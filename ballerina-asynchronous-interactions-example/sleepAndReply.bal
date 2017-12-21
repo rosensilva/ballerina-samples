@@ -13,12 +13,12 @@ service<http> sleep_and_wakeup{
         }
 
         resource getNumberResource (http:Request req, http:Response res) {
-        	int hour;
-			int minute;
-			int second;
-			int milliSecond;
-			string startTime;
-			string endTime;
+            int hour;
+            int minute;
+            int second;
+            int milliSecond;
+            string startTime;
+            string endTime;
         	globalRequestCounter = globalRequestCounter +1 ;
         	Time time = currentTime();						
         	hour, minute, second, milliSecond = time.getTime();
