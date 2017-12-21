@@ -79,7 +79,7 @@ ballerina-api-sample
 ```
 
 ##### phoneBookService.bal
-```
+```ballerina
 
 import ballerina.net.http;
 import util as phonebook;
@@ -189,7 +189,7 @@ The following code handles the http resource logic
 
 
 ##### phoneBook.bal
-```
+```ballerina
 package util;
 import ballerina.log;
 
