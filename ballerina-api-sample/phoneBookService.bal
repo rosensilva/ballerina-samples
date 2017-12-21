@@ -2,19 +2,18 @@ import ballerina.net.http;
 import util as phonebook;
 import ballerina.log;
 
-
 service<http> phonebook{
 
 
 
         @http:resourceConfig {
-            methods:["GET"],
+            methods:["GET"],	
             path:"/get_number/{name}"
         }
         resource getNumberResource (http:Request req, http:Response res, string name) {
             string result = phonebook:getContact(name);
             json responseJson = {"Name":name,"Number":result};
-            res.setJsonPayload(responseJson);
+           	res.setJsonPayload(responseJson);
             _ = res.send();
         }
 
