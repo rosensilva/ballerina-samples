@@ -3,9 +3,9 @@ Following guide walk you through the step by step process of building a RESTful 
 Guide also explains the development and deployment workflow of a standard Ballerina Service in-detail.
 
 ## What you'll build
-You’ll build a `Phone Book` service that will accept
+You’ll build a `Phone Book` service that will accept, 
 
-### HTTP GET requests at (view telephone numbers):
+##### HTTP GET requests at (view telephone numbers):
 ```
 http://localhost:9090/phonebook/get_number/{Alice}
 ```
@@ -17,7 +17,7 @@ and respond with a JSON representation of a saved telephone contact number and n
 }
 ```
 
-### HTTP POST requests at (save new telephone numbers):
+##### HTTP POST requests at (save new telephone numbers):
 ```
 http://localhost:9090/phonebook/save_number?name=Alice&number=0123456789
 ```
@@ -30,7 +30,7 @@ and respond with a JSON representation of a saved telephone contact number, name
 }
 ```
 
-### HTTP PATCH requests at (change existing telephone numbers):
+##### HTTP PATCH requests at (change existing telephone numbers):
 ```
 http://localhost:9090/phonebook/change_number?name=Alice&number=9876543210
 ```
@@ -42,7 +42,7 @@ and respond with a JSON representation of a modified telephone contact number, n
     "Number": "9876543210"
 }
 ```
-### HTTP DELETE requests at (delete existing telephone numbers):
+##### HTTP DELETE requests at (delete existing telephone numbers):
 ```
 http://localhost:9090/phonebook/delete_number?name=Alice
 ```
