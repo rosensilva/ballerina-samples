@@ -122,10 +122,12 @@ Click on **Run**(Ctrl+Shift+R) button in the tool bar.
 
 
 ## Test the Service
-Now that the service is up, http://localhost:9090/sleep_and_wakeup URL can be used to test the service by sending requests, 
-`http://localhost:9090/sleep_and_wakeup?sleeptime=10`
-`http://localhost:9090/sleep_and_wakeup?sleeptime=5`
-`http://localhost:9090/sleep_and_wakeup?sleeptime=2`
+Now that the service is up, http://localhost:9090/sleep_and_wakeup URL can be used to test the service by sending requests like, 
+```
+http://localhost:9090/sleep_and_wakeup?sleeptime=10
+http://localhost:9090/sleep_and_wakeup?sleeptime=5
+http://localhost:9090/sleep_and_wakeup?sleeptime=2
+```
 The native support for asynchronous interactions in Ballerina can experience by sending a large number of requests to the same resource concurrently. The ballerina service resource will send the response according to each requests `sleeptime`. The responses will look like,
 ```
 {
