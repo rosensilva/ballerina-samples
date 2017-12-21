@@ -42,7 +42,7 @@ ballerina-asynchronous-interactions-example
 ```
 
 ##### sleepAndReply.bal
-```import ballerina.net.http;
+```ballerina import ballerina.net.http;
 import ballerina.log;
 
 int globalRequestCounter;
