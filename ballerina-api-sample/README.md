@@ -5,7 +5,7 @@ Following guide walk you through the step by step process of building a RESTful 
 Guide also explains the development and deployment workflow of a standard Ballerina Service in-detail.
 
 ## What you will develop
-You’ll build a `Phone Book` service that will accept, 
+You’ll build a `Phone Book` service that can save new numbers, view existing numbers, change existing numbers and delete existing numebrs. The following RESTful API methods are will allow you to use `phonebook` application. 
 
 ##### HTTP GET requests at (view telephone numbers):
 ```
