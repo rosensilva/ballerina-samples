@@ -126,7 +126,7 @@ service<http> phonebook{
        	var name, _ = (string)params.name;
       	var num, _ = (string)params.number;
       	string statusMsg = "";
-       	int status = phonebook:changeNumber(name,num);
+       	int status = phonebook:changeNumber(name, num);
        	if(status ==0){
        		statusMsg = "Change Operation Success";
        	}
