@@ -1,7 +1,7 @@
 # Ballerina RESTful API Sample
 
 ## Introduction
-Following guide walk you through the step by step process of building a APIs with Ballerina.
+Following guide walk you through the step by step process of building APIs with Ballerina.
 Guide also explains the development and deployment workflow of a standard Ballerina Service in-detail. Ballerina language is a programming language which is optimized to work with web servies and integration logic. This sample will demonstrate how to develop a RESTful service up and running in a small time period.  
 
 ## What You Will Develop
