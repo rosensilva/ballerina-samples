@@ -85,18 +85,18 @@ import util as phonebook;
 import ballerina.log;
 
 service<http> phonebook{
-	@http:resourceConfig {
-		methods:["GET"],	
+    @http:resourceConfig {
+	methods:["GET"],	
     	path:"/get_number/{name}"
-	}
+    }
     resource getNumberResource (http:Request req, http:Response res, string name) {
        	string result = phonebook:getContact(name);
         json responseJson = {"Name":name,"Number":result};
         res.setJsonPayload(responseJson);
        	_ = res.send();
-  	}
+    }
 
-   	@http:resourceConfig {
+    @http:resourceConfig {
     	methods:["POST"],
         path:"/save_number/"
     }
@@ -107,17 +107,17 @@ service<http> phonebook{
       	string statusMsg = "";
        	int status = phonebook:saveContact(name,num);
        	if(status ==0){
-        	statusMsg = "Save Operation Success";
+            statusMsg = "Save Operation Success";
         }
         else{
-        	statusMsg = "Save Operation Failed";
+            statusMsg = "Save Operation Failed";
         }
         json responseJson = {"Status":statusMsg,"Name":name, "Number":num};
         res.setJsonPayload(responseJson);
         _ = res.send();
- 	}
+    }
 
-   @http:resourceConfig {
+    @http:resourceConfig {
       	methods:["PATCH"],
        	path:"/change_number/"
     }
@@ -128,10 +128,10 @@ service<http> phonebook{
       	string statusMsg = "";
        	int status = phonebook:changeNumber(name, num);
        	if(status ==0){
-       		statusMsg = "Change Operation Success";
+       	    statusMsg = "Change Operation Success";
        	}
        	else{
-       		statusMsg = "Change Operation Failed";
+       	    statusMsg = "Change Operation Failed";
         }
         json responseJson = {"Status":statusMsg,"Name":name, "Number":num};
         res.setJsonPayload(responseJson);
@@ -139,7 +139,7 @@ service<http> phonebook{
    	}
 
     @http:resourceConfig {
-		methods:["DELETE"],
+        methods:["DELETE"],
         path:"/delete_number/"
     }
     resource deleteNumberResource (http:Request req, http:Response res) {
@@ -148,15 +148,15 @@ service<http> phonebook{
         string statusMsg = "";
         int status = phonebook:deleteContact(name);
         if(status ==0){
-         	statusMsg = "Delete Operation success";
+            statusMsg = "Delete Operation success";
         }
         else{
-          	statusMsg = "Delete Operation failed";
+            statusMsg = "Delete Operation failed";
         }
         json responseJson = {"Status":statusMsg,"Name":name};
         res.setJsonPayload(responseJson);
         _ = res.send();
-	}
+    }
 }
 ```
 
