@@ -23,7 +23,6 @@ and respond with a JSON representation after the `sleeptime` timeout.
 The response is sent back to the client after waiting for number of seconds given by the `sleeptime` query parameter. The same resource can be used to serve different clients at the same time. The interaction is demonstrated by waiting for the client defined `sleeptime` and the giving back the response. To see how ballerina is good at doing that task asynchronously and simultaneously we can send several requsets at the same time by varying the `sleeptime` query parameter.
 
 ## Before You Begin:  What You Will Need
-- About 15 minutes
 - A favorite text editor or IDE
 - JDK 1.8 or later
 - Ballerina Distribution (Install Instructions:  https://ballerinalang.org/docs/quick-tour/quick-tour/#install-ballerina)
