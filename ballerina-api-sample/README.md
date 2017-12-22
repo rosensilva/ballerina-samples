@@ -2,7 +2,7 @@
 
 ## Introduction
 Following guide walk you through the step by step process of building a RESTful APIs with Ballerina.
-Guide also explains the development and deployment workflow of a standard Ballerina Service in-detail.
+Guide also explains the development and deployment workflow of a standard Ballerina Service in-detail. Ballerina language is a programming language which is optimized to work with web servies and integration logic. This sample will demonstrate how to develop a RESTful service up and running in a small time period.  
 
 ## What You Will Develop
 You’ll build a `Phone Book` service that can save new numbers, view existing numbers, change existing numbers and delete existing numebrs. The following RESTful API methods are will allow you to use `Phone Book` application. 
@@ -91,7 +91,7 @@ service<http> phonebook{
     	path:"/get_number/{name}"
     }
     resource getNumberResource (http:Request req, http:Response res, string name) {
-       	string result = phonebook:getContact(name);
+       	string result = phonebook:getContact(name); // call the getContact method in util package 
         json responseJson = {"Name":name,"Number":result};
         res.setJsonPayload(responseJson);
        	_ = res.send();
@@ -103,10 +103,10 @@ service<http> phonebook{
     }
     resource saveContactResource (http:Request req, http:Response res) {
        	map params = req.getQueryParams();
-       	var name, err1 = (string)params.name;
+       	var name, err1 = (string)params.name; //converting path parameters to strings while tracking for execptions at err1
       	var num, err2 = (string)params.number;
       	string statusMsg = "";
-       	int status = phonebook:saveContact(name,num);
+       	int status = phonebook:saveContact(name,num); // call the saveContact method in util package 
        	if(status ==0){
             statusMsg = "Save Operation Success";
         }
@@ -124,10 +124,10 @@ service<http> phonebook{
     }
     resource changeNumberResource (http:Request req, http:Response res) {
       	map params = req.getQueryParams();
-       	var name, _ = (string)params.name;
+       	var name, _ = (string)params.name;//converting path parameters to strings while neglecting execptions
       	var num, _ = (string)params.number;
       	string statusMsg = "";
-       	int status = phonebook:changeNumber(name, num);
+       	int status = phonebook:changeNumber(name, num); // call the changeContact method in util package
        	if(status ==0){
        	    statusMsg = "Change Operation Success";
        	}
@@ -147,7 +147,7 @@ service<http> phonebook{
         map params = req.getQueryParams();
         var name, _ = (string)params.name;
         string statusMsg = "";
-        int status = phonebook:deleteContact(name);
+        int status = phonebook:deleteContact(name); // call the deleteContact method in util package
         if(status ==0){
             statusMsg = "Delete Operation success";
         }
