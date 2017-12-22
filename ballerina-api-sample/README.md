@@ -274,10 +274,10 @@ Open hello-ballerina project in IntelliJ IDEA and run helloService.bal
 
 ## Test the Service
 Now that the service is up, send GET, PATCH, DELETE API call to http://localhost:9090/phonebook/ to 
-+ Add new contacts
-+ View existing contacts
-+ Modify existing contacts
-+ Delete existing contacts
++ Add new contacts		POST   - `http://localhost:9090/phonebook/save_number?name={NAME}&number={NUMBER}`	
++ View existing contacts	GET    - `http://localhost:9090/phonebook/get_number/{NAME}`
++ Modify existing contacts	PATCH  - `http://localhost:9090/phonebook/change_number?name={NAME}&number={NEW_NUMBER}`
++ Delete existing contacts	DELETE - `http://localhost:9090/phonebook/delete_number?name={NAME}`
 
 
 ## Writing Test cases
