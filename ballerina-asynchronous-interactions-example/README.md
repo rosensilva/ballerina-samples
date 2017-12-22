@@ -1,8 +1,11 @@
 # Ballerina Asynchronous Interaction Example
+
+## Introduction
+
 Following guide walk you through the step by step process of building an Asynchronous Interaction Web Service with Ballerina.
 Guide also explains the development and deployment workflow of a standard Ballerina Service in-detail.
 
-## What you'll build
+## What You Will Develop
 You’ll build a Sleep and Wakeup service that will accept HTTP GET requests at:
 ```
 http://localhost:9090/sleep_and_wakeup?sleeptime=10
@@ -19,7 +22,7 @@ and respond with a JSON representation after the `sleeptime` timeout.
 ```
 The response is sent back to the client after waiting for number of seconds given by the `sleeptime` query parameter. The same resource can be used to serve different clients at the same time. The interaction is demonstrated by waiting for the client defined `sleeptime` and the giving back the response. To see how ballerina is good at doing that task asynchronously and simultaneously we can send several requsets at the same time by varying the `sleeptime` query parameter.
 
-## Before you begin:  What you'll need
+## Before You Begin:  What You Will Need
 - About 15 minutes
 - A favorite text editor or IDE
 - JDK 1.8 or later
@@ -27,7 +30,7 @@ The response is sent back to the client after waiting for number of seconds give
 - You can import or write the code straight on your text editor/Ballerina Composer
 
 
-## How to complete this guide
+## How to Complete This Guide
 You can either start writing the service in Ballerina from scratch or by cloning the service to continue with the next steps.
 
 To skip the basics:
