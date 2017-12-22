@@ -106,20 +106,24 @@ Click on **Run**(Ctrl+Shift+R) button in the tool bar.
 
 
 ### Running in Intellij IDEA
-<TODO>
+Refer https://github.com/ballerinalang/plugin-intellij/tree/master/getting-started to setup your IntelliJ IDEA environment with Ballerina.
+Open hello-ballerina project in IntelliJ IDEA and run sleepAndReply.bal
+
+![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/ballerina-asynchronous-interactions-example/images/intelij-sleepandwake.png)
+
 
 ### Running in VSCode
 <TODO>
 
 
 ## Test the Service
-Now that the service is up, http://localhost:9090/sleep_and_wakeup URL can be used to test the service by sending requests like, 
+Now that the service is up, http://localhost:9090/sleep_and_wakeup URL can be used to test the service by sending requests, 
 ```
 http://localhost:9090/sleep_and_wakeup?sleeptime=10
 http://localhost:9090/sleep_and_wakeup?sleeptime=5
 http://localhost:9090/sleep_and_wakeup?sleeptime=2
 ```
-The native support for asynchronous interactions in Ballerina can experience by sending a large number of requests to the same resource concurrently. The ballerina service resource will send the response according to each requests `sleeptime`. The responses will look like,
+The native support for asynchronous interactions in Ballerina can be experienced by sending a large number of requests to the same resource concurrently. The ballerina service resource will send the response according to each requests `sleeptime`timeout. The responses will look similar,
 ```
 {
     "Start Time": "Time: 14:22:43",
@@ -129,7 +133,7 @@ The native support for asynchronous interactions in Ballerina can experience by 
     "Service Number": 1
 }
 ```
-The terminal of service will display the request details as Log in Info level,
+The terminal of service will display the request details as Log at Info level,
 
 ```
 ballerina: deploying service(s) in 'sleepAndReply.bal'
