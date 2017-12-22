@@ -80,90 +80,83 @@ ballerina-api-sample
 
 ##### phoneBookService.bal
 ```ballerina
-
 import ballerina.net.http;
 import util as phonebook;
 import ballerina.log;
 
 service<http> phonebook{
+	@http:resourceConfig {
+		methods:["GET"],	
+        path:"/get_number/{name}"
+	}
+    resource getNumberResource (http:Request req, http:Response res, string name) {
+       	string result = phonebook:getContact(name);
+        json responseJson = {"Name":name,"Number":result};
+        res.setJsonPayload(responseJson);
+       	_ = res.send();
+  	}
 
-
-
-        @http:resourceConfig {
-            methods:["GET"],	
-            path:"/get_number/{name}"
+   	@http:resourceConfig {
+    	methods:["POST"],
+        path:"/save_number/"
+    }
+    resource saveContactResource (http:Request req, http:Response res) {
+       	map params = req.getQueryParams();
+       	var name, err1 = (string)params.name;
+      	var num, err2 = (string)params.number;
+      	string statusMsg = "";
+       	int status = phonebook:saveContact(name,num);
+       	if(status ==0){
+        	statusMsg = "Save Operation Success";
         }
-        resource getNumberResource (http:Request req, http:Response res, string name) {
-            string result = phonebook:getContact(name);
-            json responseJson = {"Name":name,"Number":result};
-           	res.setJsonPayload(responseJson);
-            _ = res.send();
+        else{
+        	statusMsg = "Save Operation Failed";
         }
+        json responseJson = {"Status":statusMsg,"Name":name, "Number":num};
+        res.setJsonPayload(responseJson);
+        _ = res.send();
+ 	}
 
+   	@http:resourceConfig {
+      	methods:["PATCH"],
+       	path:"/change_number/"
+    }
+    resource changeNumberResource (http:Request req, http:Response res) {
+      	map params = req.getQueryParams();
+       	var name, _ = (string)params.name;
+      	var num, _ = (string)params.number;
+      	string statusMsg = "";
+       	int status = phonebook:changeNumber(name,num);
+       	if(status ==0){
+       		statusMsg = "Change Operation Success";
+       	}
+       	else{
+       		statusMsg = "Change Operation Failed";
+        }
+        json responseJson = {"Status":statusMsg,"Name":name, "Number":num};
+        res.setJsonPayload(responseJson);
+        _ = res.send();
+   	}
 
-        @http:resourceConfig {
-            methods:["POST"],
-            path:"/save_number/"
+    @http:resourceConfig {
+		methods:["DELETE"],
+        path:"/delete_number/"
+    }
+    resource deleteNumberResource (http:Request req, http:Response res) {
+        map params = req.getQueryParams();
+        var name, _ = (string)params.name;
+        string statusMsg = "";
+        int status = phonebook:deleteContact(name);
+        if(status ==0){
+         	statusMsg = "Delete Operation success";
         }
-        resource saveContactResource (http:Request req, http:Response res) {
-            map params = req.getQueryParams();
-            var name, err1 = (string)params.name;
-            var num, err2 = (string)params.number;
-            string statusMsg = "";
-            int status = phonebook:saveContact(name,num);
-            if(status ==0){
-            	statusMsg = "Save Operation Success";
-            }
-            else{
-            	statusMsg = "Save Operation Failed";
-            }
-            json responseJson = {"Status":statusMsg,"Name":name, "Number":num};
-            res.setJsonPayload(responseJson);
-            _ = res.send();
+        else{
+          	statusMsg = "Delete Operation failed";
         }
-
-
-         @http:resourceConfig {
-            methods:["PATCH"],
-            path:"/change_number/"
-        }
-        resource changeNumberResource (http:Request req, http:Response res) {
-            map params = req.getQueryParams();
-            var name, _ = (string)params.name;
-            var num, _ = (string)params.number;
-            string statusMsg = "";
-            int status = phonebook:changeNumber(name,num);
-            if(status ==0){
-            	statusMsg = "Change Operation Success";
-            }
-            else{
-            	statusMsg = "Change Operation Failed";
-            }
-            json responseJson = {"Status":statusMsg,"Name":name, "Number":num};
-            res.setJsonPayload(responseJson);
-            _ = res.send();
-        }
-
-
-         @http:resourceConfig {
-            methods:["DELETE"],
-            path:"/delete_number/"
-        }
-        resource deleteNumberResource (http:Request req, http:Response res) {
-            map params = req.getQueryParams();
-            var name, _ = (string)params.name;
-            string statusMsg = "";
-            int status = phonebook:deleteContact(name);
-            if(status ==0){
-            	statusMsg = "Delete Operation success";
-            }
-            else{
-            	statusMsg = "Delete Operation failed";
-            }
-            json responseJson = {"Status":statusMsg,"Name":name};
-            res.setJsonPayload(responseJson);
-            _ = res.send();
-        }
+        json responseJson = {"Status":statusMsg,"Name":name};
+        res.setJsonPayload(responseJson);
+        _ = res.send();
+	}
 }
 ```
 
@@ -172,19 +165,19 @@ The service is written as "`` service<http> phonebook ``" in Ballerina. The serv
 The http resource is configured by the following definition 
 ```
 @http:resourceConfig {
-            methods:["GET"],	
-            path:"/get_number/{name}"
-        }
+	methods:["GET"],	
+  	path:"/get_number/{name}"
+}
 ```
 
 The following code handles the http resource logic 
 ```
- resource getNumberResource (http:Request req, http:Response res, string name) {
-            string result = phonebook:getContact(name);
-            json responseJson = {"Name":name,"Number":result};
-           	res.setJsonPayload(responseJson);
-            _ = res.send();
-        }
+resource getNumberResource (http:Request req, http:Response res, string name) {
+ 	string result = phonebook:getContact(name);
+    json responseJson = {"Name":name,"Number":result};
+    res.setJsonPayload(responseJson);
+    _ = res.send();
+}
 ```
 
 
@@ -192,9 +185,7 @@ The following code handles the http resource logic
 ```ballerina
 package util;
 import ballerina.log;
-
 map phonebookDB = {};
-
 
 public function saveContact(string key, string value)(int){
 	phonebookDB[key]=value;	//save the contact to the phonebookDB map data stucture
@@ -204,7 +195,6 @@ public function saveContact(string key, string value)(int){
 public function getContact(string key)(string value){
 	var result = phonebookDB[key];
 	var resultString,err  = (string)result; //casting the results to a string using multivalue return for unsafe casting
-	
 	if(err == null){	//if there is no error while casting the result to a string return result
 		return resultString;	
 	}
@@ -218,7 +208,6 @@ public function getContact(string key)(string value){
 public function deleteContact(string key)(int){
 	var result = phonebookDB[key];
 	var resultString,err  = (string)result;
-	
 	if(err == null){	
 		phonebookDB[key]=null;
 		return 0;
@@ -226,14 +215,12 @@ public function deleteContact(string key)(int){
 	else{
 		log:printInfo("cannot find number in the map data structure");
 		return 1;
-	}	
-	
+	}
 }
 
 public function changeNumber(string key, string value)(int){
 	var result = phonebookDB[key];
 	var resultString,err  = (string)result;
-	
 	if(err == null){	
 		phonebookDB[key]=value;
 		return 0;
@@ -241,15 +228,13 @@ public function changeNumber(string key, string value)(int){
 	else{
 		log:printInfo("cannot find number in the map data structure");
 		return 1;
-	}	
-	
+	}		
 }
 ```
 
 Services represent collections of network accessible entry points in Ballerina. Resources represent one such entry point. 
 Ballerina supports writing RESTFul services according to JAX-RS specification. BasePath, Path and HTTP verb annotations such as POST, GET, etc can be used to constrain your service in RESTful manner.
 Post annotation constrains the resource only to accept post requests. Similarly, for each HTTP verb there are different annotations. Path attribute associates a sub-path to resource.
-
 Ballerina supports extracting values both from PathParam and QueryParam. Query Parameters are read from a map.
 In ballerina you could define a response structure or a json inline in the code.
 
@@ -277,7 +262,11 @@ Click on **Run**(Ctrl+Shift+R) button in the tool bar.
 
 
 ### Running in Intellij IDEA
-<TODO>
+Refer https://github.com/ballerinalang/plugin-intellij/tree/master/getting-started to setup your IntelliJ IDEA environment with Ballerina.
+Open hello-ballerina project in IntelliJ IDEA and run helloService.bal
+
+![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/ballerina-api-sample/images/phonebook_intellij_img.png)
+
 
 ### Running in VSCode
 <TODO>
