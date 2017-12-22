@@ -102,7 +102,7 @@ Navigate to File -> Open Program Directory, and pick the project folder (balleri
 
 Click on **Run**(Ctrl+Shift+R) button in the tool bar.
 
-![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/ballerina-asynchronous-interactions-example/images/sleepAndWake.png)
+![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/ballerina-asynchronous-interactions-example/images/Screenshot%20from%202017-12-21%2014-08-00.png)
 
 
 ### Running in Intellij IDEA
