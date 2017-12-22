@@ -1,8 +1,10 @@
 # Ballerina RESTful API Sample
+
+## Introduction
 Following guide walk you through the step by step process of building a RESTful APIs with Ballerina.
 Guide also explains the development and deployment workflow of a standard Ballerina Service in-detail.
 
-## What you'll build
+## What you will develop
 You’ll build a `Phone Book` service that will accept, 
 
 ##### HTTP GET requests at (view telephone numbers):
@@ -55,7 +57,6 @@ and respond with a JSON representation of a modified telephone contact number, n
 ```
 
 ## Before you begin:  What you'll need
-- About 15 minutes
 - A favorite text editor or IDE
 - JDK 1.8 or later
 - Ballerina Distribution (Install Instructions:  https://ballerinalang.org/docs/quick-tour/quick-tour/#install-ballerina)
