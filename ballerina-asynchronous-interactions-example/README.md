@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Following guide walk you through the step by step process of building an Asynchronous Interaction Web Service with Ballerina.
+Following guide walk you through the step by step process of building an Asynchronous Interaction web service with Ballerina language. Ballerina was designd with built-in support for Asynchronous Interactions. Since it has the built-in support for Asynchronous Interactions developers need only to follow few simple steps to write Asynchronous Interaction Web Service.
 Guide also explains the development and deployment workflow of a standard Ballerina Service in-detail.
 
 ## What You Will Develop
@@ -74,10 +74,10 @@ service<http> sleep_and_wakeup {
         startTime = "Time: " + <string>hour + ":" + <string>minute + ":" + <string>second;
         log:printInfo("Serving Reqest No: " + globalRequestCounter + " Start Time :" + startTime);
 
-        map params = req.getQueryParams();
+        map params = req.getQueryParams();  //get the query parameters from the request
         var sleeptime, _ = (string)params.sleeptime;
         var slpTime, _ = <int>sleeptime;
-        sleep(slpTime * 1000);//sleep the current request for sleeptime query parameter seconds
+        sleep(slpTime * 1000); //sleep the current request for sleeptime query parameter seconds
 
         time = currentTime();
         hour, minute, second, milliSecond = time.getTime();
