@@ -165,15 +165,15 @@ The service is written as "`` service<http> phonebook ``" in Ballerina. The serv
 The http resource is configured by the following definition 
 ```
 @http:resourceConfig {
-	methods:["GET"],	
-  	path:"/get_number/{name}"
+    methods:["GET"],	
+    path:"/get_number/{name}"
 }
 ```
 
 The following code handles the http resource logic 
 ```
 resource getNumberResource (http:Request req, http:Response res, string name) {
- 	string result = phonebook:getContact(name);
+    string result = phonebook:getContact(name);
     json responseJson = {"Name":name,"Number":result};
     res.setJsonPayload(responseJson);
     _ = res.send();
@@ -188,47 +188,47 @@ import ballerina.log;
 map phonebookDB = {};
 
 public function saveContact(string key, string value)(int){
-	phonebookDB[key]=value;	//save the contact to the phonebookDB map data stucture
-	return 0;
+    phonebookDB[key]=value;	//save the contact to the phonebookDB map data stucture
+    return 0;
 }
 
 public function getContact(string key)(string value){
-	var result = phonebookDB[key];
-	var resultString,err  = (string)result; //casting the results to a string using multivalue return for unsafe casting
-	if(err == null){	//if there is no error while casting the result to a string return result
-		return resultString;	
-	}
-	else{	//if casting cannot perform which means phonebookDB doesnot contain an value for that name send error msg
-		string no_number = "Sorry! the numebr cannot be found at directory";
-		log:printInfo("cannot find number in the map data structure");
-		return no_number;
-	}	
+    var result = phonebookDB[key];
+    var resultString,err  = (string)result; //casting the results to a string using multivalue return for unsafe casting
+    if(err == null){	//if there is no error while casting the result to a string return result
+    	return resultString;	
+    }
+    else{	//if casting cannot perform which means phonebookDB doesnot contain an value for that name send error msg
+	string no_number = "Sorry! the numebr cannot be found at directory";
+	log:printInfo("cannot find number in the map data structure");
+	return no_number;
+    }	
 }
 
 public function deleteContact(string key)(int){
-	var result = phonebookDB[key];
-	var resultString,err  = (string)result;
-	if(err == null){	
-		phonebookDB[key]=null;
-		return 0;
-	}
-	else{
-		log:printInfo("cannot find number in the map data structure");
-		return 1;
-	}
+    var result = phonebookDB[key];
+    var resultString,err  = (string)result;
+    if(err == null){
+    	phonebookDB[key]=null;
+	return 0;
+    }
+    else{
+	log:printInfo("cannot find number in the map data structure");
+	return 1;
+    }
 }
 
 public function changeNumber(string key, string value)(int){
-	var result = phonebookDB[key];
-	var resultString,err  = (string)result;
-	if(err == null){	
-		phonebookDB[key]=value;
-		return 0;
-	}
-	else{
-		log:printInfo("cannot find number in the map data structure");
-		return 1;
-	}		
+    var result = phonebookDB[key];
+    var resultString,err  = (string)result;
+    if(err == null){	
+	phonebookDB[key]=value;
+	return 0;
+    }
+    else{
+	log:printInfo("cannot find number in the map data structure");
+	return 1;
+    }		
 }
 ```
 
@@ -272,13 +272,13 @@ Open hello-ballerina project in IntelliJ IDEA and run helloService.bal
 <TODO>
 
 
-## Test the Service
+## Test the Service```
 Now that the service is up, send GET, PATCH, DELETE API call to http://localhost:9090/phonebook/ to 
-+ Add new contacts		POST   - `http://localhost:9090/phonebook/save_number?name={NAME}&number={NUMBER}`	
-+ View existing contacts	GET    - `http://localhost:9090/phonebook/get_number/{NAME}`
-+ Modify existing contacts	PATCH  - `http://localhost:9090/phonebook/change_number?name={NAME}&number={NEW_NUMBER}`
-+ Delete existing contacts	DELETE - `http://localhost:9090/phonebook/delete_number?name={NAME}`
-
+> Add new contacts		POST   - `http://localhost:9090/phonebook/save_number?name={NAME}&number={NUMBER}`	
+> View existing contacts	GET    - `http://localhost:9090/phonebook/get_number/{NAME}`
+> Modify existing contacts	PATCH  - `http://localhost:9090/phonebook/change_number?name={NAME}&number={NEW_NUMBER}`
+> Delete existing contacts	DELETE - `http://localhost:9090/phonebook/delete_number?name={NAME}`
+```
 
 ## Writing Test cases
 
