@@ -21,7 +21,7 @@ and respond with a JSON representation of a saved telephone contact number and n
 ```
 http://localhost:9090/phonebook/save_number?name=Alice&number=0123456789
 ```
-and respond with a JSON representation of a saved telephone contact number, name and the staus of the operation 
+and respond with a JSON representation of a saved telephone contact number, name and the status of the operation 
 ```json
 {
     "Status": "Save Operation Success",
@@ -34,7 +34,7 @@ and respond with a JSON representation of a saved telephone contact number, name
 ```
 http://localhost:9090/phonebook/change_number?name=Alice&number=9876543210
 ```
-and respond with a JSON representation of a modified telephone contact number, name and the staus of the operation 
+and respond with a JSON representation of a modified telephone contact number, name and the status of the operation 
 ```json
 {
     "Status": "Change Operation Success",
@@ -46,7 +46,7 @@ and respond with a JSON representation of a modified telephone contact number, n
 ```
 http://localhost:9090/phonebook/delete_number?name=Alice
 ```
-and respond with a JSON representation of a modified telephone contact number, name and the staus of the operation 
+and respond with a JSON representation of a modified telephone contact number, name and the status of the operation 
 ```json
 {
     "Status": "Delete Operation success",
@@ -79,7 +79,7 @@ ballerina-api-sample
 ```
 
 ##### phoneBookService.bal
-```
+```ballerina
 
 import ballerina.net.http;
 import util as phonebook;
@@ -189,7 +189,7 @@ The following code handles the http resource logic
 
 
 ##### phoneBook.bal
-```
+```ballerina
 package util;
 import ballerina.log;
 
