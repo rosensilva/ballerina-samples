@@ -5,7 +5,7 @@ Following guide walk you through the step by step process of building a RESTful 
 Guide also explains the development and deployment workflow of a standard Ballerina Service in-detail.
 
 ## What you will develop
-You’ll build a `Phone Book` service that can save new numbers, view existing numbers, change existing numbers and delete existing numebrs. The following RESTful API methods are will allow you to use `phonebook` application. 
+You’ll build a `Phone Book` service that can save new numbers, view existing numbers, change existing numbers and delete existing numebrs. The following RESTful API methods are will allow you to use `Phone Book` application. 
 
 ##### HTTP GET requests at (view telephone numbers):
 ```
@@ -273,13 +273,13 @@ Open hello-ballerina project in IntelliJ IDEA and run helloService.bal
 <TODO>
 
 
-## Test the Service```
+## Test the Service
 Now that the service is up, send GET, PATCH, DELETE API call to http://localhost:9090/phonebook/ to 
-> Add new contacts		POST   - `http://localhost:9090/phonebook/save_number?name={NAME}&number={NUMBER}`	
-> View existing contacts	GET    - `http://localhost:9090/phonebook/get_number/{NAME}`
-> Modify existing contacts	PATCH  - `http://localhost:9090/phonebook/change_number?name={NAME}&number={NEW_NUMBER}`
-> Delete existing contacts	DELETE - `http://localhost:9090/phonebook/delete_number?name={NAME}`
-```
++ Add new contacts		POST   - `http://localhost:9090/phonebook/save_number?name={NAME}&number={NUMBER}`	
++ View existing contacts	GET    - `http://localhost:9090/phonebook/get_number/{NAME}`
++ Modify existing contacts	PATCH  - `http://localhost:9090/phonebook/change_number?name={NAME}&number={NEW_NUMBER}`
++ Delete existing contacts	DELETE - `http://localhost:9090/phonebook/delete_number?name={NAME}`
+
 
 ## Writing Test cases
 
