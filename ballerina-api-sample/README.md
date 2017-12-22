@@ -87,7 +87,7 @@ import ballerina.log;
 service<http> phonebook{
 	@http:resourceConfig {
 		methods:["GET"],	
-        path:"/get_number/{name}"
+    	path:"/get_number/{name}"
 	}
     resource getNumberResource (http:Request req, http:Response res, string name) {
        	string result = phonebook:getContact(name);
@@ -117,7 +117,7 @@ service<http> phonebook{
         _ = res.send();
  	}
 
-   	@http:resourceConfig {
+   @http:resourceConfig {
       	methods:["PATCH"],
        	path:"/change_number/"
     }
