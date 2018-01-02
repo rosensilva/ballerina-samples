@@ -1,8 +1,11 @@
 # Ballerina Asynchronous Interaction Example
-Following guide walk you through the step by step process of building an Asynchronous Interaction Web Service with Ballerina.
+
+## Introduction
+
+Following guide walk you through the step by step process of building an Asynchronous Interaction web service with Ballerina language. Ballerina was designd with built-in support for Asynchronous Interactions. Since it has the built-in support for Asynchronous Interactions developers need only to follow few simple steps to write Asynchronous Interaction Web Service.
 Guide also explains the development and deployment workflow of a standard Ballerina Service in-detail.
 
-## What you'll build
+## What You Will Develop
 You’ll build a Sleep and Wakeup service that will accept HTTP GET requests at:
 ```
 http://localhost:9090/sleep_and_wakeup?sleeptime=10
@@ -19,15 +22,14 @@ and respond with a JSON representation after the `sleeptime` timeout.
 ```
 The response is sent back to the client after waiting for number of seconds given by the `sleeptime` query parameter. The same resource can be used to serve different clients at the same time. The interaction is demonstrated by waiting for the client defined `sleeptime` and the giving back the response. To see how ballerina is good at doing that task asynchronously and simultaneously we can send several requsets at the same time by varying the `sleeptime` query parameter.
 
-## Before you begin:  What you'll need
-- About 15 minutes
+## Before You Begin:  What You Will Need
 - A favorite text editor or IDE
 - JDK 1.8 or later
 - Ballerina Distribution (Install Instructions:  https://ballerinalang.org/docs/quick-tour/quick-tour/#install-ballerina)
 - You can import or write the code straight on your text editor/Ballerina Composer
 
 
-## How to complete this guide
+## How to Complete This Guide
 You can either start writing the service in Ballerina from scratch or by cloning the service to continue with the next steps.
 
 To skip the basics:
@@ -45,38 +47,52 @@ ballerina-asynchronous-interactions-example
 ```ballerina 
 import ballerina.net.http;
 import ballerina.log;
+
 int globalRequestCounter;
 
-service<http> sleep_and_wakeup{
-        @http:resourceConfig {
-            methods:["GET"],	
-            path:"/"
-        }
-        resource getNumberResource (http:Request req, http:Response res) {
-            int hour;
-            int minute;
-            int second;
-            int milliSecond;
-            string startTime;
-            string endTime;
-            globalRequestCounter = globalRequestCounter +1 ;
-            Time time = currentTime();						
-            hour, minute, second, milliSecond = time.getTime();
-            startTime = "Time: " + <string>hour + ":" + <string>minute + ":" + <string>second; 
-            log:printInfo("Serving Reqest No: " + globalRequestCounter + " Start Time :" +startTime);
-            map params = req.getQueryParams();
-            var sleeptime, _ = (string)params.sleeptime;
-            var slpTime, _ = <int>sleeptime;
-            sleep(slpTime*1000);//sleep the current request for sleeptime query parameter seconds
-            time = currentTime();
-            hour, minute, second, milliSecond = time.getTime();
-            endTime = "Time: " + <string>hour + ":" + <string>minute + ":" + <string>second; 
-            log:printInfo("Serving Reqest No: " + globalRequestCounter + " End Time :" +endTime);
-            json responseJson = {"Start Time":startTime, "End Time":endTime,"Sleep Time(seconds)":sleeptime,"Wake Up":"Yes","Service Number":globalRequestCounter};
-            res.setJsonPayload(responseJson);//send back the response with time information of the service execution 
-            _ = res.send();
-        }
+
+service<http> sleep_and_wakeup {
+
+
+    @http:resourceConfig {
+        methods:["GET"],
+        path:"/"
+    }
+
+    resource getNumberResource (http:Request req, http:Response res) {
+        int hour;
+        int minute;
+        int second;
+        int milliSecond;
+        string startTime;
+        string endTime;
+        globalRequestCounter = globalRequestCounter + 1;
+        
+        Time time = currentTime();
+        hour, minute, second, milliSecond = time.getTime();
+        startTime = "Time: " + <string>hour + ":" + <string>minute + ":" + <string>second;
+        log:printInfo("Serving Reqest No: " + globalRequestCounter + " Start Time :" + startTime);
+
+        map params = req.getQueryParams();  //get the query parameters from the request
+        var sleeptime, _ = (string)params.sleeptime;
+        var slpTime, _ = <int>sleeptime;
+        sleep(slpTime * 1000); //sleep the current request for sleeptime query parameter seconds
+
+        time = currentTime();
+        hour, minute, second, milliSecond = time.getTime();
+        endTime = "Time: " + <string>hour + ":" + <string>minute + ":" + <string>second;
+        log:printInfo("Serving Reqest No: " + globalRequestCounter + " End Time :" + endTime);
+
+
+        json responseJson = {"Start Time":startTime, "End Time":endTime, "Sleep Time(seconds)":sleeptime, "Wake Up":"Yes", "Service Number":globalRequestCounter};
+        res.setJsonPayload(responseJson);//send back the response with time information of the service execution 
+        _ = res.send();
+    }
+
+
+
 }
+
 ```
 
 The service is defined as `service<http> sleep_and_wakeup` in this example. First, the query parameter `sleeptime` is extracted from the Request `req.getQueryParams()`. Then the program will sleep for `sleeptime` seconds in the `sleep(slpTime*1000)` line. Finally, the response is sent back to the client with the start time and the end time of processing the request.
@@ -102,24 +118,28 @@ Navigate to File -> Open Program Directory, and pick the project folder (balleri
 
 Click on **Run**(Ctrl+Shift+R) button in the tool bar.
 
-![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/ballerina-asynchronous-interactions-example/images/sleepAndWake.png)
+![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/ballerina-asynchronous-interactions-example/images/Screenshot%20from%202017-12-21%2014-08-00.png)
 
 
 ### Running in Intellij IDEA
-<TODO>
+Refer https://github.com/ballerinalang/plugin-intellij/tree/master/getting-started to setup your IntelliJ IDEA environment with Ballerina.
+Open hello-ballerina project in IntelliJ IDEA and run sleepAndReply.bal
+
+![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/ballerina-asynchronous-interactions-example/images/intelij-sleepandwake.png)
+
 
 ### Running in VSCode
 <TODO>
 
 
 ## Test the Service
-Now that the service is up, http://localhost:9090/sleep_and_wakeup URL can be used to test the service by sending requests like, 
+Now that the service is up, http://localhost:9090/sleep_and_wakeup URL can be used to test the service by sending requests, 
 ```
 http://localhost:9090/sleep_and_wakeup?sleeptime=10
 http://localhost:9090/sleep_and_wakeup?sleeptime=5
 http://localhost:9090/sleep_and_wakeup?sleeptime=2
 ```
-The native support for asynchronous interactions in Ballerina can experience by sending a large number of requests to the same resource concurrently. The ballerina service resource will send the response according to each requests `sleeptime`. The responses will look like,
+The native support for asynchronous interactions in Ballerina can be experienced by sending a large number of requests to the same resource concurrently. The ballerina service resource will send the response according to each requests `sleeptime`timeout. The responses will look similar,
 ```
 {
     "Start Time": "Time: 14:22:43",
@@ -129,7 +149,7 @@ The native support for asynchronous interactions in Ballerina can experience by 
     "Service Number": 1
 }
 ```
-The terminal of service will display the request details as Log in Info level,
+The terminal of service will display the request details as Log at Info level,
 
 ```
 ballerina: deploying service(s) in 'sleepAndReply.bal'

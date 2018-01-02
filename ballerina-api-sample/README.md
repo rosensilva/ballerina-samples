@@ -1,9 +1,11 @@
 # Ballerina RESTful API Sample
-Following guide walk you through the step by step process of building a RESTful APIs with Ballerina.
-Guide also explains the development and deployment workflow of a standard Ballerina Service in-detail.
 
-## What you'll build
-You’ll build a `Phone Book` service that will accept, 
+## Introduction
+Following guide walk you through the step by step process of building APIs with Ballerina.
+Guide also explains the development and deployment workflow of a standard Ballerina Service in-detail. Ballerina language is a programming language which is optimized to work with web servies and integration logic. This sample will demonstrate how to develop a RESTful service up and running in a small time period.  
+
+## What You Will Develop
+You’ll build a `Phone Book` service that can save new numbers, view existing numbers, change existing numbers and delete existing numebrs. The following RESTful API methods are will allow you to use `Phone Book` application. 
 
 ##### HTTP GET requests at (view telephone numbers):
 ```
@@ -54,15 +56,14 @@ and respond with a JSON representation of a modified telephone contact number, n
 }
 ```
 
-## Before you begin:  What you'll need
-- About 15 minutes
+## Before You Begin:  What You Will Need
 - A favorite text editor or IDE
 - JDK 1.8 or later
 - Ballerina Distribution (Install Instructions:  https://ballerinalang.org/docs/quick-tour/quick-tour/#install-ballerina)
 - You can import or write the code straight on your text editor/Ballerina Composer
 
 
-## How to complete this guide
+## How to Complete This Guide
 You can either start writing the service in Ballerina from scratch or by cloning the service to continue with the next steps.
 
 To skip the basics:
@@ -80,90 +81,83 @@ ballerina-api-sample
 
 ##### phoneBookService.bal
 ```ballerina
-
 import ballerina.net.http;
 import util as phonebook;
 import ballerina.log;
 
 service<http> phonebook{
+    @http:resourceConfig {
+	methods:["GET"],	
+    	path:"/get_number/{name}"
+    }
+    resource getNumberResource (http:Request req, http:Response res, string name) {
+       	string result = phonebook:getContact(name); // call the getContact method in util package 
+        json responseJson = {"Name":name,"Number":result};
+        res.setJsonPayload(responseJson);
+       	_ = res.send();
+    }
 
-
-
-        @http:resourceConfig {
-            methods:["GET"],	
-            path:"/get_number/{name}"
+    @http:resourceConfig {
+    	methods:["POST"],
+        path:"/save_number/"
+    }
+    resource saveContactResource (http:Request req, http:Response res) {
+       	map params = req.getQueryParams();
+       	var name, err1 = (string)params.name; //converting path parameters to strings while tracking for execptions at err1
+      	var num, err2 = (string)params.number;
+      	string statusMsg = "";
+       	int status = phonebook:saveContact(name,num); // call the saveContact method in util package 
+       	if(status ==0){
+            statusMsg = "Save Operation Success";
         }
-        resource getNumberResource (http:Request req, http:Response res, string name) {
-            string result = phonebook:getContact(name);
-            json responseJson = {"Name":name,"Number":result};
-           	res.setJsonPayload(responseJson);
-            _ = res.send();
+        else{
+            statusMsg = "Save Operation Failed";
         }
+        json responseJson = {"Status":statusMsg,"Name":name, "Number":num};
+        res.setJsonPayload(responseJson);
+        _ = res.send();
+    }
 
+    @http:resourceConfig {
+      	methods:["PATCH"],
+       	path:"/change_number/"
+    }
+    resource changeNumberResource (http:Request req, http:Response res) {
+      	map params = req.getQueryParams();
+       	var name, _ = (string)params.name;//converting path parameters to strings while neglecting execptions
+      	var num, _ = (string)params.number;
+      	string statusMsg = "";
+       	int status = phonebook:changeNumber(name, num); // call the changeContact method in util package
+       	if(status ==0){
+       	    statusMsg = "Change Operation Success";
+       	}
+       	else{
+       	    statusMsg = "Change Operation Failed";
+        }
+        json responseJson = {"Status":statusMsg,"Name":name, "Number":num};
+        res.setJsonPayload(responseJson);
+        _ = res.send();
+   	}
 
-        @http:resourceConfig {
-            methods:["POST"],
-            path:"/save_number/"
+    @http:resourceConfig {
+        methods:["DELETE"],
+        path:"/delete_number/"
+    }
+    resource deleteNumberResource (http:Request req, http:Response res) {
+        map params = req.getQueryParams();
+        var name, _ = (string)params.name;
+        string statusMsg = "";
+        int status = phonebook:deleteContact(name); // call the deleteContact method in util package
+        if(status ==0){
+            statusMsg = "Delete Operation success";
         }
-        resource saveContactResource (http:Request req, http:Response res) {
-            map params = req.getQueryParams();
-            var name, err1 = (string)params.name;
-            var num, err2 = (string)params.number;
-            string statusMsg = "";
-            int status = phonebook:saveContact(name,num);
-            if(status ==0){
-            	statusMsg = "Save Operation Success";
-            }
-            else{
-            	statusMsg = "Save Operation Failed";
-            }
-            json responseJson = {"Status":statusMsg,"Name":name, "Number":num};
-            res.setJsonPayload(responseJson);
-            _ = res.send();
+        else{
+            statusMsg = "Delete Operation failed";
         }
-
-
-         @http:resourceConfig {
-            methods:["PATCH"],
-            path:"/change_number/"
-        }
-        resource changeNumberResource (http:Request req, http:Response res) {
-            map params = req.getQueryParams();
-            var name, _ = (string)params.name;
-            var num, _ = (string)params.number;
-            string statusMsg = "";
-            int status = phonebook:changeNumber(name,num);
-            if(status ==0){
-            	statusMsg = "Change Operation Success";
-            }
-            else{
-            	statusMsg = "Change Operation Failed";
-            }
-            json responseJson = {"Status":statusMsg,"Name":name, "Number":num};
-            res.setJsonPayload(responseJson);
-            _ = res.send();
-        }
-
-
-         @http:resourceConfig {
-            methods:["DELETE"],
-            path:"/delete_number/"
-        }
-        resource deleteNumberResource (http:Request req, http:Response res) {
-            map params = req.getQueryParams();
-            var name, _ = (string)params.name;
-            string statusMsg = "";
-            int status = phonebook:deleteContact(name);
-            if(status ==0){
-            	statusMsg = "Delete Operation success";
-            }
-            else{
-            	statusMsg = "Delete Operation failed";
-            }
-            json responseJson = {"Status":statusMsg,"Name":name};
-            res.setJsonPayload(responseJson);
-            _ = res.send();
-        }
+        json responseJson = {"Status":statusMsg,"Name":name};
+        res.setJsonPayload(responseJson);
+        _ = res.send();
+    }
 }
 ```
 
@@ -172,19 +166,19 @@ The service is written as "`` service<http> phonebook ``" in Ballerina. The serv
 The http resource is configured by the following definition 
 ```
 @http:resourceConfig {
-            methods:["GET"],	
-            path:"/get_number/{name}"
-        }
+    methods:["GET"],	
+    path:"/get_number/{name}"
+}
 ```
 
 The following code handles the http resource logic 
 ```
- resource getNumberResource (http:Request req, http:Response res, string name) {
-            string result = phonebook:getContact(name);
-            json responseJson = {"Name":name,"Number":result};
-           	res.setJsonPayload(responseJson);
-            _ = res.send();
-        }
+resource getNumberResource (http:Request req, http:Response res, string name) {
+    string result = phonebook:getContact(name);
+    json responseJson = {"Name":name,"Number":result};
+    res.setJsonPayload(responseJson);
+    _ = res.send();
+}
 ```
 
 
@@ -192,64 +186,56 @@ The following code handles the http resource logic
 ```ballerina
 package util;
 import ballerina.log;
-
 map phonebookDB = {};
 
-
 public function saveContact(string key, string value)(int){
-	phonebookDB[key]=value;	//save the contact to the phonebookDB map data stucture
-	return 0;
+    phonebookDB[key]=value;	//save the contact to the phonebookDB map data stucture
+    return 0;
 }
 
 public function getContact(string key)(string value){
-	var result = phonebookDB[key];
-	var resultString,err  = (string)result; //casting the results to a string using multivalue return for unsafe casting
-	
-	if(err == null){	//if there is no error while casting the result to a string return result
-		return resultString;	
-	}
-	else{	//if casting cannot perform which means phonebookDB doesnot contain an value for that name send error msg
-		string no_number = "Sorry! the numebr cannot be found at directory";
-		log:printInfo("cannot find number in the map data structure");
-		return no_number;
-	}	
+    var result = phonebookDB[key];
+    var resultString,err  = (string)result; //casting the results to a string using multivalue return for unsafe casting
+    if(err == null){	//if there is no error while casting the result to a string return result
+    	return resultString;	
+    }
+    else{	//if casting cannot perform which means phonebookDB doesnot contain an value for that name send error msg
+	string no_number = "Sorry! the numebr cannot be found at directory";
+	log:printInfo("cannot find number in the map data structure");
+	return no_number;
+    }	
 }
 
 public function deleteContact(string key)(int){
-	var result = phonebookDB[key];
-	var resultString,err  = (string)result;
-	
-	if(err == null){	
-		phonebookDB[key]=null;
-		return 0;
-	}
-	else{
-		log:printInfo("cannot find number in the map data structure");
-		return 1;
-	}	
-	
+    var result = phonebookDB[key];
+    var resultString,err  = (string)result;
+    if(err == null){
+    	phonebookDB[key]=null;
+	return 0;
+    }
+    else{
+	log:printInfo("cannot find number in the map data structure");
+	return 1;
+    }
 }
 
 public function changeNumber(string key, string value)(int){
-	var result = phonebookDB[key];
-	var resultString,err  = (string)result;
-	
-	if(err == null){	
-		phonebookDB[key]=value;
-		return 0;
-	}
-	else{
-		log:printInfo("cannot find number in the map data structure");
-		return 1;
-	}	
-	
+    var result = phonebookDB[key];
+    var resultString,err  = (string)result;
+    if(err == null){	
+	phonebookDB[key]=value;
+	return 0;
+    }
+    else{
+	log:printInfo("cannot find number in the map data structure");
+	return 1;
+    }		
 }
 ```
 
 Services represent collections of network accessible entry points in Ballerina. Resources represent one such entry point. 
 Ballerina supports writing RESTFul services according to JAX-RS specification. BasePath, Path and HTTP verb annotations such as POST, GET, etc can be used to constrain your service in RESTful manner.
 Post annotation constrains the resource only to accept post requests. Similarly, for each HTTP verb there are different annotations. Path attribute associates a sub-path to resource.
-
 Ballerina supports extracting values both from PathParam and QueryParam. Query Parameters are read from a map.
 In ballerina you could define a response structure or a json inline in the code.
 
@@ -277,7 +263,11 @@ Click on **Run**(Ctrl+Shift+R) button in the tool bar.
 
 
 ### Running in Intellij IDEA
-<TODO>
+Refer https://github.com/ballerinalang/plugin-intellij/tree/master/getting-started to setup your IntelliJ IDEA environment with Ballerina.
+Open hello-ballerina project in IntelliJ IDEA and run helloService.bal
+
+![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/ballerina-api-sample/images/phonebook_intellij_img.png)
+
 
 ### Running in VSCode
 <TODO>
@@ -285,10 +275,10 @@ Click on **Run**(Ctrl+Shift+R) button in the tool bar.
 
 ## Test the Service
 Now that the service is up, send GET, PATCH, DELETE API call to http://localhost:9090/phonebook/ to 
-+ Add new contacts
-+ View existing contacts
-+ Modify existing contacts
-+ Delete existing contacts
++ Add new contacts		POST   - `http://localhost:9090/phonebook/save_number?name={NAME}&number={NUMBER}`	
++ View existing contacts	GET    - `http://localhost:9090/phonebook/get_number/{NAME}`
++ Modify existing contacts	PATCH  - `http://localhost:9090/phonebook/change_number?name={NAME}&number={NEW_NUMBER}`
++ Delete existing contacts	DELETE - `http://localhost:9090/phonebook/delete_number?name={NAME}`
 
 
 ## Writing Test cases
