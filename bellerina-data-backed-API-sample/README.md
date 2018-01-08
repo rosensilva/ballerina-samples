@@ -20,17 +20,17 @@ the visual editor (Composer) and other tools.
 * To retrieve details about all employees - POST `localhost:9090/employee/retrieve_all`
 
 6) Responses for above requst will look simliar to, 
-```json
-
 * adding new employee
+```json
 {
     "Name": "Alice",
     "Age": "20",
     "ssn": "111223333"
 } 
+```
 
 * retrieving an existing employee detail
- 
+```json 
 [
     {
         "employee_Id": 1,
@@ -39,14 +39,18 @@ the visual editor (Composer) and other tools.
         "ssn": 111223333
     }
 ]
-* deleting an existing employee 
+```
 
+* deleting an existing employee 
+```json
 {
     "Employee ID": "1",
     "Status": "Deleted"
 }
-* retrieving details about all employees
+```
 
+* retrieving details about all employees
+```josn
 [
     {
         "employee_Id": 3,
@@ -61,4 +65,5 @@ the visual editor (Composer) and other tools.
         "ssn": 111223333
     }
 ]
+```
 
