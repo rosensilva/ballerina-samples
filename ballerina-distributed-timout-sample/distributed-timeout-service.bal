@@ -40,7 +40,7 @@ function httpCall(int localTimeout){
 
     http:Request req = {};
     http:Response resp = {};
-    int delayTime = math:randomInRange(1,3);
+    int delayTime = math:randomInRange(0,3);
     string endpointUrl = "/delay/"+<string>delayTime;
     log:printInfo("Responce delay for remote procedure call :"+<string>(delayTime*1000)+"ms");
     try{
