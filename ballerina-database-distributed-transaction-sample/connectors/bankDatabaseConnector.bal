@@ -3,7 +3,6 @@ package connectors;
 import ballerina.data.sql;
 import ballerina.log;
 
-
 public connector bankDatabaseConnector () {
     endpoint<sql:ClientConnector> testDB1 {
         create sql:ClientConnector(
@@ -22,7 +21,6 @@ public connector bankDatabaseConnector () {
         log:printInfo("[REQUEST] Transfer from " + from + " to " + to + " total amount of : " + amount);
 
         transaction {
-
             try {
                 string sqlString = "SELECT BALANCE FROM CUSTOMER WHERE NAME= '" + from + "'";
                 var dataTable = testDB1.call(sqlString, null, null);
@@ -38,13 +36,11 @@ public connector bankDatabaseConnector () {
 
                 log:printInfo("[AVAILABLE BALANCE] - ALICE " + acc_balance_account1 + "/= and BOB : " + acc_balance_account2 + "/=");
 
-
                 if (acc_balance_account1 >= amount) {
                     int new_balance = acc_balance_account2 + amount;
                     string new_balance_string = <string>new_balance;
                     sqlString = "UPDATE CUSTOMER SET BALANCE = '" + new_balance_string + "'WHERE NAME= '" + to + "'";
                     int statusCode1 = testDB2.update(sqlString, null);
-
 
                     new_balance = acc_balance_account1 - amount;
                     new_balance_string = <string>new_balance;
@@ -67,7 +63,6 @@ public connector bankDatabaseConnector () {
             transactionSuccess = false;
             log:printInfo("Transaction Not committed");
         }
-
 
         if (transactionSuccess) {
             log:printInfo("Transaction committed");

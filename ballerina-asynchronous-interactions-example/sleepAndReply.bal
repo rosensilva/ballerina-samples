@@ -5,8 +5,6 @@ int globalRequestCounter;
 
 
 service<http> sleep_and_wakeup {
-
-
     @http:resourceConfig {
         methods:["GET"],
         path:"/"
@@ -41,7 +39,4 @@ service<http> sleep_and_wakeup {
         res.setJsonPayload(responseJson);//send back the response with time information of the service execution
         _ = res.send();
     }
-
-
-
 }

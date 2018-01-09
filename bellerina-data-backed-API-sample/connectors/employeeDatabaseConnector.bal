@@ -31,14 +31,14 @@ public connector employeeDatabaseConnector () {
     }
 
     action retrieveAllData () (json) {
-        var dt = employeeDB.call("SELECT * FROM EMPLOYEES;",null, null);
+        var dt = employeeDB.call("SELECT * FROM EMPLOYEES;", null, null);
         var jsonReturnValue, _ = <json>dt;
         return jsonReturnValue;
     }
 
     action retrieveById (string employeeID) (json) {
         string sqlString = "SELECT * FROM EMPLOYEES WHERE employee_Id = '" + employeeID + "'";
-        var dt = employeeDB.call(sqlString,null, null);
+        var dt = employeeDB.call(sqlString, null, null);
         var jsonReturnValue, _ = <json>dt;
         return jsonReturnValue;
     }

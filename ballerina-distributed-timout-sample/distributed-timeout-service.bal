@@ -2,16 +2,16 @@ import ballerina.math;
 import ballerina.net.http;
 import ballerina.log;
 
-int count =0;
+int count = 0;
 
 public function main (string[] args) {
 
     log:printInfo("Distributed timeout demo program started...");
     int deadline = 10000;
-    while(true) {
+    while (true) {
         count = count + 1;
         log:printInfo("----------------------------------------------------------------------------");
-        log:printInfo("                          TEST NO :" + <string >count);
+        log:printInfo("                          TEST NO :" + <string>count);
         try {
             int localTimeout1 = math:randomInRange(2000, 4000);
             log:printInfo("Local timeout for 1st remote procedure call :" + localTimeout1 + "ms");
@@ -33,20 +33,20 @@ public function main (string[] args) {
 }
 
 
-function httpCall(int localTimeout){
+function httpCall (int localTimeout) {
     endpoint<http:HttpClient> httpEndpoint {
-        create http:HttpClient("https://postman-echo.com", {endpointTimeout: localTimeout});
+        create http:HttpClient("https://postman-echo.com", {endpointTimeout:localTimeout});
     }
 
     http:Request req = {};
     http:Response resp = {};
-    int delayTime = math:randomInRange(0,3);
-    string endpointUrl = "/delay/"+<string>delayTime;
-    log:printInfo("Responce delay for remote procedure call :"+<string>(delayTime*1000)+"ms");
-    try{
+    int delayTime = math:randomInRange(0, 3);
+    string endpointUrl = "/delay/" + <string>delayTime;
+    log:printInfo("Responce delay for remote procedure call :" + <string>(delayTime * 1000) + "ms");
+    try {
         resp, _ = httpEndpoint.get(endpointUrl, req);
         int responseCode = resp.statusCode;
-        log:printInfo("HTTP responce status code : "+responseCode);
+        log:printInfo("HTTP responce status code : " + responseCode);
     }
     catch (error e) {
         throw e;

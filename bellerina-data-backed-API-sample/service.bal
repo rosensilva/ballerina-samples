@@ -7,7 +7,6 @@ service<http> employee {
         create conn:employeeDatabaseConnector();
     }
 
-
     @http:resourceConfig {
         methods:["POST"],
         path:"/add_employee/"
