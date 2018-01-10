@@ -9,7 +9,7 @@ service<http> employee {
 
     @http:resourceConfig {
         methods:["POST"],
-        path:"/add_employee/"
+        path:"/employee/"
     }
     resource addEmployeeDataResource (http:Request req, http:Response res) {
 
@@ -27,8 +27,8 @@ service<http> employee {
     }
 
     @http:resourceConfig {
-        methods:["POST"],
-        path:"/delete_employee/"
+        methods:["DELETE"],
+        path:"/employee/"
     }
     resource deleteEmployeeDataResource (http:Request req, http:Response res) {
 
@@ -43,8 +43,8 @@ service<http> employee {
     }
 
     @http:resourceConfig {
-        methods:["POST"],
-        path:"/retrieve_employee/"
+        methods:["GET"],
+        path:"/employee/"
     }
     resource retrieveEmployeeDataResource (http:Request req, http:Response res) {
 
@@ -58,8 +58,8 @@ service<http> employee {
     }
 
     @http:resourceConfig {
-        methods:["POST"],
-        path:"/retrieve_all/"
+        methods:["GET"],
+        path:"/retrieve-all/"
     }
     resource retrieveAllDataResource (http:Request req, http:Response res) {
 

@@ -9,7 +9,7 @@ You’ll build a `Phone Book` service that can save new numbers, view existing n
 
 ##### HTTP GET requests at (view telephone numbers):
 ```
-http://localhost:9090/phonebook/get_number/{Alice}
+http://localhost:9090/phonebook/number/{Alice}
 ```
 and respond with a JSON representation of a saved telephone contact number and name 
 ```json
@@ -21,7 +21,7 @@ and respond with a JSON representation of a saved telephone contact number and n
 
 ##### HTTP POST requests at (save new telephone numbers):
 ```
-http://localhost:9090/phonebook/save_number?name=Alice&number=0123456789
+http://localhost:9090/phonebook/number?name=Alice&number=0123456789
 ```
 and respond with a JSON representation of a saved telephone contact number, name and the status of the operation 
 ```json
@@ -34,7 +34,7 @@ and respond with a JSON representation of a saved telephone contact number, name
 
 ##### HTTP PATCH requests at (change existing telephone numbers):
 ```
-http://localhost:9090/phonebook/change_number?name=Alice&number=9876543210
+http://localhost:9090/phonebook/number?name=Alice&number=9876543210
 ```
 and respond with a JSON representation of a modified telephone contact number, name and the status of the operation 
 ```json
@@ -46,7 +46,7 @@ and respond with a JSON representation of a modified telephone contact number, n
 ```
 ##### HTTP DELETE requests at (delete existing telephone numbers):
 ```
-http://localhost:9090/phonebook/delete_number?name=Alice
+http://localhost:9090/phonebook/number?name=Alice
 ```
 and respond with a JSON representation of a modified telephone contact number, name and the status of the operation 
 ```json
@@ -275,10 +275,10 @@ Open hello-ballerina project in IntelliJ IDEA and run helloService.bal
 
 ## Test the Service
 Now that the service is up, send GET, PATCH, DELETE API call to http://localhost:9090/phonebook/ to 
-+ Add new contacts		POST   - `http://localhost:9090/phonebook/save_number?name={NAME}&number={NUMBER}`	
-+ View existing contacts	GET    - `http://localhost:9090/phonebook/get_number/{NAME}`
-+ Modify existing contacts	PATCH  - `http://localhost:9090/phonebook/change_number?name={NAME}&number={NEW_NUMBER}`
-+ Delete existing contacts	DELETE - `http://localhost:9090/phonebook/delete_number?name={NAME}`
++ Add new contacts		POST   - `http://localhost:9090/phonebook/number?name={NAME}&number={NUMBER}`
++ View existing contacts	GET    - `http://localhost:9090/phonebook/number/{NAME}`
++ Modify existing contacts	PATCH  - `http://localhost:9090/phonebook/number?name={NAME}&number={NEW_NUMBER}`
++ Delete existing contacts	DELETE - `http://localhost:9090/phonebook/number?name={NAME}`
 
 
 ## Writing Test cases

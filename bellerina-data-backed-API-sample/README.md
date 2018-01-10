@@ -14,10 +14,10 @@ the visual editor (Composer) and other tools.
 4) After setting up <ballerina_home>, run: `$ ballerina run service.bal` 
 
 5) How to interact with the employee database web service, 
-* To add new employee to the Database     - POST `localhost:9090/employee/add_employee?name=Alice&age=20&ssn=111223333`
-* To retrieve an existing employee detail - POST `localhost:9090/employee/retrieve_employee?id=1`
-* To delete an existing employee          - POST `localhost:9090/employee/delete_employee?id=1`
-* To retrieve details about all employees - POST `localhost:9090/employee/retrieve_all`
+* To add new employee to the Database     - POST `localhost:9090/employee/employee?name=Alice&age=20&ssn=111223333`
+* To retrieve an existing employee detail - GET `localhost:9090/employee/employee?id=1`
+* To delete an existing employee          - DELETE `localhost:9090/employee/employee?id=1`
+* To retrieve details about all employees - GET `localhost:9090/employee/retrieve-all`
 
 6) Responses for above requst will look simliar to, 
 * adding new employee

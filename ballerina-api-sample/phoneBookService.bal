@@ -5,7 +5,7 @@ import ballerina.log;
 service<http> phonebook {
     @http:resourceConfig {
         methods:["GET"],
-        path:"/get_number/{name}"
+        path:"/number/{name}"
     }
     resource getNumberResource (http:Request req, http:Response res, string name) {
         string result = phonebook:getContact(name);
@@ -16,7 +16,7 @@ service<http> phonebook {
 
     @http:resourceConfig {
         methods:["POST"],
-        path:"/save_number/"
+        path:"/number/"
     }
     resource saveContactResource (http:Request req, http:Response res) {
         map params = req.getQueryParams();
@@ -37,7 +37,7 @@ service<http> phonebook {
 
     @http:resourceConfig {
         methods:["PATCH"],
-        path:"/change_number/"
+        path:"/number/"
     }
     resource changeNumberResource (http:Request req, http:Response res) {
         map params = req.getQueryParams();
@@ -58,7 +58,7 @@ service<http> phonebook {
 
     @http:resourceConfig {
         methods:["DELETE"],
-        path:"/delete_number/"
+        path:"/number/"
     }
     resource deleteNumberResource (http:Request req, http:Response res) {
         map params = req.getQueryParams();
