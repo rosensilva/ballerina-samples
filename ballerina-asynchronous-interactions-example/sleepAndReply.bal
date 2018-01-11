@@ -4,7 +4,7 @@ import ballerina.log;
 int globalRequestCounter;
 
 
-service<http> sleep_and_wakeup {
+service<http> sleep-and-wakeup {
     @http:resourceConfig {
         methods:["GET"],
         path:"/"
