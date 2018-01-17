@@ -14,17 +14,19 @@ service<http> bank {
     }
     resource transferResource (http:Request req, http:Response res) {
         if (count == 0) {
+            //call the init action for one time to create database tables and populate values
             bankDB.init();
         }
         count = count + 1;
+
         map params = req.getQueryParams();
         var from, _ = (string)params.from;
         var to, _ = (string)params.to;
-        var amountStr, _ = (string)params.amount;
-        var amount, _ = <int>amountStr;
-
+        var amountString, _ = (string)params.amount;
+        var amount, _ = <int>amountString;
+        //call the transferMoney action from bankDatabaseConnector
         string status = bankDB.transferMoney(from, to, amount);
-
+        //send the response back to the client with the status of the transaction
         res.setStringPayload(status);
         _ = res.send();
     }

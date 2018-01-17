@@ -4,104 +4,103 @@ import ballerina.data.sql;
 import ballerina.log;
 
 public connector bankDatabaseConnector () {
-    endpoint<sql:ClientConnector> testDB1 {
+    endpoint<sql:ClientConnector> bankDB1 {
         create sql:ClientConnector(
         sql:DB.MYSQL, "localhost", 3306, "bankDB1?useSSL=false", "root", "qwe123",
         {maximumPoolSize:1, isXA:true});
     }
-    endpoint<sql:ClientConnector> testDB2 {
+    endpoint<sql:ClientConnector> bankDB2 {
         create sql:ClientConnector(
         sql:DB.MYSQL, "localhost", 3306, "bankDB2?useSSL=false", "root", "qwe123",
         {maximumPoolSize:1, isXA:true});
     }
 
-    action transferMoney (string from, string to, int amount) (string) {
-        boolean transactionSuccess = false;
+    action transferMoney (string from, string to, int transferAmount) (string) {
+        boolean transactionSuccessful = false;
         string statusString = "Transaction failed";
-        log:printInfo("[REQUEST] Transfer from " + from + " to " + to + " total amount of : " + amount);
+        log:printInfo("[REQUEST] Transfer from " + from + " to " + to + " total amount of : " + transferAmount);
 
         transaction {
             try {
-                string sqlString = "SELECT BALANCE FROM CUSTOMER WHERE NAME= '" + from + "'";
-                var dataTable = testDB1.call(sqlString, null, null);
+                //call the sql database and get the account balance of the first account
+                string sqlQueryString = "SELECT BALANCE FROM CUSTOMER WHERE NAME= '" + from + "'";
+                var dataTable = bankDB1.call(sqlQueryString, null, null);
                 var jsonValue, _ = <json>dataTable;
-                var val_string, _ = (string)jsonValue[0].BALANCE;
-                var acc_balance_account1, _ = <int>val_string;
-
-                sqlString = "SELECT BALANCE FROM CUSTOMER WHERE NAME= '" + to + "'";
-                dataTable = testDB2.call(sqlString, null, null);
+                var valueString, _ = (string)jsonValue[0].BALANCE;
+                var accountBalance1, _ = <int>valueString;
+                //call the sql database and get the account balance of the second account
+                sqlQueryString = "SELECT BALANCE FROM CUSTOMER WHERE NAME= '" + to + "'";
+                dataTable = bankDB2.call(sqlQueryString, null, null);
                 jsonValue, _ = <json>dataTable;
-                val_string, _ = (string)jsonValue[0].BALANCE;
-                var acc_balance_account2, _ = <int>val_string;
+                valueString, _ = (string)jsonValue[0].BALANCE;
+                var accountBalance2, _ = <int>valueString;
 
-                log:printInfo("[AVAILABLE BALANCE] - ALICE " + acc_balance_account1 + "/= and BOB : " + acc_balance_account2 + "/=");
-
-                if (acc_balance_account1 >= amount) {
-                    int new_balance = acc_balance_account2 + amount;
-                    string new_balance_string = <string>new_balance;
-                    sqlString = "UPDATE CUSTOMER SET BALANCE = '" + new_balance_string + "'WHERE NAME= '" + to + "'";
-                    int statusCode1 = testDB2.update(sqlString, null);
-
-                    new_balance = acc_balance_account1 - amount;
-                    new_balance_string = <string>new_balance;
-                    sqlString = "UPDATE CUSTOMER SET BALANCE = '" + new_balance_string + "'WHERE NAME= '" + from + "'";
-                    int statusCode2 = testDB1.update(sqlString, null);
+                log:printInfo("[AVAILABLE BALANCE] - ALICE " + accountBalance1 + "/= and BOB : " + accountBalance2 + "/=");
+                //check whether the account balance is enough for the transfer the money
+                if (accountBalance1 >= transferAmount) {
+                    //deducting the account balance by the transfer amount
+                    int newBalance = accountBalance1 - transferAmount;
+                    string newBalanceString = <string>newBalance;
+                    sqlQueryString = "UPDATE CUSTOMER SET BALANCE = '" + newBalanceString + "'WHERE NAME= '" + from + "'";
+                    _ = bankDB1.update(sqlQueryString, null);
+                    //adding the money to the account by the transfer amount
+                    newBalance = accountBalance2 + transferAmount;
+                    newBalanceString = <string>newBalance;
+                    sqlQueryString = "UPDATE CUSTOMER SET BALANCE = '" + newBalanceString + "'WHERE NAME= '" + to + "'";
+                    _ = bankDB2.update(sqlQueryString, null);
                 }
                 else {
-                    log:printInfo("Account Balance not Sufficient for the transaction!");
+                    log:printInfo("[TRANSACTION STATUS] - Account Balance not Sufficient for the transaction!");
                     abort;
                 }
             }
             catch (error err) {
-                log:printError("Tansaction failed due to :" + err.msg);
+                log:printError("Tansaction failed due to : " + err.msg);
                 abort;
             }
+            finally {
+                bankDB1.close();
+                bankDB2.close();
+            }
 
-            transactionSuccess = true;
+            transactionSuccessful = true;
         }
         failed {
-            transactionSuccess = false;
+            //if transaction fails at any point log that the transaction was not committed
             log:printInfo("Transaction Not committed");
         }
 
-        if (transactionSuccess) {
-            log:printInfo("Transaction committed");
+        if (transactionSuccessful) {
             statusString = "Transaction committed";
+            log:printInfo("[TRANSACTION STATUS] - " + statusString);
         }
 
-        testDB1.close();
-        testDB2.close();
         return statusString;
     }
 
     action init () {
-        endpoint<sql:ClientConnector> testDB1 {
-            create sql:ClientConnector(
-            sql:DB.MYSQL, "localhost", 3306, "bankDB1?useSSL=false", "root", "qwe123",
-            {maximumPoolSize:1, isXA:true});
-        }
-        endpoint<sql:ClientConnector> testDB2 {
-            create sql:ClientConnector(
-            sql:DB.MYSQL, "localhost", 3306, "bankDB2?useSSL=false", "root", "qwe123",
-            {maximumPoolSize:1, isXA:true});
-        }
+        //initialization action to create tables and populate data
+        try {
+            _ = bankDB1.update("DROP TABLE IF EXISTS CUSTOMER", null);
+            _ = bankDB2.update("DROP TABLE IF EXISTS CUSTOMER", null);
 
-        int returnCode1 = testDB1.update("CREATE TABLE IF NOT EXISTS CUSTOMER (NAME VARCHAR(30) PRIMARY KEY,
+            _ = bankDB1.update("CREATE TABLE CUSTOMER (NAME VARCHAR(30) PRIMARY KEY,
                                     BALANCE VARCHAR(30))", null);
-        int returnCode2 = testDB2.update("CREATE TABLE IF NOT EXISTS CUSTOMER (NAME VARCHAR(30) PRIMARY KEY,
+            _ = bankDB2.update("CREATE TABLE CUSTOMER (NAME VARCHAR(30) PRIMARY KEY,
                                     BALANCE VARCHAR(30))", null);
 
-        int ret3 = testDB1.update("INSERT INTO CUSTOMER (NAME, BALANCE)
-                              SELECT * FROM (SELECT 'Alice', '5000') AS tmp
-                              WHERE NOT EXISTS (
-                                    SELECT name FROM CUSTOMER WHERE NAME = 'Alice'
-                              ) LIMIT 1", null);
-        int ret4 = testDB2.update("INSERT INTO CUSTOMER (NAME, BALANCE)
-                              SELECT * FROM (SELECT 'Bob', '0') AS tmp
-                              WHERE NOT EXISTS (
-                                    SELECT name FROM CUSTOMER WHERE NAME = 'Bob'
-                              ) LIMIT 1", null);
-        testDB1.close();
-        testDB2.close();
+            _ = bankDB1.update("INSERT INTO CUSTOMER (NAME, BALANCE)
+                                    VALUES ('Alice', '5000')", null);
+            _ = bankDB2.update("INSERT INTO CUSTOMER (NAME, BALANCE)
+                                    VALUES ('Bob', '0')", null);
+        }
+        catch (error err) {
+            log:printError("Error occurred while initializing databases : " + err.msg);
+        }
+        finally {
+            bankDB1.close();
+            bankDB2.close();
+        }
     }
+
 }
