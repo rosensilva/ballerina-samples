@@ -1,7 +1,6 @@
 import ballerina.task;
 import ballerina.log;
 
-
 function main (string[] args) {
     println("Scheduling Tasks Demo ...");
     //Starting the scheduled tasks with a 5 second interval by calling scheduleTimer in the ballerina.task package
