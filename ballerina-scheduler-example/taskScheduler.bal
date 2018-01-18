@@ -3,10 +3,9 @@ import ballerina.log;
 
 
 function main (string[] args) {
-
     println("Scheduling Tasks Demo ...");
-    var taskId, schedulerError = task:scheduleTimer(scheduledTask,
-                                                    taskError, {delay:500, interval:5000});
+    //Starting the scheduled tasks with a 5 second interval by calling scheduleTimer in the ballerina.task package
+    var taskId, schedulerError = task:scheduleTimer(scheduledDemoTask, taskError, {delay:500, interval:5000});
 
     if (schedulerError != null) {
         println("Timer scheduling failed: " + schedulerError.msg);
@@ -16,8 +15,7 @@ function main (string[] args) {
     }
 }
 
-
-function scheduledTask () returns (error e) {
+function scheduledDemoTask () returns (error e) {
     int hour;
     int minute;
     int second;
@@ -25,6 +23,7 @@ function scheduledTask () returns (error e) {
     string timeString;
 
     try {
+        //Get the current time and log the current time
         Time time = currentTime();
         hour, minute, second, milliSecond = time.getTime();
         timeString = "Time: " + <string>hour + ":" + <string>minute + ":" + <string>second;
@@ -38,5 +37,5 @@ function scheduledTask () returns (error e) {
 }
 
 function taskError (error e) {
-    log:printError("[ERROR] Oops! something went wrong" + e.msg);
+    log:printError("[ERROR] Something went wrong " + e.msg);
 }
