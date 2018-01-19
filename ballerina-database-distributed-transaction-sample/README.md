@@ -23,8 +23,7 @@ the visual editor (Composer) and other tools.
     * The second database will have account name `Bob` with `$0` initial balance.
    
    To transfer $1000 from Alice's account to Bob's account
-    * POST `localhost:9090/bank/transfer?fr
-om=Alice&to=Bob&amount=1000`
+    * POST `localhost:9090/bank/transfer?from=Alice&to=Bob&amount=1000`
 
    Responses to successful requests will look similar to, 
     ```
@@ -41,10 +40,10 @@ om=Alice&to=Bob&amount=1000`
     ```
     ballerina: deploying service(s) in '/home/rosen/ballerina-samples/ballerina-database-distributed-transaction-sample/main.bal'
     ballerina: started HTTP/WS server connector 0.0.0.0:9090
-    2018-01-19 15:14:06,831 INFO  [connectors] - [REQUEST] Transfer from Alice to Bob total amount of : 1000 
-    2018-01-19 15:14:07,126 INFO  [connectors] - [AVAILABLE BALANCE] - ALICE 5000/= and BOB : 0/= 
-    2018-01-19 15:14:07,183 INFO  [connectors] - [TRANSACTION STATUS] - Transaction committed 
-    2018-01-19 15:14:15,351 INFO  [connectors] - [REQUEST] Transfer from Alice to Bob total amount of : 5000 
-    2018-01-19 15:14:15,382 INFO  [connectors] - [AVAILABLE BALANCE] - ALICE 4000/= and BOB : 1000/= 
-    2018-01-19 15:14:15,382 INFO  [connectors] - [TRANSACTION STATUS] - Account Balance not Sufficient for the transaction! 
+    2018-01-19 15:26:22,917 INFO  [connectors] - [REQUEST] Transfer from Alice to Bob total amount of : $1000 
+    2018-01-19 15:26:23,173 INFO  [connectors] - [AVAILABLE BALANCE] - ALICE : $5000 and BOB : $0 
+    2018-01-19 15:26:23,219 INFO  [connectors] - [TRANSACTION STATUS] - Transaction committed 
+    2018-01-19 15:26:35,248 INFO  [connectors] - [REQUEST] Transfer from Alice to Bob total amount of : $5000 
+    2018-01-19 15:26:35,279 INFO  [connectors] - [AVAILABLE BALANCE] - ALICE : $4000 and BOB : $1000 
+    2018-01-19 15:26:35,280 INFO  [connectors] - [TRANSACTION STATUS] - Account Balance not Sufficient for the transaction! 
     ```

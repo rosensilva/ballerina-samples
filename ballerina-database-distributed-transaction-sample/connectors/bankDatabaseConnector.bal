@@ -30,7 +30,7 @@ public connector bankDatabaseConnector () {
     action transferMoney (string from, string to, int transferAmount) (string) {
         boolean transactionSuccessful = false;
         string statusString = "Transaction failed";
-        log:printInfo("[REQUEST] Transfer from " + from + " to " + to + " total amount of : " + transferAmount);
+        log:printInfo("[REQUEST] Transfer from " + from + " to " + to + " total amount of : $" + transferAmount);
 
         transaction {
             try {
@@ -47,7 +47,7 @@ public connector bankDatabaseConnector () {
                 valueString, _ = (string)jsonValue[0].BALANCE;
                 var accountBalance2, _ = <int>valueString;
 
-                log:printInfo("[AVAILABLE BALANCE] - ALICE " + accountBalance1 + "/= and BOB : " + accountBalance2 + "/=");
+                log:printInfo("[AVAILABLE BALANCE] - ALICE : $" + accountBalance1 + " and BOB : $" + accountBalance2);
                 //check whether the account balance is enough for the transfer the money
                 if (accountBalance1 >= transferAmount) {
                     //deducting the account balance by the transfer amount
