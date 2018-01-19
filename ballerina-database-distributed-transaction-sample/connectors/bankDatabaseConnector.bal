@@ -3,15 +3,27 @@ package connectors;
 import ballerina.data.sql;
 import ballerina.log;
 
+const string DATABASE1_HOST = "localhost";
+const int DATABASE1_PORT = 3306;
+const string DATABASE1_NAME = "bankDB1?useSSL=false";
+const string DATABASE1_USERNAME = "root";
+const string DATABASE1_PASSWORD = "qwe123";
+
+const string DATABASE2_HOST = "localhost";
+const int DATABASE2_PORT = 3306;
+const string DATABASE2_NAME = "bankDB2?useSSL=false";
+const string DATABASE2_USERNAME = "root";
+const string DATABASE2_PASSWORD = "qwe123";
+
 public connector bankDatabaseConnector () {
     endpoint<sql:ClientConnector> bankDB1 {
         create sql:ClientConnector(
-        sql:DB.MYSQL, "localhost", 3306, "bankDB1?useSSL=false", "root", "qwe123",
+        sql:DB.MYSQL, DATABASE1_HOST, DATABASE1_PORT, DATABASE1_NAME, DATABASE1_USERNAME, DATABASE1_PASSWORD,
         {maximumPoolSize:1, isXA:true});
     }
     endpoint<sql:ClientConnector> bankDB2 {
         create sql:ClientConnector(
-        sql:DB.MYSQL, "localhost", 3306, "bankDB2?useSSL=false", "root", "qwe123",
+        sql:DB.MYSQL, DATABASE2_HOST, DATABASE2_PORT, DATABASE2_NAME, DATABASE2_USERNAME, DATABASE2_PASSWORD,
         {maximumPoolSize:1, isXA:true});
     }
 
