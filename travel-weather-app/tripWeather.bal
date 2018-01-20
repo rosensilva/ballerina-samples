@@ -6,34 +6,30 @@ import ballerina.log;
 service<http> travel {
     @http:resourceConfig {
         methods:["GET"]
-
     }
     resource weather (http:Request req, http:Response res) {
-
         var start = "";
         var end = "";
-        var wa = "";
+        var waypointString = "";
         var waypoints = 4;
 
         try {
             map params = req.getQueryParams();
-
             start, _ = (string)params.start;
             end, _ = (string)params.end;
-            wa, _ = (string)params.waypoints;
-
-            println("start : " + start + "end : " + end + "waypoints : " + wa);
-
-            waypoints, _ = <int>wa;
-
+            waypointString, _ = (string)params.waypoints;
+            if (waypointString != null) {
+                waypoints, _ = <int>waypointString;
+            }
+            println("start : " + start + "end : " + end + "waypoints : " + waypoints);
             if (waypoints <= 0) {
-                error err = {msg:"waypoints should be a valid int"};
+                error err = {msg:"waypoints should be a positive integer"};
                 throw err;
             }
 
-            json retval = weatherUtil:getWeatherSummery(start, end, waypoints);
+            json responseJson = weatherUtil:getWeatherSummery(start, end, waypoints);
 
-            res.setJsonPayload(retval);
+            res.setJsonPayload(responseJson);
             _ = res.send();
             log:printInfo("Completed request for trip from : " + start + " to " + end);
         }
