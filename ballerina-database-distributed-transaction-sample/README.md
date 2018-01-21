@@ -1,6 +1,6 @@
 # Distributed Transaction Across Two Database Endpoints
-This Ballerina service use distributed databases to perform distributed transactions. This is a banking web application 
-which is capable of transferring money from one account to another account where databases are in a distributed manner.
+This Ballerina service consumes distributed databases to perform distributed transactions. This banking web 
+application is capable of transferring money from one account to another account where databases are in a distributed manner.
 The transactions can be done by calling HTTP endpoint. If the entire transaction is completed then the changes will be 
 committed in the databases. Otherwise, changes will be rolled back. The HTTP response will indicate the client whether 
 the transaction was completed or not.

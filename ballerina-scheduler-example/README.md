@@ -2,9 +2,8 @@
 `Task Scheduling Application` written using Ballerina language (https://ballerinalang.org)
 
 # About this appication 
-This application is a sample application to showcase the usage of scheduling tasks in Ballerina language.
+This application is task scheduling sample program written in Ballerina language.
 This application will print the current time in the console output for every 5 second time interval.
-
 
 # How to deploy
 1) Go to http://www.ballerinalang.org and click Download.

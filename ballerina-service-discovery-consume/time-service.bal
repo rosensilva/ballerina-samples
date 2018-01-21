@@ -7,7 +7,7 @@ service<http> timeService {
     }
     resource timeServiceResource (http:Request req, http:Response res) {
         Time time = currentTime();
-        var hour, minute, second, mills = time.getTime();
+        var hour, minute, second, _ = time.getTime();
         string timeString = "Time:" + <string>hour + ":" + <string>minute + ":" + <string>second;
 
         res.setStringPayload(timeString);

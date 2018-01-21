@@ -1,29 +1,39 @@
-# Distributed Timeout Sample Web-Service
-`Distributed timeout sample web service` written using Ballerina language (https://ballerinalang.org)
+# Distributed Timeout Web-Service
+This application calls three remote endpoints in a sequential order with distributed timeout for each call.
+The total deadline for all three remote calls is 10 seconds(i.e. all three responses should be received before 10 
+seconds). If any one of three remote call response is delayed more than the local timeout for that call the program 
+will not call the remaining remote calls.
+The complete application is written using ballerina language including the timeout handling. The local timeouts for 
+each remote call will randomly generated. The remote calls are mocked through http calls to `www.postman-echo.com/delay` 
+with 
+specific response delays. The application will repeatedly run the with 
+different set of random 
+local timeouts until 
+user 
+terminates the programme.
 
-# About this appication/service 
-This web service is a sample application that uses three remote procedure calls(RPC) with distributed timeouts.
-The full service/application is written using ballerina language. This sample provides guides to adding timeouts for each RPC.
-This application will test distributed timeouts using random timouts for each of the three remote procedure calls.
-The application will run tests until user terminate the programme.
-
-# How to deploy
+# How to run
 1) Go to http://www.ballerinalang.org and click Download.
 2) Download the Ballerina Tools distribution and unzip it on your computer. Ballerina Tools includes the Ballerina runtime plus
 the visual editor (Composer) and other tools.
 3) Add the <ballerina_home>/bin directory to your $PATH environment variable so that you can run the Ballerina commands from anywhere.
 4) After setting up <ballerina_home>, run: `$ ballerina run distributed-timeout-service.bal`
-5) Output for the distributed-timeout-service application will look similar to , 
+5) Output for the distributed-timeout-service application will look similar structure like,
+    * Local timeout for each remote call is displayed as  - `INFO  [] - Local timeout for 1st remote procedure call 
+    :3013ms` 
+    * Each remote call delay is displayed as `INFO  [] - Responce delay for remote procedure call :1000ms`
+    * Response for each RPC call is displayed as `INFO  [] - HTTP responce status code : 200 `
+ 
 
 ```
 2018-01-09 09:37:04,951 INFO  [] - Distributed timeout demo program started... 
 2018-01-09 09:37:04,955 INFO  [] - ---------------------------------------------------------------------------- 
-2018-01-09 09:37:04,956 INFO  [] -                           TEST NO :1 
+2018-01-09 09:37:04,956 INFO  [] -                           TRIAL NO :1 
 2018-01-09 09:37:04,957 INFO  [] - Local timeout for 1st remote procedure call :2064ms 
 2018-01-09 09:37:04,961 INFO  [] - Responce delay for remote procedure call :2000ms 
 2018-01-09 09:37:08,214 ERROR [] - Failed to get responce within local timeout 
 2018-01-09 09:37:12,215 INFO  [] - ---------------------------------------------------------------------------- 
-2018-01-09 09:37:12,217 INFO  [] -                           TEST NO :2 
+2018-01-09 09:37:12,217 INFO  [] -                           TRIAL NO :2 
 2018-01-09 09:37:12,218 INFO  [] - Local timeout for 1st remote procedure call :2973ms 
 2018-01-09 09:37:12,221 INFO  [] - Responce delay for remote procedure call :1000ms 
 2018-01-09 09:37:14,392 INFO  [] - HTTP responce status code : 200 
@@ -34,12 +44,12 @@ the visual editor (Composer) and other tools.
 2018-01-09 09:37:17,628 INFO  [] - Responce delay for remote procedure call :0ms 
 2018-01-09 09:37:18,773 INFO  [] - HTTP responce status code : 200 
 2018-01-09 09:37:22,775 INFO  [] - ---------------------------------------------------------------------------- 
-2018-01-09 09:37:22,777 INFO  [] -                           TEST NO :3 
+2018-01-09 09:37:22,777 INFO  [] -                           TRIAL NO :3 
 2018-01-09 09:37:22,779 INFO  [] - Local timeout for 1st remote procedure call :2693ms 
 2018-01-09 09:37:22,781 INFO  [] - Responce delay for remote procedure call :2000ms 
 2018-01-09 09:37:25,749 ERROR [] - Failed to get responce within local timeout 
 2018-01-09 09:37:29,751 INFO  [] - ---------------------------------------------------------------------------- 
-2018-01-09 09:37:29,752 INFO  [] -                           TEST NO :4 
+2018-01-09 09:37:29,752 INFO  [] -                           TRIAL NO :4 
 2018-01-09 09:37:29,753 INFO  [] - Local timeout for 1st remote procedure call :2425ms 
 2018-01-09 09:37:29,755 INFO  [] - Responce delay for remote procedure call :0ms 
 2018-01-09 09:37:30,993 INFO  [] - HTTP responce status code : 200 
@@ -50,7 +60,7 @@ the visual editor (Composer) and other tools.
 2018-01-09 09:37:32,153 INFO  [] - Responce delay for remote procedure call :1000ms 
 2018-01-09 09:37:34,232 INFO  [] - HTTP responce status code : 200 
 2018-01-09 09:37:38,233 INFO  [] - ---------------------------------------------------------------------------- 
-2018-01-09 09:37:38,234 INFO  [] -                           TEST NO :5 
+2018-01-09 09:37:38,234 INFO  [] -                           TRIAL NO :5 
 2018-01-09 09:37:38,236 INFO  [] - Local timeout for 1st remote procedure call :3058ms 
 2018-01-09 09:37:38,237 INFO  [] - Responce delay for remote procedure call :0ms 
 2018-01-09 09:37:39,455 INFO  [] - HTTP responce status code : 200 
@@ -61,7 +71,7 @@ the visual editor (Composer) and other tools.
 2018-01-09 09:37:42,694 INFO  [] - Responce delay for remote procedure call :1000ms 
 2018-01-09 09:37:44,118 ERROR [] - Failed to get responce within local timeout 
 2018-01-09 09:37:48,120 INFO  [] - ---------------------------------------------------------------------------- 
-2018-01-09 09:37:48,121 INFO  [] -                           TEST NO :6 
+2018-01-09 09:37:48,121 INFO  [] -                           TRIAL NO :6 
 2018-01-09 09:37:48,121 INFO  [] - Local timeout for 1st remote procedure call :3013ms 
 2018-01-09 09:37:48,123 INFO  [] - Responce delay for remote procedure call :0ms 
 2018-01-09 09:37:49,381 INFO  [] - HTTP responce status code : 200 
@@ -73,7 +83,3 @@ the visual editor (Composer) and other tools.
 2018-01-09 09:37:51,882 INFO  [] - HTTP responce status code : 200 
 2018-01-09 09:37:55,883 INFO  [] - ---------------------------------------------------------------------------- 
 ```
-
-6) Local timeout for each RPC call is displayed as  - `INFO  [] - Local timeout for 1st remote procedure call :3013ms`
-7) Each RPC delay is displayed as `INFO  [] - Responce delay for remote procedure call :1000ms`
-8) Responce for each RPC call is displayed as `INFO  [] - HTTP responce status code : 200 `

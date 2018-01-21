@@ -4,14 +4,13 @@ import ballerina.log;
 
 int count = 0;
 const int deadline = 10000;
-
 public function main (string[] args) {
     log:printInfo("Distributed timeout demo program started...");
 
     while (true) {
         count = count + 1;
         log:printInfo("----------------------------------------------------------------------------");
-        log:printInfo("                          TEST NO :" + <string>count);
+        log:printInfo("                          TRIAL NO :" + <string>count);
 
         try {
             //First remote call with random local timeout between 2000ms and 4000ms
