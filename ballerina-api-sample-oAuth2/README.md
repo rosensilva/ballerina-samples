@@ -13,7 +13,7 @@ the visual editor (Composer) and other tools.
 6) Update the OAuth credentials and protected APIs at `oauth-secured-phonebook.bal1`
 7) After setting up <ballerina_home>, run: `$ ballerina run oauth-secured-phonebook.bal`
 
-# Results should look similar to, 
+#### Expected Output  
 ```$xslt
 -----Calling POST method-----
 {"Status":"Save Operation Success","Name":"Alice","Number":"123456789"}
