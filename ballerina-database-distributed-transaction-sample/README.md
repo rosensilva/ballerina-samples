@@ -1,9 +1,7 @@
 # Distributed Transaction Across Two Database Endpoints
 This Ballerina service consumes distributed databases to perform distributed transactions. This banking web 
 application is capable of transferring money from one account to another account across distributed databases.
-The transactions can be done by calling HTTP endpoint. If the entire transaction is completed then the changes will be 
-committed in the databases. Otherwise, changes will be rolled back. The HTTP response will indicate the client whether 
-the transaction was completed or not.
+The transactions can be done via HTTP endpoint. Changes will only committed only if the entire transaction is completed. Otherwise, changes will be rolled back. The HTTP response will indicate the client whether the transaction was completed or not.
 
 # Before running
 1) Copy MySQL JDBC driver to the BALLERINA_HOME/bre/lib folder
@@ -16,7 +14,7 @@ Ballerina runtime plus
 the visual editor (Composer) and other tools.
 3) Add the <ballerina_home>/bin directory to your $PATH environment variable so that you can run the Ballerina
  commands from anywhere.
-4) After setting up <ballerina_home>, run: `$ ballerina run main.bal`
+4) After setting up <ballerina_home>, run: `$ ballerina run distributed-bank-service.bal`
    #### How to interact with the employee database web service, 
    This sample banking application will have two databases.
     * The first database will have account name `Alice` with `$5000` initial balance
