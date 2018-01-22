@@ -1,6 +1,5 @@
 import ballerina.net.http;
 import util as phonebook;
-import ballerina.log;
 
 service<http> phonebook {
     @http:resourceConfig {
@@ -20,8 +19,8 @@ service<http> phonebook {
     }
     resource saveContactResource (http:Request req, http:Response res) {
         map params = req.getQueryParams();
-        var name, err1 = (string)params.name;
-        var num, err2 = (string)params.number;
+        var name, _ = (string)params.name;
+        var num, _ = (string)params.number;
         string statusMsg = "";
         int status = phonebook:saveContact(name, num);
         if (status == 0) {

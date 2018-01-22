@@ -6,13 +6,13 @@ string accessTokenValue;
 http:HttpConnectorError e;
 http:Response response = {};
 
-@Description { value:"OAuth2 client connector"}
-@Param { value:"baseUrl: The endpoint base url"}
-@Param { value:"accessToken: The access token of the account"}
-@Param { value:"clientId: The client Id of the account"}
-@Param { value:"clientSecret: The client secret of the account"}
-@Param { value:"refreshToken: The refresh token of the account"}
-@Param { value:"refreshTokenEP: The refresh token endpoint url"}
+@Description {value:"OAuth2 client connector"}
+@Param {value:"baseUrl: The endpoint base url"}
+@Param {value:"accessToken: The access token of the account"}
+@Param {value:"clientId: The client Id of the account"}
+@Param {value:"clientSecret: The client secret of the account"}
+@Param {value:"refreshToken: The refresh token of the account"}
+@Param {value:"refreshTokenEP: The refresh token endpoint url"}
 public connector ClientConnector (string baseUrl, string accessToken, string clientId, string clientSecret,
                                   string refreshToken, string refreshTokenEP, string refreshTokenPath) {
 
@@ -20,107 +20,107 @@ public connector ClientConnector (string baseUrl, string accessToken, string cli
         create http:HttpClient(baseUrl, {});
     }
 
-    @Description { value:"Get with OAuth2 authentication"}
-    @Param { value:"path: The endpoint path"}
-    @Param { value:"request: The request of the method"}
-    @Return { value:"response object"}
-    @Return { value:"Error occured during HTTP client invocation." }
+    @Description {value:"Get with OAuth2 authentication"}
+    @Param {value:"path: The endpoint path"}
+    @Param {value:"request: The request of the method"}
+    @Return {value:"response object"}
+    @Return {value:"Error occured during HTTP client invocation."}
     action get (string path, http:Request request) (http:Response, http:HttpConnectorError) {
         populateAuthHeader(request, accessToken);
-        response, e = httpConnectorEP.get (path, request);
+        response, e = httpConnectorEP.get(path, request);
         request = {};
 
         if (checkAndRefreshToken(request, accessToken, clientId, clientSecret, refreshToken, refreshTokenEP,
                                  refreshTokenPath)) {
-            response, e = httpConnectorEP.get (path, request);
+            response, e = httpConnectorEP.get(path, request);
         }
 
         return response, e;
     }
 
-    @Description { value:"Post with OAuth2 authentication"}
-    @Param { value:"path: The endpoint path"}
-    @Param { value:"request: The request of the method"}
-    @Return { value:"response object"}
-    @Return { value:"Error occured during HTTP client invocation." }
+    @Description {value:"Post with OAuth2 authentication"}
+    @Param {value:"path: The endpoint path"}
+    @Param {value:"request: The request of the method"}
+    @Return {value:"response object"}
+    @Return {value:"Error occured during HTTP client invocation."}
     action post (string path, http:Request originalRequest) (http:Response, http:HttpConnectorError) {
-        json originalPayload = originalRequest.getJsonPayload();
+        var originalPayload = originalRequest.getBinaryPayload();
 
         populateAuthHeader(originalRequest, accessToken);
-        response, e = httpConnectorEP.post (path, originalRequest);
+        response, e = httpConnectorEP.post(path, originalRequest);
 
         http:Request request = {};
-        request.setJsonPayload(originalPayload);
+        request.setBinaryPayload(originalPayload);
 
         if (checkAndRefreshToken(request, accessToken, clientId, clientSecret, refreshToken, refreshTokenEP,
                                  refreshTokenPath)) {
-            response, e = httpConnectorEP.post (path, request);
+            response, e = httpConnectorEP.post(path, request);
         }
 
         return response, e;
     }
 
-    @Description { value:"Put with OAuth2 authentication"}
-    @Param { value:"path: The endpoint path"}
-    @Param { value:"request: The request of the method"}
-    @Return { value:"response object"}
-    @Return { value:"Error occured during HTTP client invocation." }
+    @Description {value:"Put with OAuth2 authentication"}
+    @Param {value:"path: The endpoint path"}
+    @Param {value:"request: The request of the method"}
+    @Return {value:"response object"}
+    @Return {value:"Error occured during HTTP client invocation."}
     action put (string path, http:Request originalRequest) (http:Response, http:HttpConnectorError) {
-        json originalPayload = originalRequest.getJsonPayload();
+        var originalPayload = originalRequest.getBinaryPayload();
 
         populateAuthHeader(originalRequest, accessToken);
-        response, e = httpConnectorEP.put (path, originalRequest);
+        response, e = httpConnectorEP.put(path, originalRequest);
 
         http:Request request = {};
-        request.setJsonPayload(originalPayload);
+        request.setBinaryPayload(originalPayload);
 
         if (checkAndRefreshToken(request, accessToken, clientId, clientSecret, refreshToken, refreshTokenEP,
                                  refreshTokenPath)) {
-            response, e = httpConnectorEP.put (path, request);
+            response, e = httpConnectorEP.put(path, request);
         }
 
         return response, e;
     }
 
-    @Description { value:"Delete with OAuth2 authentication"}
-    @Param { value:"path: The endpoint path"}
-    @Param { value:"request: The request of the method"}
-    @Return { value:"response object"}
-    @Return { value:"Error occured during HTTP client invocation." }
+    @Description {value:"Delete with OAuth2 authentication"}
+    @Param {value:"path: The endpoint path"}
+    @Param {value:"request: The request of the method"}
+    @Return {value:"response object"}
+    @Return {value:"Error occured during HTTP client invocation."}
     action delete (string path, http:Request originalRequest) (http:Response, http:HttpConnectorError) {
-        json originalPayload = originalRequest.getJsonPayload();
+        var originalPayload = originalRequest.getBinaryPayload();
 
         populateAuthHeader(originalRequest, accessToken);
-        response, e = httpConnectorEP.delete (path, originalRequest);
+        response, e = httpConnectorEP.delete(path, originalRequest);
 
         http:Request request = {};
-        request.setJsonPayload(originalPayload);
+        request.setBinaryPayload(originalPayload);
 
         if (checkAndRefreshToken(request, accessToken, clientId, clientSecret, refreshToken, refreshTokenEP,
                                  refreshTokenPath)) {
-            response, e = httpConnectorEP.delete (path, request);
+            response, e = httpConnectorEP.delete(path, request);
         }
 
         return response, e;
     }
 
-    @Description { value:"Patch with OAuth2 authentication"}
-    @Param { value:"path: The endpoint path"}
-    @Param { value:"request: The request of the method"}
-    @Return { value:"response object"}
-    @Return { value:"Error occured during HTTP client invocation." }
+    @Description {value:"Patch with OAuth2 authentication"}
+    @Param {value:"path: The endpoint path"}
+    @Param {value:"request: The request of the method"}
+    @Return {value:"response object"}
+    @Return {value:"Error occured during HTTP client invocation."}
     action patch (string path, http:Request originalRequest) (http:Response, http:HttpConnectorError) {
-        json originalPayload = originalRequest.getJsonPayload();
+        var originalPayload = originalRequest.getBinaryPayload();
 
         populateAuthHeader(originalRequest, accessToken);
-        response, e = httpConnectorEP.patch (path, originalRequest);
+        response, e = httpConnectorEP.patch(path, originalRequest);
 
         http:Request request = {};
-        request.setJsonPayload(originalPayload);
+        request.setBinaryPayload(originalPayload);
 
         if (checkAndRefreshToken(request, accessToken, clientId, clientSecret, refreshToken, refreshTokenEP,
                                  refreshTokenPath)) {
-            response, e = httpConnectorEP.patch (path, request);
+            response, e = httpConnectorEP.patch(path, request);
         }
 
         return response, e;
@@ -128,15 +128,16 @@ public connector ClientConnector (string baseUrl, string accessToken, string cli
 }
 
 function populateAuthHeader (http:Request request, string accessToken) {
-    if (accessTokenValue == null) {
+    if (accessTokenValue == "") {
         accessTokenValue = accessToken;
     }
 
     request.setHeader("Authorization", "Bearer " + accessTokenValue);
 }
 
-function checkAndRefreshToken(http:Request request, string accessToken, string clientId,
-                              string clientSecret, string refreshToken, string refreshTokenEP, string refreshTokenPath) (boolean){
+function checkAndRefreshToken (http:Request request, string accessToken, string clientId,
+                               string clientSecret, string refreshToken, string refreshTokenEP, string refreshTokenPath)
+(boolean) {
     boolean isRefreshed;
     if ((response.getStatusCode() == 401) && refreshToken != null) {
         accessTokenValue = getAccessTokenFromRefreshToken(request, accessToken, clientId, clientSecret, refreshToken,

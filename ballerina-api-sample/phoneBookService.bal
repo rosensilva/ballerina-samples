@@ -1,6 +1,5 @@
 import ballerina.net.http;
 import util as phonebook;
-import ballerina.log;
 
 service<http> phonebook {
     @http:resourceConfig {
