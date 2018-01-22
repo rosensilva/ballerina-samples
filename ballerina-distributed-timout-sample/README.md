@@ -1,16 +1,13 @@
 # Distributed Timeout Web-Service
 This application calls three remote endpoints in a sequential order with distributed timeout for each call.
 The total deadline for all three remote calls is 10 seconds(i.e. all three responses should be received before 10 
-seconds). If any one of three remote call response is delayed more than the local timeout for that call the program 
-will not call the remaining remote calls.
+seconds). If any one of three remote call response is delayed more than the local timeout it will not call the remaining remote calls.
 The complete application is written using ballerina language including the timeout handling. The local timeouts for 
 each remote call will randomly generated. The remote calls are mocked through http calls to `www.postman-echo.com/delay` 
-with 
-specific response delays. The application will repeatedly run the with 
-different set of random 
-local timeouts until 
-user 
-terminates the programme.
+with specific response delays. The application will repeatedly run the with different set of random local timeouts until 
+user terminates the programme.
+
+![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/ballerina-distributed-timout-sample/images/Distributed-timeout-image.png)
 
 # How to run
 1) Go to http://www.ballerinalang.org and click Download.
