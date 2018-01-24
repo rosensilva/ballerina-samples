@@ -1,8 +1,10 @@
 package util;
 
 import ballerina.net.http;
+import ballerina.util;
 
-string accessTokenValue;
+string accessTokenValue = null;
+string refreshTokenValue = null;
 http:HttpConnectorError e;
 http:Response response = {};
 
@@ -47,6 +49,7 @@ public connector ClientConnector (string baseUrl, string accessToken, string cli
         var originalPayload = originalRequest.getBinaryPayload();
 
         populateAuthHeader(originalRequest, accessToken);
+        println(originalRequest);
         response, e = httpConnectorEP.post(path, originalRequest);
 
         http:Request request = {};
@@ -128,7 +131,7 @@ public connector ClientConnector (string baseUrl, string accessToken, string cli
 }
 
 function populateAuthHeader (http:Request request, string accessToken) {
-    if (accessTokenValue == "") {
+    if (accessTokenValue == null) {
         accessTokenValue = accessToken;
     }
 
@@ -155,17 +158,23 @@ function getAccessTokenFromRefreshToken (http:Request request, string accessToke
         create http:HttpClient(refreshTokenEP, {});
     }
 
+    if(refreshTokenValue != null){
+        refreshToken = refreshTokenValue;
+    }
     http:Request refreshTokenRequest = {};
     http:Response refreshTokenResponse = {};
     string accessTokenFromRefreshTokenReq;
     json accessTokenFromRefreshTokenJSONResponse;
-
-    accessTokenFromRefreshTokenReq = refreshTokenPath + "?refresh_token=" + refreshToken
-                                     + "&grant_type=refresh_token&client_secret="
-                                     + clientSecret + "&client_id=" + clientId;
+    string base64encodedString = clientId+":"+clientSecret;
+    base64encodedString = util:base64Encode(base64encodedString);
+    base64encodedString = "Basic "+base64encodedString;
+    refreshTokenRequest.setHeader("Authorization",base64encodedString);
+    accessTokenFromRefreshTokenReq = refreshTokenPath + "?grant_type=refresh_token&"+ "refresh_token=" + refreshToken;
+    println(accessTokenFromRefreshTokenReq);
     refreshTokenResponse, e = refreshTokenHTTPEP.post(accessTokenFromRefreshTokenReq, refreshTokenRequest);
     accessTokenFromRefreshTokenJSONResponse = refreshTokenResponse.getJsonPayload();
     accessToken = accessTokenFromRefreshTokenJSONResponse.access_token.toString();
+    refreshTokenValue = accessTokenFromRefreshTokenJSONResponse.refresh_token.toString();
     request.setHeader("Authorization", "Bearer " + accessToken);
 
     return accessToken;

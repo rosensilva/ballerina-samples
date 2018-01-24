@@ -4,14 +4,14 @@ import ballerina.log;
 map phonebookDB = {};
 
 public function saveContact (string key, string value) (int) {
-    //save the contact to the phonebookDB map data stucture
+    //save the contact to the phonebookDB map data structure
     phonebookDB[key] = value;
     return 0;
 }
 
-public function getContact (string key) (string value) {
+public function getContact (string key) (string) {
     var result = phonebookDB[key];
-    //casting the results to a string using multivalue return for unsafe casting
+    //casting the results to a string using multivalued return for unsafe casting
     var resultString, err = (string)result;
 
     if (err == null) {
@@ -19,7 +19,7 @@ public function getContact (string key) (string value) {
         return resultString;
     }
     else {
-        //if casting cannot perform which means phonebookDB doesnot contain an value for that name send error msg
+        //if casting cannot perform which means phonebookDB doesn't contain an value for that name send error msg
         string no_number = "Sorry! the numebr cannot be found at directory";
         log:printInfo("cannot find number in the map data structure");
         return no_number;
