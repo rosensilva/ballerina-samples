@@ -1,5 +1,5 @@
 import ballerina.net.http;
-import util as phonebook;
+import util as phoneBook;
 
 service<http> phonebook {
     @http:resourceConfig {
@@ -7,8 +7,8 @@ service<http> phonebook {
         path:"/number/{name}"
     }
     resource getNumberResource (http:Request req, http:Response res, string name) {
-        string result = phonebook:getContact(name);
-        json responseJson = {"Name":name, "Number":result};
+        string contactNumber = phoneBook:getContact(name);
+        json responseJson = {"Name":name, "Number":contactNumber};
         res.setJsonPayload(responseJson);
         _ = res.send();
     }
@@ -21,8 +21,10 @@ service<http> phonebook {
         map params = req.getQueryParams();
         var name, _ = (string)params.name;
         var num, _ = (string)params.number;
+
         string statusMsg = "";
-        int status = phonebook:saveContact(name, num);
+        int status = phoneBook:saveContact(name, num);
+
         if (status == 0) {
             statusMsg = "Save Operation Success";
         }
@@ -42,8 +44,10 @@ service<http> phonebook {
         map params = req.getQueryParams();
         var name, _ = (string)params.name;
         var num, _ = (string)params.number;
+
         string statusMsg = "";
-        int status = phonebook:changeNumber(name, num);
+        int status = phoneBook:changeNumber(name, num);
+
         if (status == 0) {
             statusMsg = "Change Operation Success";
         }
@@ -62,8 +66,10 @@ service<http> phonebook {
     resource deleteNumberResource (http:Request req, http:Response res) {
         map params = req.getQueryParams();
         var name, _ = (string)params.name;
+
         string statusMsg = "";
-        int status = phonebook:deleteContact(name);
+        int status = phoneBook:deleteContact(name);
+
         if (status == 0) {
             statusMsg = "Delete Operation success";
         }

@@ -1,11 +1,11 @@
 import ballerina.net.http;
-import connectors as conn;
+import connectors.bank as bankDatabaseConnector;
 
 int count = 0;
 
 service<http> bank {
-    endpoint<conn:bankDatabaseConnector> bankDB {
-        create conn:bankDatabaseConnector();
+    endpoint<bankDatabaseConnector:bankDatabaseConnector> bankDB {
+        create bankDatabaseConnector:bankDatabaseConnector();
     }
 
     @http:resourceConfig {

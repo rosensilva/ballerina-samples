@@ -1,7 +1,7 @@
 #!/bin/bash
 
 STRING="Setting up consul ..."
-echo $STRING
+echo ${STRING}
 
 sudo mkdir /etc/consul.d
 

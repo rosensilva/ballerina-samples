@@ -2,7 +2,9 @@ import ballerina.log;
 import connectors.github as gitConnector;
 
 public function main (string[] args) {
+    //list of github users to retrieve their git repositories
     string[] userList = ["wso2", "facebook", "google"];
+    //using fork and join constructs executing tasks asynchronously for each git account
     fork {
         worker w1 {
             log:printInfo("Requesting github user details of " + userList[0] + "...");
@@ -22,6 +24,7 @@ public function main (string[] args) {
     }
     join (all) (map results) {
         int count;
+        //processing received data from all the asynchronous calls
         foreach result in results {
             var response, _ = (any[])result;
             string repoDetails = "Repos of user name : " + userList[count] + "\n";

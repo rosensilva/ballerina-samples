@@ -1,4 +1,4 @@
-package connectors;
+package connectors.bank;
 
 import ballerina.data.sql;
 import ballerina.log;

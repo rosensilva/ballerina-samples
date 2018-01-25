@@ -158,18 +158,18 @@ function getAccessTokenFromRefreshToken (http:Request request, string accessToke
         create http:HttpClient(refreshTokenEP, {});
     }
 
-    if(refreshTokenValue != null){
+    if (refreshTokenValue != null) {
         refreshToken = refreshTokenValue;
     }
     http:Request refreshTokenRequest = {};
     http:Response refreshTokenResponse = {};
     string accessTokenFromRefreshTokenReq;
     json accessTokenFromRefreshTokenJSONResponse;
-    string base64encodedString = clientId+":"+clientSecret;
+    string base64encodedString = clientId + ":" + clientSecret;
     base64encodedString = util:base64Encode(base64encodedString);
-    base64encodedString = "Basic "+base64encodedString;
-    refreshTokenRequest.setHeader("Authorization",base64encodedString);
-    accessTokenFromRefreshTokenReq = refreshTokenPath + "?grant_type=refresh_token&"+ "refresh_token=" + refreshToken;
+    base64encodedString = "Basic " + base64encodedString;
+    refreshTokenRequest.setHeader("Authorization", base64encodedString);
+    accessTokenFromRefreshTokenReq = refreshTokenPath + "?grant_type=refresh_token&" + "refresh_token=" + refreshToken;
     println(accessTokenFromRefreshTokenReq);
     refreshTokenResponse, e = refreshTokenHTTPEP.post(accessTokenFromRefreshTokenReq, refreshTokenRequest);
     accessTokenFromRefreshTokenJSONResponse = refreshTokenResponse.getJsonPayload();

@@ -1,37 +1,35 @@
 package util;
 import ballerina.log;
 
-map phonebookDB = {};
+map phoneBookDataMap = {};
 
 public function saveContact (string key, string value) (int) {
-    //save the contact to the phonebookDB map data structure
-    phonebookDB[key] = value;
+    //save the contact to the phoneBookMap map data structure
+    phoneBookDataMap[key] = value;
     return 0;
 }
 
 public function getContact (string key) (string) {
-    var result = phonebookDB[key];
-    //casting the results to a string using multivalued return for unsafe casting
+    var result = phoneBookDataMap[key];
+    //casting the results to a string using multivalue return for unsafe casting
     var resultString, err = (string)result;
-
     if (err == null) {
-        //if there is no error while casting the result to a string return result
+        //check for any error while casting the result to a string return result
         return resultString;
     }
     else {
-        //if casting cannot perform which means phonebookDB doesn't contain an value for that name send error msg
-        string no_number = "Sorry! the numebr cannot be found at directory";
+        //if casting cannot perform which means phoneBookMap doesn't contain an value for that name send error msg
+        string noNumberString = "Sorry! the numebr cannot be found at directory";
         log:printInfo("cannot find number in the map data structure");
-        return no_number;
+        return noNumberString;
     }
 }
 
 public function deleteContact (string key) (int) {
-    var result = phonebookDB[key];
-    var resultString, err = (string)result;
+    var result = phoneBookDataMap[key];
 
-    if (err == null) {
-        phonebookDB[key] = null;
+    if (result != null) {
+        phoneBookDataMap[key] = null;
         return 0;
     }
     else {
@@ -41,11 +39,10 @@ public function deleteContact (string key) (int) {
 }
 
 public function changeNumber (string key, string value) (int) {
-    var result = phonebookDB[key];
-    var resultString, err = (string)result;
+    var result = phoneBookDataMap[key];
 
-    if (err == null) {
-        phonebookDB[key] = value;
+    if (result != null) {
+        phoneBookDataMap[key] = value;
         return 0;
     }
     else {

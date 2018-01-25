@@ -43,6 +43,7 @@ function httpRemoteMockCall (int localTimeout) {
     //Creating http request for postman-echo with random delay response time
     http:Request request = {};
     http:Response response = {};
+    //generating a artificial delay for remote call
     int delayTime = math:randomInRange(0, 4);
     string endpointUrl = "/delay/" + <string>delayTime;
     log:printInfo("Response delay for remote procedure call :" + <string>(delayTime * 1000) + "ms");
