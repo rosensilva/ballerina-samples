@@ -20,8 +20,9 @@ order,
  * `$ ./setup-consul.sh`
  * `$ ballerina run service-discovery-sample.bal`
 #### Output for service-discovery-sample,
-    ```
-    2018-01-25 16:29:20,509 INFO  [] - Available services after discovery ...  
+
+
+    2018-01-25 16:29:20,509 INFO  [] - Available services after discovery ...
     2018-01-25 16:29:20,670 INFO  [] - All Services Discovery Response message {"consul":[],"dateService":["get the current date"],"helloService":["say hello"],"timeService":["get the current time"]} 
     2018-01-25 16:29:20,845 INFO  [] -  0 -> consul : [] 
     2018-01-25 16:29:20,846 INFO  [] -  1 -> dateService : ["get the current date"] 
@@ -32,4 +33,3 @@ order,
     2018-01-25 16:29:20,978 INFO  [] - Response from the service consumed : Date:2018:1:25 
     
     Process finished with exit code 0
-    ``` 
