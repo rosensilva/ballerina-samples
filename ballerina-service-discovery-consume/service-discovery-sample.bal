@@ -42,6 +42,6 @@ public function main (string[] args) {
     request = {};
     urlString = "/" + availableServicesList[randomNumber];
     response, _ = httpEndpoint.get(urlString, request);
-    infoString = "Responce from the service consumed : " + response.getBinaryPayload().toString("UTF-8");
+    infoString = "Response from the service consumed : " + response.getBinaryPayload().toString("UTF-8");
     log:printInfo(infoString);
 }
