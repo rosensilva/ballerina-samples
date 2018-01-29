@@ -1,7 +1,6 @@
-import ballerina.net.http;
-import connectors as conn;
-import weather.util as weatherUtil;
 import ballerina.log;
+import ballerina.net.http;
+import weather.util as weatherUtil;
 
 service<http> travel {
     @http:resourceConfig {

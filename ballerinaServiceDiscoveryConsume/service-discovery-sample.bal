@@ -1,6 +1,6 @@
-import ballerina.net.http;
-import ballerina.math;
 import ballerina.log;
+import ballerina.math;
+import ballerina.net.http;
 
 public function main (string[] args) {
     endpoint<http:HttpClient> httpEndpoint {

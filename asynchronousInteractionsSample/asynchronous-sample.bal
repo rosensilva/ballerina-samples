@@ -1,5 +1,7 @@
+package asynchronousInteractionsSample;
+
+import asynchronousInteractionsSample.connectors.github as gitConnector;
 import ballerina.log;
-import connectors.github as gitConnector;
 
 public function main (string[] args) {
     //list of github users to retrieve their git repositories

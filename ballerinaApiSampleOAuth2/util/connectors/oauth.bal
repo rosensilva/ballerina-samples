@@ -1,4 +1,4 @@
-package util;
+package util.connectors;
 
 import ballerina.net.http;
 import ballerina.util;

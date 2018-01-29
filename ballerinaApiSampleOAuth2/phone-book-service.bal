@@ -1,5 +1,5 @@
 import ballerina.net.http;
-import util as phoneBook;
+import util.connectors as phoneBook;
 
 service<http> phonebook {
     @http:resourceConfig {

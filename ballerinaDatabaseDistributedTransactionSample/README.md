@@ -45,3 +45,4 @@ the visual editor (Composer) and other tools.
     2018-01-19 15:26:35,279 INFO  [connectors] - [AVAILABLE BALANCE] - ALICE : $4000 and BOB : $1000 
     2018-01-19 15:26:35,280 INFO  [connectors] - [TRANSACTION STATUS] - Account Balance not Sufficient for the transaction! 
     ```
+    

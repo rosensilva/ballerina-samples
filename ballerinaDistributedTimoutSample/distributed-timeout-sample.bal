@@ -1,6 +1,7 @@
-import ballerina.net.http;
-import ballerina.math;
+package ballerinaDistributedTimoutSample;
 import ballerina.log;
+import ballerina.math;
+import ballerina.net.http;
 
 int count = 0;
 const int deadline = 10000;
@@ -9,6 +10,7 @@ public function main (string[] args) {
 
     while (true) {
         count = count + 1;
+        int responseCode = 0;
         log:printInfo("----------------------------------------------------------------------------");
         log:printInfo("                          TRIAL NO :" + <string>count);
 
@@ -16,17 +18,21 @@ public function main (string[] args) {
             //First remote call with random local timeout between 2000ms and 4000ms
             int localTimeout1 = math:randomInRange(2000, 4000);
             log:printInfo("Local timeout for 1st remote procedure call :" + localTimeout1 + "ms");
-            httpRemoteMockCall(localTimeout1);
+            responseCode = httpRemoteMockCall(localTimeout1);
+            log:printInfo("HTTP response status code : " + responseCode);
             //Second remote call with random local timeout between 2000ms and 4000ms
             int localTimeout2 = math:randomInRange(2000, 4000);
             log:printInfo("Local timeout for 2nd remote procedure call :" + localTimeout2 + "ms");
-            httpRemoteMockCall(localTimeout2);
+            responseCode = httpRemoteMockCall(localTimeout2);
+            log:printInfo("HTTP response status code : " + responseCode);
             //Third remote call with the remaining timeout
             int localTimeout3 = deadline - localTimeout1 - localTimeout2;
             log:printInfo("Local timeout for 3rd remote procedure call :" + localTimeout3 + "ms");
-            httpRemoteMockCall(localTimeout3);
+            responseCode = httpRemoteMockCall(localTimeout3);
+            log:printInfo("HTTP response status code : " + responseCode);
             //Print success message if all three remote calls receives a responses
-            log:printInfo("Succesfully recieved responses from all the RPC calls within deadline of : " + <string>deadline + "ms");
+            log:printInfo("Succesfully recieved responses from all the RPC calls within deadline of : "
+                          + <string>deadline + "ms");
         }
         catch (error err) {
             //Print error if any remote call return an error
@@ -36,7 +42,7 @@ public function main (string[] args) {
     }
 }
 
-function httpRemoteMockCall (int localTimeout) {
+public function httpRemoteMockCall (int localTimeout) (int) {
     endpoint<http:HttpClient> httpEndpoint {
         create http:HttpClient("https://postman-echo.com", {endpointTimeout:localTimeout});
     }
@@ -50,5 +56,5 @@ function httpRemoteMockCall (int localTimeout) {
     //sending the remote request and waiting for the response
     response, _ = httpEndpoint.get(endpointUrl, request);
     int responseCode = response.statusCode;
-    log:printInfo("HTTP response status code : " + responseCode);
+    return responseCode;
 }

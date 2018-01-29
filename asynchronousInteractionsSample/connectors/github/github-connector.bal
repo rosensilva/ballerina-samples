@@ -1,4 +1,4 @@
-package connectors.github;
+package asynchronousInteractionsSample.connectors.github;
 
 import ballerina.log;
 import ballerina.math;

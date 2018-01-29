@@ -1,4 +1,5 @@
-package util;
+package util.connectors;
+
 import ballerina.log;
 
 map phoneBookDataMap = {};

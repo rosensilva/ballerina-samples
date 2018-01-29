@@ -1,5 +1,7 @@
-import ballerina.task;
+package ballerinaSchedulerExample;
+
 import ballerina.log;
+import ballerina.task;
 
 function main (string[] args) {
     println("Scheduling Tasks Demo ...");

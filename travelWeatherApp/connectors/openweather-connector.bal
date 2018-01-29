@@ -1,9 +1,7 @@
 package connectors;
 
-import ballerina.net.http;
-import ballerina.util;
 import ballerina.config;
-import ballerina.log;
+import ballerina.net.http;
 
 string appid = config:getGlobalValue("openweather_appid");
 

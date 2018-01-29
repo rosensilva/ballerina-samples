@@ -1,5 +1,5 @@
 import ballerina.net.http;
-import util as oauth2;
+import util.connectors as oauth2;
 
 string baseUrl = "https://10.100.1.112:8243/phonebook/v1/";
 string accessToken = "a3a9f667-7dbf-3cd7-80b3-060a312b6152";
