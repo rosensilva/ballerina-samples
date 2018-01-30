@@ -8,6 +8,7 @@ public function main (string[] args) {
     }
     string infoString;
     log:printInfo("Available services after discovery ... ");
+
     http:Request request = {};
     http:Response response = {};
     response, _ = httpEndpoint.get("/v1/catalog/services", request);
