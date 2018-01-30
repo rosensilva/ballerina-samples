@@ -2,7 +2,7 @@
 This application is a lookup service that queries GitHub user information and retrieves data through GitHub’s API. 
 Then this application retrieves the details about the public repositories using the previously received GitHub user information.
 Finally the application will print the details of all the public repositories in the console log. This sample will 
-lookup 3 outsource github projects and retrieves all the details asynchronously.
+lookup 3 open-source github projects and retrieves all the details asynchronously.
  
 # How to run
 1) Go to http://www.ballerinalang.org and click Download.
