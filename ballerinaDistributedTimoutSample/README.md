@@ -7,7 +7,7 @@ each remote call will randomly generated. The remote calls are mocked through ht
 with specific response delays. The application will repeatedly run the with different set of random local timeouts until 
 user terminates the programme.
 
-![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/ballerina-distributed-timout-sample/images/Distributed-timeout-image.png)
+![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/ballerinaDistributedTimoutSample/images/Distributed-timeout-image.png)
 
 # How to run
 1) Go to http://www.ballerinalang.org and click Download.
