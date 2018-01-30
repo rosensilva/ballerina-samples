@@ -19,7 +19,8 @@ public function main (string[] args) {
     int numberOfServices = lengthof availableServicesList;
     int count = 0;
     while (count < numberOfServices) {
-        infoString = " " + count + " -> " + availableServicesList[count] + " : " + jsonResponse[availableServicesList[count]].toString();
+        infoString = " " + count + " -> " + availableServicesList[count] + " : " +
+                     jsonResponse[availableServicesList[count]].toString();
         log:printInfo(infoString);
         count = count + 1;
     }
