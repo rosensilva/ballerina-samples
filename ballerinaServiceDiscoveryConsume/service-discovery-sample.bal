@@ -16,8 +16,8 @@ public function main (string[] args) {
     log:printInfo("Running Service Discovery ...");
     //calling consul API to get a complete list of available services
     response, err = consulEndpoint.get("/v1/catalog/services", request);
-    //checking for errors with consul endpoint response
-    if(err != null) {
+    //checking for errors with consul endpoint
+    if (err != null) {
         log:printError("Error occured while connecting to Consul, make sure consul is running \n Erorr: " + err.msg);
         return;
     }
@@ -37,7 +37,7 @@ public function main (string[] args) {
     string urlString = "/v1/catalog/service/" + availableServicesList[randomNumber];
     //get required details about the selected service endpoint from consul
     response, err = consulEndpoint.get(urlString, request);
-    if(err != null) {
+    if (err != null) {
         log:printError("Error occured while requseting details about services from Consul, make sure consul is
         running properly \n Erorr: " + err.msg);
         return;
@@ -57,9 +57,9 @@ public function main (string[] args) {
     //Consume the actual service
     response, err = httpEndpoint.get(urlString, request);
     //check the errors at service endpoint
-    if(err != null) {
-        log:printError("Error occured while consuming service , make sure all the services are running \n Erorr: " + err
-                                                                                                                .msg);
+    if (err != null) {
+        log:printError("Error occured while consuming service , make sure all the services are running \n Erorr: "
+                       + err.msg);
         return;
     }
     log:printInfo("Response from the service consumed : " + response.getBinaryPayload().toString("UTF-8"));
