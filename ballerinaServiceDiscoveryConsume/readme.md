@@ -22,7 +22,7 @@ order,
  * `$ ./setup-consul.sh`
  * `$ ballerina run service-discovery-sample.bal`
 #### Output for service-discovery-sample,
-``
+```
 2018-02-01 16:07:43,691 INFO  [] - Running Service Discovery ... 
 2018-02-01 16:07:44,084 INFO  [] - List of Available Services 
 2018-02-01 16:07:44,085 INFO  [] - -------------------------------------------------------- 
@@ -34,4 +34,4 @@ order,
 2018-02-01 16:07:44,091 INFO  [] - Consuming resource name : helloService 
 2018-02-01 16:07:44,243 INFO  [] - Response from the service consumed : Hello, World!     
 Process finished with exit code 0
-``
+```
