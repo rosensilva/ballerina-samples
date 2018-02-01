@@ -13,7 +13,7 @@ configuring services in your infrastructure. This sample consist of three servic
 2) Download the Ballerina Tools distribution and unzip it on your computer. Ballerina Tools includes the Ballerina runtime plus
 the visual editor (Composer) and other tools.
 3) Add the <ballerina_home>/bin directory to your $PATH environment variable so that you can run the Ballerina commands from anywhere.
-4) Download the Consule using https://www.consul.io/downloads.html
+4) Download the Consul using https://www.consul.io/downloads.html
 5) Extract the downloaded consul zip file and copy executable consul file to the sample directory
 5) Navigate to service discovery directory and run following commands in following 
 order, 
