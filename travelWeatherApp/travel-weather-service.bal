@@ -7,7 +7,6 @@ service<http> travel {
         methods:["GET"]
     }
     resource weather (http:Request req, http:Response res) {
-
         try {
             map params = req.getQueryParams();
             var start, startLocationError = (string)params.start;
@@ -23,7 +22,6 @@ service<http> travel {
                 _ = res.send();
                 return;
             }
-
             log:printInfo("Request -> start : " + start + " end : " + end + "waypoints : " + waypoints);
             var responseJson, err = weatherUtil:getWeatherSummery(start, end, waypoints);
             if (err != null) {
