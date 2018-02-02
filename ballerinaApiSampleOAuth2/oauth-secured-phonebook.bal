@@ -1,55 +1,61 @@
+import ballerina.config;
+import ballerina.log;
 import ballerina.net.http;
 import util.connectors as oauth2;
 
-string baseUrl = "https://10.100.1.112:8243/phonebook/v1/";
-string accessToken = "a3a9f667-7dbf-3cd7-80b3-060a312b6152";
-string clientId = "W81j82CxwhMRDHgakQKuGXmHHEoa";
-string clientSecret = "NVPM0Pd2HernlBd3Ync2NfYnag0a";
-string refreshToken = "7d157cb4-69ba-3375-9c68-b4c0433ed788";
-string refreshTokenEndPoint = "https://10.100.1.112:8243";
-string refreshTokenPath = "/token";
+string baseUrl = config:getGlobalValue("baseUrl");
+string accessToken = config:getGlobalValue("accessToken");
+string clientId = config:getGlobalValue("clientId");
+string clientSecret = config:getGlobalValue("clientSecret");
+string refreshToken = config:getGlobalValue("refreshToken");
+string refreshTokenEndPoint = config:getGlobalValue("refreshTokenEndPoint");
+string refreshTokenPath = config:getGlobalValue("refreshTokenPath");
 
 function main (string[] args) {
-    endpoint<oauth2:ClientConnector> clientConnector {
+    endpoint<oauth2:ClientConnector> oauthClientConnector {
         create oauth2:ClientConnector(baseUrl, accessToken, clientId, clientSecret, refreshToken, refreshTokenEndPoint,
                                       refreshTokenPath);
     }
     http:Request request = {};
-    http:Response userProfileResponse = {};
-    json userProfileJSONResponse;
-    string requestString = "";
-    http:HttpConnectorError e;
+    http:Response response = {};
+    json jsonResponse;
+    string requestString;
+    http:HttpConnectorError connectionError;
 
-    println("-----Calling POST method-----");
+    //calling oauth2 authorise HTTP GET endpoint using ballerina oauth2 connector
+    log:printInfo("-----Calling POST method-----");
     requestString = "/number?name=Alice&number=123456789";
-    userProfileResponse, e = clientConnector.post(requestString, request);
-    if (e == null) {
-        userProfileJSONResponse = userProfileResponse.getJsonPayload();
-        println(userProfileJSONResponse.toString());
+    response, connectionError = oauthClientConnector.post(requestString, request);
+    if (connectionError == null) {
+        jsonResponse = response.getJsonPayload();
+        log:printInfo(jsonResponse.toString());
     } else {
-        println(e);
+        log:printError(connectionError.msg);
     }
 
+
+    //calling oauth2 authorise HTTP GET endpoint using ballerina oauth2 connector
     request = {};
-    println("-----Calling GET method-----");
+    log:printInfo("-----Calling GET method-----");
     requestString = "/number/Alice";
-    userProfileResponse, e = clientConnector.get(requestString, request);
-    if (e == null) {
-        userProfileJSONResponse = userProfileResponse.getJsonPayload();
-        println(userProfileJSONResponse.toString());
+    response, connectionError = oauthClientConnector.get(requestString, request);
+    if (connectionError == null) {
+        jsonResponse = response.getJsonPayload();
+        log:printInfo(jsonResponse.toString());
     } else {
-        println(e);
+        log:printError(connectionError.msg);
     }
 
+    //calling oauth2 authorise HTTP DELETE endpoint using ballerina oauth2 connector
     request = {};
-    println("-----Calling DELETE method-----");
+    log:printInfo("-----Calling DELETE method-----");
     requestString = "/number?name=Alice";
-    userProfileResponse, e = clientConnector.delete(requestString, request);
-    if (e == null) {
-        userProfileJSONResponse = userProfileResponse.getJsonPayload();
-        println(userProfileJSONResponse.toString());
+    response, connectionError = oauthClientConnector.delete(requestString, request);
+    if (connectionError == null) {
+        jsonResponse = response.getJsonPayload();
+        log:printInfo(jsonResponse.toString());
     } else {
-        println(e);
+        log:printError(connectionError.msg);
     }
     sleep(5000);
 }

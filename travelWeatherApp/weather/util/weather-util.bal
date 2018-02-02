@@ -1,34 +1,43 @@
 package weather.util;
+
 import connectors as conn;
 
-public function getWeatherSummery (string start, string end, int waypoints) (json) {
+public function getWeatherSummery (string start, string end, int waypoints) (json, error) {
     endpoint<conn:openweatherConnector> openWeatherEP {
         create conn:openweatherConnector();
     }
-
-    json startCoordinates = openWeatherEP.getCoordinatesFromCity(start);
-    json endCoordinates = openWeatherEP.getCoordinatesFromCity(end);
+    error err;
+    json finalResult = {};
+    var startCoordinates, err1 = openWeatherEP.getCoordinatesFromCity(start);
+    var endCoordinates, err2 = openWeatherEP.getCoordinatesFromCity(end);
+    if (err1 != null || err2 != null) {
+        err = {msg:"Error occured while getting coordinates from city name"};
+        return finalResult, err;
+    }
     var startLongitudeString = startCoordinates.lon.toString();
-    var startLattitudeString = startCoordinates.lat.toString();
+    var startLatitudeString = startCoordinates.lat.toString();
     var endLongitudeString = endCoordinates.lon.toString();
-    var endLattitudeString = endCoordinates.lat.toString();
+    var endLatitudeString = endCoordinates.lat.toString();
 
     var startLongitude, _ = <float>startLongitudeString;
-    var startLattitude, _ = <float>startLattitudeString;
+    var startLatitude, _ = <float>startLatitudeString;
     var endLongitude, _ = <float>endLongitudeString;
-    var endLattitude, _ = <float>endLattitudeString;
+    var endLatitude, _ = <float>endLatitudeString;
 
     float longitudeDiff = (endLongitude - startLongitude) / waypoints;
-    float lattitudeDiff = (endLattitude - startLattitude) / waypoints;
+    float latitudeDiff = (endLatitude - startLatitude) / waypoints;
 
-    json finalResult = {};
     int i = 0;
     while (i < waypoints + 1) {
         float tmpLon = startLongitude + longitudeDiff * i;
-        float tmpLat = startLattitude + lattitudeDiff * i;
+        float tmpLat = startLatitude + latitudeDiff * i;
         i = i + 1;
-        json result = openWeatherEP.getWeatherFromCoordinates(<string>tmpLon, <string>tmpLat);
+        var result, err3 = openWeatherEP.getWeatherFromCoordinates(<string>tmpLon, <string>tmpLat);
+        if (err3 != null) {
+            err = {msg:"Error occured while getting weather details from coordinates"};
+            return finalResult, err;
+        }
         finalResult[result.Name.toString()] = result;
     }
-    return finalResult;
+    return finalResult, err;
 }

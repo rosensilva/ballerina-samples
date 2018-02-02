@@ -1,4 +1,3 @@
-package ballerinaDistributedTimoutSample;
 import ballerina.log;
 import ballerina.math;
 import ballerina.net.http;

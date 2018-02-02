@@ -4,8 +4,8 @@ import ballerina.log;
 import ballerina.task;
 
 function main (string[] args) {
-    println("Scheduling Tasks Demo ...");
-    //Starting the scheduled tasks with a 5 second interval by calling scheduleTimer in the ballerina.task package
+    println("Scheduling Tasks Demo Started ...");
+    //Starting the scheduled tasks with a 5 seconds interval by calling ballerina.task.scheduleTimer
     var taskId, schedulerError = task:scheduleTimer(scheduledDemoTask, taskError, {delay:500, interval:5000});
 
     if (schedulerError != null) {

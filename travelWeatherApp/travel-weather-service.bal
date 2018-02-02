@@ -7,36 +7,47 @@ service<http> travel {
         methods:["GET"]
     }
     resource weather (http:Request req, http:Response res) {
-        var start = "";
-        var end = "";
-        var waypointString = "";
-        var waypoints = 4;
+        string start;
+        string end;
+        string waypointString;
+        int waypoints;
+        TypeCastError startLocationError;
+        TypeCastError endLocationError;
+        TypeCastError waypointError;
+        TypeConversionError intConversionError;
 
         try {
             map params = req.getQueryParams();
-            start, _ = (string)params.start;
-            end, _ = (string)params.end;
-            waypointString, _ = (string)params.waypoints;
-            if (waypointString != null) {
-                waypoints, _ = <int>waypointString;
-            }
-            println("start : " + start + "end : " + end + "waypoints : " + waypoints);
-            if (waypoints <= 0) {
-                error err = {msg:"waypoints should be a positive integer"};
-                throw err;
+            start, startLocationError = (string)params.start;
+            end, endLocationError = (string)params.end;
+            waypointString, waypointError = (string)params.waypoints;
+            //convert waypoints string to integer
+            waypoints, intConversionError = <int>waypointString;
+            //check for request errors
+            if (startLocationError != null || endLocationError != null || waypointError != null ||
+                intConversionError != null || waypoints <= 0) {
+                res.setStringPayload("Error : something wrong with the data you entered");
+                res.setStatusCode(400);
+                _ = res.send();
+                return;
             }
 
-            json responseJson = weatherUtil:getWeatherSummery(start, end, waypoints);
-
+            log:printInfo("Request -> start : " + start + " end : " + end + "waypoints : " + waypoints);
+            var responseJson, err = weatherUtil:getWeatherSummery(start, end, waypoints);
+            if (err != null) {
+                res.setStatusCode(500);
+                res.setStringPayload("Error : " + err.msg);
+                _ = res.send();
+                return;
+            }
             res.setJsonPayload(responseJson);
             _ = res.send();
             log:printInfo("Completed request for trip from : " + start + " to " + end);
         }
 
         catch (error err) {
-            println("error occured while processing user request: " + err.msg);
-            log:printErrorCause("error log with cause", err);
-
+            log:printError("error log with cause" + err.msg);
+            res.setStatusCode(500);
             res.setJsonPayload({error:err.msg});
             _ = res.send();
         }

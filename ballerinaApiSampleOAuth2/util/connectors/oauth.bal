@@ -49,7 +49,6 @@ public connector ClientConnector (string baseUrl, string accessToken, string cli
         var originalPayload = originalRequest.getBinaryPayload();
 
         populateAuthHeader(originalRequest, accessToken);
-        println(originalRequest);
         response, e = httpConnectorEP.post(path, originalRequest);
 
         http:Request request = {};
@@ -170,7 +169,6 @@ function getAccessTokenFromRefreshToken (http:Request request, string accessToke
     base64encodedString = "Basic " + base64encodedString;
     refreshTokenRequest.setHeader("Authorization", base64encodedString);
     accessTokenFromRefreshTokenReq = refreshTokenPath + "?grant_type=refresh_token&" + "refresh_token=" + refreshToken;
-    println(accessTokenFromRefreshTokenReq);
     refreshTokenResponse, e = refreshTokenHTTPEP.post(accessTokenFromRefreshTokenReq, refreshTokenRequest);
     accessTokenFromRefreshTokenJSONResponse = refreshTokenResponse.getJsonPayload();
     accessToken = accessTokenFromRefreshTokenJSONResponse.access_token.toString();
