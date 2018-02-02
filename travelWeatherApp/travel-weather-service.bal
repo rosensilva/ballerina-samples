@@ -7,22 +7,14 @@ service<http> travel {
         methods:["GET"]
     }
     resource weather (http:Request req, http:Response res) {
-        string start;
-        string end;
-        string waypointString;
-        int waypoints;
-        TypeCastError startLocationError;
-        TypeCastError endLocationError;
-        TypeCastError waypointError;
-        TypeConversionError intConversionError;
 
         try {
             map params = req.getQueryParams();
-            start, startLocationError = (string)params.start;
-            end, endLocationError = (string)params.end;
-            waypointString, waypointError = (string)params.waypoints;
+            var start, startLocationError = (string)params.start;
+            var end, endLocationError = (string)params.end;
+            var waypointString, waypointError = (string)params.waypoints;
             //convert waypoints string to integer
-            waypoints, intConversionError = <int>waypointString;
+            var waypoints, intConversionError = <int>waypointString;
             //check for request errors
             if (startLocationError != null || endLocationError != null || waypointError != null ||
                 intConversionError != null || waypoints <= 0) {

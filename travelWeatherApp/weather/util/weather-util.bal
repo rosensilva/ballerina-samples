@@ -28,6 +28,7 @@ public function getWeatherSummery (string start, string end, int waypoints) (jso
     float latitudeDiff = (endLatitude - startLatitude) / waypoints;
 
     int i = 0;
+    //retrieve weather details about all the locations between start and end
     while (i < waypoints + 1) {
         float tmpLon = startLongitude + longitudeDiff * i;
         float tmpLat = startLatitude + latitudeDiff * i;
