@@ -1,4 +1,4 @@
-# Distributed Timeout Web-Service
+# Distributed Timeout Ballerina Example
 This application calls three remote endpoints in a sequential order with distributed timeout for each call.
 The total deadline for all three remote calls is 10 seconds(i.e. all three responses should be received before 10 
 seconds). If any one of three remote call response is delayed more than the local timeout it will not call the remaining remote calls.
