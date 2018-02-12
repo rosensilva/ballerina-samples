@@ -1,50 +1,64 @@
 package employeeService;
 
+import ballerina.log;
 import ballerina.net.http;
-import employeeService.db.util as dataBaseUtil;
+import employeeService.util.db as dataBaseUtil;
 
-boolean isFirstTime = true;
 
 service<http> company {
+
+    boolean isInitialized = dataBaseUtil:initializeDatabase();
+
     @http:resourceConfig {
         methods:["POST"],
         path:"/employee/"
     }
-
-    resource addEmployeeDataResource (http:Request req, http:Response res) {
-        if (isFirstTime) {
-            dataBaseUtil:initializeDatabase();
+    resource addEmployeeResource (http:Request req, http:Response res) {
+        // Processing request payload
+        json payload = req.getJsonPayload();
+        var name, nameError = (string)payload.name;
+        var age, ageError = (string)payload.age;
+        var ssn, ssnError = (string)payload.ssn;
+        // Check query parameter errors and send bad request response if errors present
+        if (nameError != null || ageError != null || ssnError != null) {
+            res.setStringPayload("Error : Please check the input parameters ");
+            res.setStatusCode(400);
+            _ = res.send();
+            return;
         }
-        isFirstTime = false;
-        map params = req.getQueryParams();
-        var name, _ = (string)params.name;
-        var age, _ = (string)params.age;
-        var ssn, _ = (string)params.ssn;
+        // Invoke insertData function in dataBaseUtil package to store data in MySQL database
         dataBaseUtil:insertData(name, age, ssn);
-        //employeeDB.createTable();
-        //employeeDB.insertData(name, age, ssn);
-
         json responseJson = {"Name":name, "Age":age, "ssn":ssn};
+        log:printInfo("New employee added to database : " + responseJson.toString());
         res.setJsonPayload(responseJson);
+        // Send the response back to the client
         _ = res.send();
     }
+
     @http:resourceConfig {
-        methods:["PATCH"],
+        methods:["PUT"],
         path:"/employee/"
     }
-
-    resource updateEmployeeDataResource (http:Request req, http:Response res) {
-        map params = req.getQueryParams();
-        var name, _ = (string)params.name;
-        var age, _ = (string)params.age;
-        var ssn, _ = (string)params.ssn;
-        var id, _ = (string)params.id;
+    resource updateEmployeeResource (http:Request req, http:Response res) {
+        // Processing request payload
+        json payload = req.getJsonPayload();
+        var name, nameError = (string)payload.name;
+        var age, ageError = (string)payload.age;
+        var ssn, ssnError = (string)payload.ssn;
+        var id, idError = (string)payload.id;
+        // Check query parameter errors and sending bad request response if errors present
+        if (nameError != null || ageError != null || ssnError != null || idError != null) {
+            res.setStringPayload("Error : Please check the input parameters ");
+            res.setStatusCode(400);
+            _ = res.send();
+            return;
+        }
+        // Invoke updateData function in dataBaseUtil package to update data in mysql database
         dataBaseUtil:updateData(name, age, ssn, id);
-        //employeeDB.createTable();
-        //employeeDB.insertData(name, age, ssn);
-
-        json responseJson = {"Name":name, "Age":age, "ssn":ssn};
+        json responseJson = {"Name":name, "Age":age, "ssn":ssn, "id":id};
+        log:printInfo("Employee details updated in database : " + responseJson.toString());
         res.setJsonPayload(responseJson);
+        // Send the response back to the client
         _ = res.send();
     }
 
@@ -52,15 +66,23 @@ service<http> company {
         methods:["DELETE"],
         path:"/employee/"
     }
-    resource deleteEmployeeDataResource (http:Request req, http:Response res) {
-
-        map params = req.getQueryParams();
-        var employeeID, _ = (string)params.id;
-        dataBaseUtil:deleteData(employeeID);
-        //employeeDB.deleteData(employeeID);
-
-        json responseJson = {"Employee ID":employeeID, "Status":"Deleted"};
+    resource deleteEmployeeResource (http:Request req, http:Response res) {
+        // Processing request payload
+        json payload = req.getJsonPayload();
+        var id, idError = (string)payload.id;
+        // Check query parameter errors and sending bad request response if errors present
+        if (idError != null) {
+            res.setStringPayload("Error : Please check the input parameters ");
+            res.setStatusCode(400);
+            _ = res.send();
+            return;
+        }
+        // Invoke deleteData function in dataBaseUtil package to delete data from mysql database
+        dataBaseUtil:deleteData(id);
+        json responseJson = {"Employee ID":id, "Status":"Deleted"};
+        log:printInfo("Employee deleted from database : " + responseJson.toString());
         res.setJsonPayload(responseJson);
+        // Send the response back to the client
         _ = res.send();
     }
 
@@ -68,14 +90,21 @@ service<http> company {
         methods:["GET"],
         path:"/employee/"
     }
-    resource retrieveEmployeeDataResource (http:Request req, http:Response res) {
-
+    resource retrieveEmployeeResource (http:Request req, http:Response res) {
+        // Processing request payload
         map params = req.getQueryParams();
-        var employeeID, _ = (string)params.id;
-
-        json result = dataBaseUtil:retrieveById(employeeID);
-
+        var id, idError = (string)params.id;
+        // Check query parameter errors and sending bad request response if errors present
+        if (idError != null) {
+            res.setStringPayload("Error : Please check the input parameters ");
+            res.setStatusCode(400);
+            _ = res.send();
+            return;
+        }
+        // Invoke retrieveById function in dataBaseUtil package to retrieve employee data from mysql database
+        json result = dataBaseUtil:retrieveById(id);
         res.setJsonPayload(result);
+        // Send the response back to the client
         _ = res.send();
     }
 
@@ -83,11 +112,11 @@ service<http> company {
         methods:["GET"],
         path:"/retrieve-all/"
     }
-    resource retrieveAllDataResource (http:Request req, http:Response res) {
-
+    resource retrieveAllResource (http:Request req, http:Response res) {
+        // Invoke retrieveAllData function in dataBaseUtil package to retrieve all employees from mysql database
         json result = dataBaseUtil:retrieveAllData();
-
         res.setJsonPayload(result);
+        // Send the response back to the client
         _ = res.send();
     }
 }
