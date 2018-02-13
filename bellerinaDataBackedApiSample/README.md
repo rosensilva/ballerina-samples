@@ -1,5 +1,7 @@
 # Employee Database Web-Service
 Data backed RESTful API web service written using Ballerina language (https://ballerinalang.org)
+Scenario Diagram
+![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/bellerinaDataBackedApiSample/images/employee_service_scenario.png)
 
 # About this appication/service 
 This web service is a sample web service that is capable of saving and retrieving employee data from a MYSQL database.
