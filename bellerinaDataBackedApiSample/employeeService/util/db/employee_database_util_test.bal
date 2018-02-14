@@ -17,7 +17,6 @@ function executeSqlQuery (string sqlQueryString) (table) {
     endpoint<sql:ClientConnector> employeeDataBase {
         sqlConnection;
     }
-    // Create Database by invoking update action defined in ballerina sql connector
     var sqlReturnValue = employeeDataBase.call(sqlQueryString, null, null);
     return sqlReturnValue;
 }
