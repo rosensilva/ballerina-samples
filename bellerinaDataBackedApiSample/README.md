@@ -11,6 +11,8 @@ You'll build an employee data management web service that performs CRUD Operatio
 
 Basically, the service will deal with MySQL database and expose the data operations as a web service.
 Please refer to the following scenario diagram to understand complete end-to-end scenario.
+
+
 ![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/bellerinaDataBackedApiSample/images/employee_service_scenario.png)
 
 
@@ -31,7 +33,7 @@ Optional Requirements
 - Container-support (Refer: https://github.com/ballerinalang/container-support)
 - Docerina (Refer: https://github.com/ballerinalang/docerina)
 
-## <a name="develop-app"></a> Develpoing the application
+## <a name="develop-app"></a> Develop the application
 ### Before you begin
 #### Understand the package structure
 Ballerina is a complete programming language that can have any custom project structure as you wish. Although language allows you to have any package structure, we'll stick with the following package structure for this project.
@@ -47,7 +49,7 @@ Ballerina is a complete programming language that can have any custom project st
 └── ballerina.conf
 
 ```
-#### Adding database configurations to the `ballerina.conf` file
+#### Add database configurations to the `ballerina.conf` file
 The purpose of  `ballerina.conf` file is to provide any external configurations that are needed to ballerina programs. Since this guide have interact with MySQL database we need to provide the database connection properties to the ballerina program via `ballerina.cof` file.
 This configuration file will have the following fields,
 ```
@@ -60,6 +62,34 @@ DATABASE_NAME = RECORDS
 First you need to replace `localhost`, `3306`, `username`, `password` the respective MySQL database connection properties in the `ballerina.conf` file. You can keep the DATABASE_NAME as it is if you don't want to change the name explicitly.
 
 
+### Develop the Ballerina web service
+Ballerina language have built-in support for writting web services. The `service` keyword in ballerina simply defines a web service. Inside the service block we can have all the required resources. You can define a resource using `resource` keyword in Ballerina. We can implement the business logic inside a resource block using Ballerina language syntaxes. The following ballerina code is the skelliton code of the service with resources to add new employee and retrieve emoloyee data.
+
+```ballerina
+package employeeService;
+
+import ballerina.net.http;
+
+service<http> records {
+    // Initialize your global variables here
+    
+    @http:resourceConfig {
+        // Set the HTTP URL for adding new employee
+    }
+    resource addEmployeeResource (http:Connection conn, http:InRequest req) {
+        // Implement the logic for adding a new employee
+        // Here you can execute SQL INSERT database and save the employee data
+    }
+
+    @http:resourceConfig {
+        // Set the HTTP URL for retrieve employee data
+    }
+    resource retrieveEmployeeResource (http:Connection conn, http:InRequest req) {
+        // Implement the logic for retrieve employee data
+        // Here you can execute SQL RETRIEVE query and retrieve the employee data
+    }
+}
+```
 
 
 
