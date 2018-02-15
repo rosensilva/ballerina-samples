@@ -91,5 +91,76 @@ service<http> records {
 }
 ```
 
+Please refer `org/<repo name>/employeeService/employee_database_service.bal` file for the complete implementaion of employee management web service.
+
+
+### Develop the database handeling utility functions
+You can implement custom functions in Ballerina which does specific tasks. For this scenario we need to have utility functions that deal with MySQL database. The following skeliton code is the implementation of the database utility package.
+```ballerina 
+package employeeService.util.db;
+
+public sql:ClientConnector sqlConnection;
+
+public function initializeDatabase (string dbHost, string dbPort, string userName, string password, string dbName)
+(boolean) {
+   // Implementation of data initilization funcion
+}
+
+public function createDatabase (string userName, string password, string dbName, string dbURL) (int) {
+   // Implementation of database create funcion
+}
+
+public function createTable () (int) {
+   // Implementation of table creation function
+}
+
+public function insertData (string name, string age, string ssn) (json) {
+    // Implementation of inserting employee data to the database
+}
+
+public function updateData (string name, string age, string ssn, string employeeID) (string) {
+    // Implementaion of updating existing employye in the database
+}
+
+public function deleteData (string employeeID) (string) {
+    // Implementaion of deleting an existing employee data from the database
+}
+
+public function retrieveAllData () (json) {
+    // Implementaion of recieving all the employee data from database 
+}
+
+public function retrieveById (string employeeID) (json) {
+    // Implementaiton of retrieving employee data of specific employee with given EmployeeID
+}
+```
+The following section will explain the implementation of `public function insertData`. Similarly other functions can be implemented. The complete implementation can be found at `org/<repo name>/employeeService/util/db/employee_database_util.bal`
+
+
+The `endpoint` keyword in ballerina refers to an connection with remote service, in this case the remote service is MySQL database. `employeeDatabase` is the reference name for the sql endpoint. This endpoint is initialized with the  
+```ballerina
+public function insertData (string name, string age, string ssn) (json) {
+    endpoint<sql:ClientConnector> employeeDataBase {
+        sqlConnection;
+    }
+    json updateStatus;
+    string sqlString = "INSERT INTO EMPLOYEES (Name, Age, SSN) VALUES ('" + name + "','" + age + "','" + ssn + "')";
+    // Insert data to SQL database by invoking update action defined in ballerina sql connector
+    int updateRowCount = employeeDataBase.update(sqlString, null);
+    // log:printInfo("Data insertion to table status:" + updateRowCount);
+    if (updateRowCount > 0) {
+        // SQL query to retrieve the EmployeeID
+        sqlString = "SELECT EmployeeID FROM EMPLOYEES WHERE SSN = '" + ssn + "'";
+        var dataTableOfIDs = employeeDataBase.select(sqlString, null, null);
+        var jsonArrayOfIDs, _ = <json>dataTableOfIDs;
+        string employeeID = jsonArrayOfIDs[(lengthof jsonArrayOfIDs - 1)].EmployeeID.toString();
+        updateStatus = {"Status":UPDATED, "EmployeeID":employeeID};
+    }
+    else {
+        updateStatus = {"Status":NOT_UPDATED};
+    }
+    return updateStatus;
+}
+```
 
 
