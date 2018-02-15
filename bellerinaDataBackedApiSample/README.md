@@ -19,7 +19,7 @@ Please refer to the following scenario diagram for understanding the scenario en
 * JDK 1.8 or later
 * Ballerina Distribution (Install Instructions:  https://ballerinalang.org/docs/quick-tour/quick-tour/#install-ballerina)
 * Official JDBC driver for MySQL ( Download https://dev.mysql.com/downloads/connector/j/)
-  *Copy the downloaded JDBC driver to the <BALLERINA_HOME>/bre/lib folder 
+  * Copy the downloaded JDBC driver to the <BALLERINA_HOME>/bre/lib folder 
 * A Text Editor or an IDE
 
 
