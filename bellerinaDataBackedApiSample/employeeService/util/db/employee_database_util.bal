@@ -3,16 +3,14 @@ package employeeService.util.db;
 import ballerina.data.sql;
 import ballerina.log;
 
-sql:ClientConnector sqlConnection;
+public sql:ClientConnector sqlConnection;
 
 const string UPDATED = "Updated";
-const string NOT_UPDATED = "Not Updated";
+const string NOT_UPDATED = "Not_updated";
 
 
 public function initializeDatabase (string dbHost, string dbPort, string userName, string password, string dbName)
 (boolean) {
-
-
     var dbPortNumber, portError = <int>dbPort;
     error initializationError;
     // Check for port number error and return initialization false if error present
@@ -22,7 +20,7 @@ public function initializeDatabase (string dbHost, string dbPort, string userNam
     }
     try {
         // Create custom URL to create Database
-        string dbURL = "jdbc:mysql://" + dbHost + ":" + dbPort + "/";
+        string dbURL = "jdbc:mysql://" + dbHost + ":" + dbPort + "/?useSSL=false";
         // Create database by invoking createDatabase function
         _ = createDatabase(userName, password, dbName, dbURL);
         dbName = dbName + "?useSSL=false";
@@ -62,20 +60,25 @@ public function createTable () (int) {
     return updateRowCount;
 }
 
-public function insertData (string name, string age, string ssn) (string) {
+public function insertData (string name, string age, string ssn) (json) {
     endpoint<sql:ClientConnector> employeeDataBase {
         sqlConnection;
     }
-    string updateStatus;
+    json updateStatus;
     string sqlString = "INSERT INTO EMPLOYEES (Name, Age, SSN) VALUES ('" + name + "','" + age + "','" + ssn + "')";
     // Insert data to SQL database by invoking update action defined in ballerina sql connector
     int updateRowCount = employeeDataBase.update(sqlString, null);
     // log:printInfo("Data insertion to table status:" + updateRowCount);
     if (updateRowCount > 0) {
-        updateStatus = UPDATED;
+        // SQL query to retrieve the EmployeeID
+        sqlString = "SELECT EmployeeID FROM EMPLOYEES WHERE SSN = '" + ssn + "'";
+        var dataTableOfIDs = employeeDataBase.select(sqlString, null, null);
+        var jsonArrayOfIDs, _ = <json>dataTableOfIDs;
+        string employeeID = jsonArrayOfIDs[(lengthof jsonArrayOfIDs - 1)].EmployeeID.toString();
+        updateStatus = {"Status":UPDATED, "EmployeeID":employeeID};
     }
     else {
-        updateStatus = NOT_UPDATED;
+        updateStatus = {"Status":NOT_UPDATED};
     }
     return updateStatus;
 }
@@ -89,7 +92,7 @@ public function updateData (string name, string age, string ssn, string employee
                         EmployeeID  = '" + employeeID + "'";
     // Update existing data by invoking update action defined in ballerina sql connector
     int updateRowCount = employeeDataBase.update(sqlString, null);
-//    log:printInfo("Data update to table status:" + updateRowCount);
+    //    log:printInfo("Data update to table status:" + updateRowCount);
     if (updateRowCount > 0) {
         updateStatus = UPDATED;
     }
@@ -107,7 +110,7 @@ public function deleteData (string employeeID) (string) {
     string sqlString = "DELETE FROM EMPLOYEES WHERE EmployeeID = '" + employeeID + "'";
     // Delete existing data by invoking update action defined in ballerina sql connector
     int updateRowCount = employeeDataBase.update(sqlString, null);
-  //  log:printInfo("Data delete status:" + updateRowCount);
+    //  log:printInfo("Data delete status:" + updateRowCount);
     if (updateRowCount > 0) {
         updateStatus = UPDATED;
     }
@@ -126,7 +129,7 @@ public function retrieveAllData () (json) {
     var jsonReturnValue, dataTableCastError = <json>dataTable;
     // Check for errors while casting retrieved data from Data Table to JSON format
     if (dataTableCastError != null) {
-     //   log:printError("SQL data casting failed due to : " + dataTableCastError.msg);
+        //   log:printError("SQL data casting failed due to : " + dataTableCastError.msg);
         json jsonError = {"Error ":dataTableCastError.msg};
         return jsonError;
     }

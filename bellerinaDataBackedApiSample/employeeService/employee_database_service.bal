@@ -1,7 +1,5 @@
 package employeeService;
 
-import ballerina.log;
-import ballerina.config;
 import ballerina.net.http;
 import employeeService.util.db as dataBaseUtil;
 
@@ -12,15 +10,14 @@ service<http> records {
     //string userName = config:getGlobalValue("DATABASE_USERNAME");
     //string password = config:getGlobalValue("DATABASE_PASSWORD");
     //string dbName = config:getGlobalValue("DATABASE_NAME");
-    //
 
     string dbHost = "localhost";
     string dbPort = "3306";
     string userName = "root";
     string password = "qwe123";
-    string dbName = "EMPLOYEE";
+    string dbName = "RECORDS";
 
-    boolean isInitialized = dataBaseUtil:initializeDatabase(dbHost,dbPort,userName,password,dbName);
+    boolean isInitialized = dataBaseUtil:initializeDatabase(dbHost, dbPort, userName, password, dbName);
 
     @http:resourceConfig {
         methods:["POST"],
@@ -41,9 +38,9 @@ service<http> records {
             return;
         }
         // Invoke insertData function in dataBaseUtil package to store data in MySQL database
-        string updateStatus = dataBaseUtil:insertData(name, age, ssn);
-        json responseJson = {"Name":name, "Age":age, "SSN":ssn, "Update Status":updateStatus};
-//        log:printInfo("New employee added to database : " + responseJson.toString());
+        json updateStatus = dataBaseUtil:insertData(name, age, ssn);
+        json responseJson = {"Name":name, "Age":age, "SSN":ssn, "Details":updateStatus};
+        //log:printInfo("New employee added to database : " + responseJson.toString());
         res.setJsonPayload(responseJson);
         // Send the response back to the client
         _ = conn.respond(res);
@@ -71,7 +68,7 @@ service<http> records {
         // Invoke updateData function in dataBaseUtil package to update data in mysql database
         string updateStatus = dataBaseUtil:updateData(name, age, ssn, id);
         json responseJson = {"Name":name, "Age":age, "ssn":ssn, "id":id, "Update Status":updateStatus};
-        log:printInfo("Employee details updated in database : " + responseJson.toString());
+        //        log:printInfo("Employee details updated in database : " + responseJson.toString());
         res.setJsonPayload(responseJson);
         // Send the response back to the client
         _ = conn.respond(res);
@@ -96,7 +93,7 @@ service<http> records {
         // Invoke deleteData function in dataBaseUtil package to delete data from mysql database
         string updateStatus = dataBaseUtil:deleteData(id);
         json responseJson = {"Employee ID":id, "Update Status":updateStatus};
-        log:printInfo("Employee deleted from database : " + responseJson.toString());
+        //        log:printInfo("Employee deleted from database : " + responseJson.toString());
         res.setJsonPayload(responseJson);
         // Send the response back to the client
         _ = conn.respond(res);
