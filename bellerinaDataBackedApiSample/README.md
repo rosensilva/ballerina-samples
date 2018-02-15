@@ -35,7 +35,7 @@ Optional Requirements
 
 ## <a name="develop-app"></a> Develop the application
 ### Before you begin
-#### Understand the package structure
+##### Understand the package structure
 Ballerina is a complete programming language that can have any custom project structure as you wish. Although language allows you to have any package structure, we'll stick with the following package structure for this project.
 
 ```
@@ -49,7 +49,7 @@ Ballerina is a complete programming language that can have any custom project st
 └── ballerina.conf
 
 ```
-#### Add database configurations to the `ballerina.conf` file
+##### Add database configurations to the `ballerina.conf` file
 The purpose of  `ballerina.conf` file is to provide any external configurations that are needed to ballerina programs. Since this guide have interact with MySQL database we need to provide the database connection properties to the ballerina program via `ballerina.cof` file.
 This configuration file will have the following fields,
 ```
