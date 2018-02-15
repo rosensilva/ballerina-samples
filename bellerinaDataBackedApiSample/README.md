@@ -10,7 +10,7 @@ You'll build an employee data management web service that performs CRUD Operatio
 * Retrieve all the existing employee details from the database via HTTP GET method  
 
 Basically, the service will deal with MySQL database and expose the data operations as a web service.
-Please refer to the following scenario diagram for understanding the scenario end-to-end.
+Please refer to the following scenario diagram to understand complete end-to-end scenario.
 ![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/bellerinaDataBackedApiSample/images/employee_service_scenario.png)
 
 
