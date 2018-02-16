@@ -8,7 +8,6 @@ public sql:ClientConnector sqlConnection;
 const string UPDATED = "Updated";
 const string NOT_UPDATED = "Not_updated";
 
-
 public function initializeDatabase (string dbHost, string dbPort, string userName, string password, string dbName)
 (boolean) {
     var dbPortNumber, portError = <int>dbPort;

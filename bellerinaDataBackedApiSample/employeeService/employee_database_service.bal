@@ -1,7 +1,7 @@
 package employeeService;
 
 import ballerina.net.http;
-import employeeService.util.db as dataBaseUtil;
+import employeeService.util.db as databaseUtil;
 
 service<http> records {
 
@@ -17,7 +17,7 @@ service<http> records {
     string password = "qwe123";
     string dbName = "RECORDS";
 
-    boolean isInitialized = dataBaseUtil:initializeDatabase(dbHost, dbPort, userName, password, dbName);
+    boolean isInitialized = databaseUtil:initializeDatabase(dbHost, dbPort, userName, password, dbName);
 
     @http:resourceConfig {
         methods:["POST"],
@@ -38,7 +38,7 @@ service<http> records {
             return;
         }
         // Invoke insertData function in dataBaseUtil package to store data in MySQL database
-        json updateStatus = dataBaseUtil:insertData(name, age, ssn);
+        json updateStatus = databaseUtil:insertData(name, age, ssn);
         json responseJson = {"Name":name, "Age":age, "SSN":ssn, "Details":updateStatus};
         //log:printInfo("New employee added to database : " + responseJson.toString());
         res.setJsonPayload(responseJson);
@@ -66,7 +66,7 @@ service<http> records {
             return;
         }
         // Invoke updateData function in dataBaseUtil package to update data in mysql database
-        string updateStatus = dataBaseUtil:updateData(name, age, ssn, id);
+        string updateStatus = databaseUtil:updateData(name, age, ssn, id);
         json responseJson = {"Name":name, "Age":age, "ssn":ssn, "id":id, "Update Status":updateStatus};
         //        log:printInfo("Employee details updated in database : " + responseJson.toString());
         res.setJsonPayload(responseJson);
@@ -82,6 +82,8 @@ service<http> records {
         http:OutResponse res = {};
         // Processing request payload
         json payload = req.getJsonPayload();
+        println(payload.id);
+        println("fsdfds");
         var id, idError = (string)payload.id;
         // Check query parameter errors and sending bad request response if errors present
         if (idError != null) {
@@ -91,7 +93,7 @@ service<http> records {
             return;
         }
         // Invoke deleteData function in dataBaseUtil package to delete data from mysql database
-        string updateStatus = dataBaseUtil:deleteData(id);
+        string updateStatus = databaseUtil:deleteData(id);
         json responseJson = {"Employee ID":id, "Update Status":updateStatus};
         //        log:printInfo("Employee deleted from database : " + responseJson.toString());
         res.setJsonPayload(responseJson);
@@ -116,7 +118,7 @@ service<http> records {
             return;
         }
         // Invoke retrieveById function in dataBaseUtil package to retrieve employee data from mysql database
-        json result = dataBaseUtil:retrieveById(id);
+        json result = databaseUtil:retrieveById(id);
         res.setJsonPayload(result);
         // Send the response back to the client
         _ = conn.respond(res);
@@ -129,7 +131,7 @@ service<http> records {
     resource retrieveAllResource (http:Connection conn, http:InRequest req) {
         http:OutResponse res = {};
         // Invoke retrieveAllData function in dataBaseUtil package to retrieve all employees from mysql database
-        json result = dataBaseUtil:retrieveAllData();
+        json result = databaseUtil:retrieveAllData();
         res.setJsonPayload(result);
         // Send the response back to the client
         _ = conn.respond(res);
