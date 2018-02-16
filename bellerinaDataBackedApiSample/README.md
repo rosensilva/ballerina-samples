@@ -91,6 +91,8 @@ service<http> records {
 }
 ```
 
+
+
 Please refer `org/<repo name>/employeeService/employee_database_service.bal` file for the complete implementaion of employee management web service.
 
 
@@ -134,10 +136,9 @@ public function retrieveById (string employeeID) (json) {
     // Implementaiton of retrieving employee data of specific employee with given EmployeeID
 }
 ```
-The following section will explain the implementation of `public function insertData`. Similarly other functions can be implemented. The complete implementation can be found at `org/<repo name>/employeeService/util/db/employee_database_util.bal`
+The following section will explain the implementation of `public function insertData`. Similarly other functions can be implemented. Please refer`org/<repo name>/employeeService/util/db/employee_database_util.bal` for complete implementation of utility functions.
+The `endpoint` keyword in ballerina refers to an connection with remote service, in this case the remote service is MySQL database. `employeeDatabase` is the reference name for the SQL endpoint. This endpoint is initialized with the  SQL connection. The rest of the code is just preparing SQL queries and executing them by calling `update` action in `ballerina.data.sql` package. finally the status of the SQL operation is returned as a JSON file.
 
-
-The `endpoint` keyword in ballerina refers to an connection with remote service, in this case the remote service is MySQL database. `employeeDatabase` is the reference name for the sql endpoint. This endpoint is initialized with the  
 ```ballerina
 public function insertData (string name, string age, string ssn) (json) {
     endpoint<sql:ClientConnector> employeeDataBase {
@@ -164,3 +165,121 @@ public function insertData (string name, string age, string ssn) (json) {
 ```
 
 
+## <a name="testing"></a> Testing 
+
+### <a name="invoking"></a> Invoking the RESTful service 
+
+You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installation in you local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
+
+1. As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
+
+```
+$ballerina build  /employeeService
+```
+
+2. Once the employeeService.balx is created, you can run that with the following command. 
+
+```
+ballerina run employeeService.balx 
+```
+
+3. The successful execution of the service should show us the following output. 
+```
+ballerina: deploying service(s) in 'employeeService'
+ballerina: started HTTP/WS server connector 0.0.0.0:9090
+ 
+```
+
+4. You can test the functionality of the employee database management RESTFul service by sending HTTP request for each database operation. For example, we have used the curl commands to test each operation of employeeService as follows. 
+
+**Add new employee** 
+```
+curl -v -X POST -d '{"name":"Alice", "age":"20","ssn":"123456789"}'  "http://localhost:9090/records/employee" -H "Content-Type:application/json"
+
+Output :  
+< HTTP/1.1 200 OK
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Server: wso2-http-transport
+< 
+* Connection #0 to host localhost left intact
+{"Name":"Alice","Age":"20","SSN":"123456789","Details":{"Status":"Updated","EmployeeID":"1"}}
+ 
+```
+
+**Retrieve employee data** 
+```
+curl -v  "http://localhost:9090/records/employee?id=1"
+
+Output : 
+< HTTP/1.1 200 OK
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Server: wso2-http-transport
+< 
+* Connection #0 to host localhost left intact
+[{"EmployeeID":34,"Name":"Alice","Age":20,"SSN":123456789}]
+
+```
+**Update an existing employee data** 
+```
+curl -v -X PUT -d '{"name":"Alice Updated", "age":"30","ssn":"123456789","id":"1"}' \ "http://localhost:9090/records/employee" -H "Content-Type:application/json"
+
+Output: 
+< HTTP/1.1 200 OK
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Server: wso2-http-transport
+< 
+* Connection #0 to host localhost left intact
+{"Name":"Alice Updated","Age":"30","ssn":"123456789","id":"1","Update Status":"Updated"}
+```
+
+**Delete employee data** 
+```
+curl -v -X DELETE -d '{"id":"1"}'  "http://localhost:9090/records/employee" -H "Content-Type:application/json"
+
+Output:
+{"Employee ID":"1","Update Status":"Updated"}
+```
+
+### <a name="unit-testing"></a> Writing Unit Tests 
+
+In ballerina all the unit test cases should be in the same package and the naming convention is as follows,
+* Test files should contain _test.bal suffix.
+* Test functions should contain test prefix.
+  * e.g.: testAddEmployee()
+  
+This guide contain unit test cases in the respective folders. Please find them in the git repo
+
+
+## <a name="deploying-the-scenario"></a> Deployment
+
+Once you are done with the development, you can deploy the service using any of the methods that we listed below. 
+
+### <a name="deploying-on-locally"></a> Deploying Locally
+You can deploy the RESTful service that you developed above, in your local environment. You can use the Ballerina executable archive (.balx) archive that we created above and run it in your local environment as follows. 
+
+```
+ballerina run employeeService.balx 
+```
+
+
+### <a name="deploying-on-docker"></a> Deploying on Docker
+(Work in progress) 
+
+### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
+(Work in progress) 
+
+
+## <a name="observability"></a> Observability 
+
+### <a name="logging"></a> Logging
+(Work in progress) 
+
+### <a name="metrics"></a> Metrics
+(Work in progress) 
+
+
+### <a name="tracing"></a> Tracing 
+(Work in progress) 
