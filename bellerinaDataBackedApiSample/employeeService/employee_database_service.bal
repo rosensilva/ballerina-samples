@@ -6,7 +6,6 @@ import ballerina.net.http;
 import employeeService.util.db as databaseUtil;
 
 service<http> records {
-
     string dbHost = config:getGlobalValue("DATABASE_HOST");
     string dbPort = config:getGlobalValue("DATABASE_PORT");
     string userName = config:getGlobalValue("DATABASE_USERNAME");
@@ -20,7 +19,6 @@ service<http> records {
         path:"/employee/"
     }
     resource addEmployeeResource (http:Connection httpConnection, http:InRequest request) {
-
         // Extract the data from the request payload
         json requestPayload = request.getJsonPayload();
         // Convert the json payload to string values
@@ -55,7 +53,6 @@ service<http> records {
         path:"/employee/"
     }
     resource retrieveEmployeeResource (http:Connection httpConnection, http:InRequest request) {
-
         // Extract the data from the request payload
         map queryParams = request.getQueryParams();
         var employeeId, employeeIdError = (string)queryParams.EmployeeID;
@@ -84,7 +81,6 @@ service<http> records {
         path:"/employee/"
     }
     resource updateEmployeeResource (http:Connection httpConnection, http:InRequest request) {
-
         // Extract the data from the request payload
         json requestPayload = request.getJsonPayload();
         // Convert the json payload to string values
@@ -119,7 +115,6 @@ service<http> records {
         path:"/employee/"
     }
     resource deleteEmployeeResource (http:Connection httpConnection, http:InRequest request) {
-
         // Extract the data from the request payload
         json requestPayload = request.getJsonPayload();
         var employeeId, employeeIdError = (string)requestPayload.EmployeeID;

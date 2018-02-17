@@ -5,7 +5,6 @@ import ballerina.data.sql;
 import ballerina.test;
 
 function beforeTest () {
-
     // Initialize the database before starting unit tests
     string dbHost = config:getGlobalValue("DATABASE_HOST");
     string dbPort = config:getGlobalValue("DATABASE_PORT");
@@ -17,7 +16,6 @@ function beforeTest () {
 }
 
 function afterTest () {
-
     // Clean up the database from the test entries
     _ = deleteData("111111111");
     _ = deleteData("222222222");
@@ -25,7 +23,6 @@ function afterTest () {
 }
 
 public function testCreateTable () {
-
     // Create a EMPLOYEE table in the database
     _ = createTable();
     // SQL query to check whether the table exists
@@ -37,7 +34,6 @@ public function testCreateTable () {
 }
 
 public function testInsertData () {
-
     // Insert test employee to database using insertData function
     json jsonResponse = insertData("Test Case 1", "11", "111111111", "111111111");
     // Assert to check whether the fucntion returns the status as success
@@ -53,7 +49,6 @@ public function testInsertData () {
 
 
 public function testRetrieveById () {
-
     // Insert test employee to database using SQL command
     string sqlQueryString = "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES ('Test Case 2', '22',
                              '222222222', '222222222')";
@@ -69,7 +64,6 @@ public function testRetrieveById () {
 
 
 public function testUpdateData () {
-
     // Insert test employee to database using SQL command
     string sqlQueryString = "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES ('Test Case 3', '33',
                             '333333333', '333333333')";
@@ -89,7 +83,6 @@ public function testUpdateData () {
 }
 
 public function testDeleteData () {
-
     // Insert test employee to database using SQL command
     string sqlQueryString = "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES ('Test Case 4', '44',
                             '444444444', '444444444')";
