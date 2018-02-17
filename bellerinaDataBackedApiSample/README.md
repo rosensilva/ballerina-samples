@@ -1,15 +1,15 @@
 # Database Backed RESTful Web Service
-This guide walks you through building a database backed RESTful web service with Ballerina.
+This guide walks you through building a database-backed RESTful web service with Ballerina.
 
 ## <a name="what-you-build"></a>  What you'll build
-You'll build an employee data management web service that performs CRUD Operations(Create, Read, Update, Delete) on MySQL database. The service is capable of,
+You'll build an employee data management web service that performs CRUD Operations(Create, Read, Update, Delete) on MySQL database. The service will have following functionalities,
 * Adding new employees to the database through HTTP POST method
 * Retrieve existing employee details from the database via HTTP GET method
-* Update existing employee in the database via HTTP PUT mehtod
+* Update existing employee in the database via HTTP PUT method
 * Delete existing employee from the database via HTTP DELETE method
 
 Basically, this service will deal with MySQL database and expose the data operations as a web service.
-Please refer to the following scenario diagram to understand complete end-to-end scenario.
+Please refer to the following scenario diagram to understand the complete end-to-end scenario.
 
 
 ![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/bellerinaDataBackedApiSample/images/database_service_scenario.png)
@@ -27,7 +27,7 @@ Please refer to the following scenario diagram to understand complete end-to-end
 
 Optional Requirements
 - Docker (Follow instructions in https://docs.docker.com/engine/installation/)
-- Ballerina IDE plugins. ( Intellij IDEA, VSCode, Atom)
+- Ballerina IDE plugins. ( IntelliJ IDEA, VSCode, Atom)
 - Testerina (Refer: https://github.com/ballerinalang/testerina)
 - Container-support (Refer: https://github.com/ballerinalang/container-support)
 - Docerina (Refer: https://github.com/ballerinalang/docerina)
@@ -49,7 +49,7 @@ Ballerina is a complete programming language that can have any custom project st
 
 ```
 ##### Add database configurations to the `ballerina.conf` file
-The purpose of  `ballerina.conf` file is to provide any external configurations that are needed to ballerina programs. Since this guide have interact with MySQL database we need to provide the database connection properties to the ballerina program via `ballerina.cof` file.
+The purpose of  `ballerina.conf` file is to provide any external configurations that are needed for ballerina programs. Since this guide has MySQL database integration, we need to provide the database connection properties to the ballerina program via `ballerina.cof` file.
 This configuration file will have the following fields,
 ```
 DATABASE_HOST = localhost
@@ -58,11 +58,11 @@ DATABASE_USERNAME = username
 DATABASE_PASSWORD = password
 DATABASE_NAME = RECORDS
 ```
-First you need to replace `localhost`, `3306`, `username`, `password` the respective MySQL database connection properties in the `ballerina.conf` file. You can keep the DATABASE_NAME as it is if you don't want to change the name explicitly.
+First, you need to replace `localhost`, `3306`, `username`, `password` the respective MySQL database connection properties in the `ballerina.conf` file. You can keep the DATABASE_NAME as it is if you don't want to change the name explicitly.
 
 
 ### Develop the Ballerina web service
-Ballerina language have built-in support for writting web services. The `service` keyword in ballerina simply defines a web service. Inside the service block we can have all the required resources. You can define a resource using `resource` keyword in Ballerina. We can implement the business logic inside a resource block using Ballerina language syntaxes. The following ballerina code is the skelliton code of the service with resources to add new employee and retrieve emoloyee data.
+Ballerina language has built-in support for writing web services. The `service` keyword in ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource using `resource` keyword in Ballerina. We can implement the business logic inside a resource block using Ballerina language syntaxes. The following ballerina code is the skeleton code of the service with resources to add a new employee and retrieve employee data.
 
 ```ballerina
 package employeeService;
@@ -95,8 +95,8 @@ service<http> records {
 Please refer `org/<repo name>/employeeService/employee_database_service.bal` file for the complete implementaion of employee management web service.
 
 
-### Develop the database handeling utility functions
-You can implement custom functions in Ballerina which does specific tasks. For this scenario we need to have utility functions that deal with MySQL database. The following skeliton code is the implementation of the database utility package.
+### Develop the database handling utility functions
+You can implement custom functions in Ballerina which does specific tasks. For this scenario, we need to have utility functions that deal with MySQL database. The following skeleton code is the implementation of the database utility package.
 ```ballerina 
 package employeeService.util.db;
 
@@ -116,19 +116,19 @@ public function createTable () (int) {
 }
 
 public function insertData (string name, string age, string ssn) (json) {
-    // Implementation of inserting employee data to the database
+    // Implementation of inserting employee data into the database
 }
 
 public function updateData (string name, string age, string ssn, string employeeID) (string) {
-    // Implementaion of updating existing employye in the database
+    // Implementation of updating existing employee in the database
 }
 
 public function deleteData (string employeeID) (string) {
-    // Implementaion of deleting an existing employee data from the database
+    // Implementation of deleting an existing employee data from the database
 }
 
 public function retrieveAllData () (json) {
-    // Implementaion of recieving all the employee data from database 
+    // Implementation of receiving all the employee data from database 
 }
 
 public function retrieveById (string employeeID) (json) {
@@ -136,7 +136,7 @@ public function retrieveById (string employeeID) (json) {
 }
 ```
 The following section will explain the implementation of `public function insertData`. Similarly other functions can be implemented. Please refer`org/<repo name>/employeeService/util/db/employee_database_util.bal` for complete implementation of utility functions.
-The `endpoint` keyword in ballerina refers to an connection with remote service, in this case the remote service is MySQL database. `employeeDatabase` is the reference name for the SQL endpoint. This endpoint is initialized with the  SQL connection. The rest of the code is just preparing SQL queries and executing them by calling `update` action in `ballerina.data.sql` package. finally the status of the SQL operation is returned as a JSON file.
+The `endpoint` keyword in ballerina refers to a connection with remote service, in this case, the remote service is MySQL database. `employee database` is the reference name for the SQL endpoint. This endpoint is initialized with the  SQL connection. The rest of the code is just preparing SQL queries and executing them by calling `update` action in `ballerina.data.sql` package. finally, the status of the SQL operation is returned as a JSON file.
 
 ```ballerina
 public function insertData (string name, string age, string ssn) (json) {
@@ -168,9 +168,9 @@ public function insertData (string name, string age, string ssn) (json) {
 
 ### <a name="invoking"></a> Invoking the RESTful service 
 
-You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installation in you local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
+You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installation on your local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
 
-1. As the first step you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
+1. As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
 
 ```
 $ballerina build  /employeeService
@@ -244,12 +244,12 @@ Output:
 
 ### <a name="unit-testing"></a> Writing Unit Tests 
 
-In ballerina all the unit test cases should be in the same package and the naming convention is as follows,
+In ballerina, all the unit test cases should be in the same package and the naming convention is as follows,
 * Test files should contain _test.bal suffix.
 * Test functions should contain test prefix.
   * e.g.: testAddEmployee()
   
-This guide contain unit test cases in the respective folders. Please find them in the git repo
+This guide contains unit test cases in the respective folders. Please find them in the git repo
 
 
 ## <a name="deploying-the-scenario"></a> Deployment
