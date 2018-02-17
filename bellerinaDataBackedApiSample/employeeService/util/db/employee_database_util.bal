@@ -6,7 +6,7 @@ sql:ClientConnector sqlConnection;
 
 public function initializeDatabase (string dbHost, string dbPort, string userName, string password, string dbName)
 (boolean) {
-    // convert dbPort name to integer value
+    // Convert dbPort string to integer value
     var dbPortNumber, _ = <int>dbPort;
     dbName = dbName + "?useSSL=false";
     try {
@@ -17,7 +17,7 @@ public function initializeDatabase (string dbHost, string dbPort, string userNam
         _ = createTable();
     }
     catch (error err) {
-        error initializationError = {msg:"Database Initialization Error : " + err.msg};
+        error initializationError = {msg:"Database Initialization Error. Please check the database: " + err.msg};
         throw initializationError;
     }
     return true;
@@ -38,7 +38,7 @@ public function insertData (string name, string age, string ssn, string employee
     endpoint<sql:ClientConnector> employeeDataBase {
         sqlConnection;
     }
-    // initialize update status as unsuccessful MySQL operation
+    // Initialize update status as unsuccessful MySQL operation
     json updateStatus = {"Status":"Data Not Inserted"};
 
     string sqlString = "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES ('" + name + "','" + age + "','" +
@@ -57,7 +57,7 @@ public function updateData (string name, string age, string ssn, string employee
     endpoint<sql:ClientConnector> employeeDataBase {
         sqlConnection;
     }
-    // initialize update status as unsuccessful MySQL operation
+    // Initialize update status as unsuccessful MySQL operation
     json updateStatus = {"Status":"Data Not Updated"};
 
     string sqlString = "UPDATE EMPLOYEES SET Name = '" + name + "', Age = '" + age + "', SSN = '" + ssn + "'WHERE
@@ -76,7 +76,7 @@ public function deleteData (string employeeID) (json) {
     endpoint<sql:ClientConnector> employeeDataBase {
         sqlConnection;
     }
-    // initialize update status as unsuccessful MySQL operation
+    // Initialize update status as unsuccessful MySQL operation
     json updateStatus = {"Status":"Data Not Deleted"};
 
     string sqlString = "DELETE FROM EMPLOYEES WHERE EmployeeID = '" + employeeID + "'";

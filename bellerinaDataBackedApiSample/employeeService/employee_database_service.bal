@@ -5,8 +5,9 @@ import ballerina.log;
 import ballerina.net.http;
 import employeeService.util.db as databaseUtil;
 
+
 service<http> records {
-    
+
     string dbHost = config:getGlobalValue("DATABASE_HOST");
     string dbPort = config:getGlobalValue("DATABASE_PORT");
     string userName = config:getGlobalValue("DATABASE_USERNAME");

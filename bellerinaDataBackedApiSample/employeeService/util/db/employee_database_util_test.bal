@@ -36,7 +36,7 @@ public function testCreateTable () {
 public function testInsertData () {
     // Insert test employee to database using insertData function
     json jsonResponse = insertData("Test Case 1", "11", "111111111", "111111111");
-    // Assert to check whether the fucntion returns the status as success
+    // Assert to check whether the function returns the status as success
     test:assertStringEquals(jsonResponse.Status.toString(), "Data Inserted Successfully", "insertData function failed");
     // Write a SQL query to retrieve the test employee that previous added
     string sqlQueryString = "SELECT * FROM EMPLOYEES WHERE Name = 'Test Case 1' AND Age = '11' AND SSN = '111111111'

@@ -5,7 +5,6 @@ import ballerina.test;
 
 string TEST_EMPLOYEE_ID = "879796979";
 
-
 function testEmployeeDataService () {
     endpoint<http:HttpClient> httpEndpoint {
         create http:HttpClient("http://localhost:9090/records", {});
