@@ -7,13 +7,12 @@ You'll build an employee data management web service that performs CRUD Operatio
 * Retrieve existing employee details from the database via HTTP GET method
 * Update existing employee in the database via HTTP PUT mehtod
 * Delete existing employee from the database via HTTP DELETE method
-* Retrieve all the existing employee details from the database via HTTP GET method  
 
-Basically, the service will deal with MySQL database and expose the data operations as a web service.
+Basically, this service will deal with MySQL database and expose the data operations as a web service.
 Please refer to the following scenario diagram to understand complete end-to-end scenario.
 
 
-![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/bellerinaDataBackedApiSample/images/employee_service_scenario.png)
+![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/bellerinaDataBackedApiSample/images/database_service_scenario.png)
 
 
 ## <a name="pre-req"></a> Prerequisites
