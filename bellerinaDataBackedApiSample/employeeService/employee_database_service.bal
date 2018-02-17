@@ -1,21 +1,17 @@
 package employeeService;
 
+import ballerina.config;
+import ballerina.log;
 import ballerina.net.http;
 import employeeService.util.db as databaseUtil;
 
 service<http> records {
 
-    //string dbHost = config:getGlobalValue("DATABASE_HOST");
-    //string dbPort = config:getGlobalValue("DATABASE_PORT");
-    //string userName = config:getGlobalValue("DATABASE_USERNAME");
-    //string password = config:getGlobalValue("DATABASE_PASSWORD");
-    //string dbName = config:getGlobalValue("DATABASE_NAME");
-
-    string dbHost = "localhost";
-    string dbPort = "3306";
-    string userName = "root";
-    string password = "qwe123";
-    string dbName = "RECORDS";
+    string dbHost = config:getGlobalValue("DATABASE_HOST");
+    string dbPort = config:getGlobalValue("DATABASE_PORT");
+    string userName = config:getGlobalValue("DATABASE_USERNAME");
+    string password = config:getGlobalValue("DATABASE_PASSWORD");
+    string dbName = config:getGlobalValue("DATABASE_NAME");
 
     boolean isInitialized = databaseUtil:initializeDatabase(dbHost, dbPort, userName, password, dbName);
 
@@ -23,117 +19,129 @@ service<http> records {
         methods:["POST"],
         path:"/employee/"
     }
-    resource addEmployeeResource (http:Connection conn, http:InRequest req) {
-        http:OutResponse res = {};
-        // Processing request payload
-        json payload = req.getJsonPayload();
-        var name, nameError = (string)payload.name;
-        var age, ageError = (string)payload.age;
-        var ssn, ssnError = (string)payload.ssn;
+    resource addEmployeeResource (http:Connection httpConnection, http:InRequest request) {
+
+        // Extract the data from the request payload
+        json requestPayload = request.getJsonPayload();
+        // Convert the json payload to string values
+        var name, nameError = (string)requestPayload.Name;
+        var age, ageError = (string)requestPayload.Age;
+        var ssn, ssnError = (string)requestPayload.SSN;
+        var employeeId, empIdError = (string)requestPayload.EmployeeID;
+
+        // Initialize an empty http response message
+        http:OutResponse response = {};
+
         // Check query parameter errors and send bad request response if errors present
-        if (nameError != null || ageError != null || ssnError != null) {
-            res.setStringPayload("Error : Please check the input parameters ");
-            res.statusCode = 400;
-            _ = conn.respond(res);
+        if (nameError != null || ageError != null || ssnError != null || empIdError != null) {
+            response.setStringPayload("Error : Please check the input parameters ");
+            response.statusCode = 400;
+            _ = httpConnection.respond(response);
             return;
         }
-        // Invoke insertData function in dataBaseUtil package to store data in MySQL database
-        json updateStatus = databaseUtil:insertData(name, age, ssn);
-        json responseJson = {"Name":name, "Age":age, "SSN":ssn, "Details":updateStatus};
-        //log:printInfo("New employee added to database : " + responseJson.toString());
-        res.setJsonPayload(responseJson);
-        // Send the response back to the client
-        _ = conn.respond(res);
+
+        // Invoke insertData function to store data in the MySQL database
+        json updateStatus = databaseUtil:insertData(name, age, ssn, employeeId);
+        log:printInfo("New employee added to database: employeeID = " + employeeId);
+
+        // Send the response back to the client with the status of the database operation
+        json respJson = {"Name":name, "Age":age, "SSN":ssn, "EmployeeID":employeeId, "Status":updateStatus};
+        response.setJsonPayload(respJson);
+        _ = httpConnection.respond(response);
+    }
+
+    @http:resourceConfig {
+        methods:["GET"],
+        path:"/employee/"
+    }
+    resource retrieveEmployeeResource (http:Connection httpConnection, http:InRequest request) {
+
+        // Extract the data from the request payload
+        map queryParams = request.getQueryParams();
+        var employeeId, employeeIdError = (string)queryParams.EmployeeID;
+
+        // Initialize an empty http response message
+        http:OutResponse response = {};
+
+        // Check query parameter errors and sending bad request response if errors present
+        if (employeeIdError != null) {
+            response.setStringPayload("Error : Please check the input parameters ");
+            response.statusCode = 400;
+            _ = httpConnection.respond(response);
+            return;
+        }
+
+        // Invoke retrieveById function to retrieve data from MySQL database
+        json employeeData = databaseUtil:retrieveById(employeeId);
+
+        // Send the response back to the client with the employee data
+        response.setJsonPayload(employeeData);
+        _ = httpConnection.respond(response);
     }
 
     @http:resourceConfig {
         methods:["PUT"],
         path:"/employee/"
     }
-    resource updateEmployeeResource (http:Connection conn, http:InRequest req) {
-        http:OutResponse res = {};
-        // Processing request payload
-        json payload = req.getJsonPayload();
-        var name, nameError = (string)payload.name;
-        var age, ageError = (string)payload.age;
-        var ssn, ssnError = (string)payload.ssn;
-        var id, idError = (string)payload.id;
+    resource updateEmployeeResource (http:Connection httpConnection, http:InRequest request) {
+
+        // Extract the data from the request payload
+        json requestPayload = request.getJsonPayload();
+        // Convert the json payload to string values
+        var name, nameError = (string)requestPayload.Name;
+        var age, ageError = (string)requestPayload.Age;
+        var ssn, ssnError = (string)requestPayload.SSN;
+        var employeeId, employeeIdError = (string)requestPayload.EmployeeID;
+
+        // Initialize an empty http response message
+        http:OutResponse response = {};
+
         // Check query parameter errors and sending bad request response if errors present
-        if (nameError != null || ageError != null || ssnError != null || idError != null) {
-            res.setStringPayload("Error : Please check the input parameters ");
-            res.statusCode = 400;
-            _ = conn.respond(res);
+        if (nameError != null || ageError != null || ssnError != null || employeeIdError != null) {
+            response.setStringPayload("Error : Please check the input parameters ");
+            response.statusCode = 400;
+            _ = httpConnection.respond(response);
             return;
         }
-        // Invoke updateData function in dataBaseUtil package to update data in mysql database
-        string updateStatus = databaseUtil:updateData(name, age, ssn, id);
-        json responseJson = {"Name":name, "Age":age, "ssn":ssn, "id":id, "Update Status":updateStatus};
-        //        log:printInfo("Employee details updated in database : " + responseJson.toString());
-        res.setJsonPayload(responseJson);
-        // Send the response back to the client
-        _ = conn.respond(res);
+
+        // Invoke updateData function to update data in MySQL database
+        json updateStatus = databaseUtil:updateData(name, age, ssn, employeeId);
+        log:printInfo("Employee details updated in database: EmployeeID = " + employeeId);
+
+        // Send the response back to the client with database update status
+        json respJson = {"Name":name, "Age":age, "SSN":ssn, "EmployeeID":employeeId, "Status":updateStatus};
+        response.setJsonPayload(respJson);
+        _ = httpConnection.respond(response);
     }
 
     @http:resourceConfig {
         methods:["DELETE"],
         path:"/employee/"
     }
-    resource deleteEmployeeResource (http:Connection conn, http:InRequest req) {
-        http:OutResponse res = {};
-        // Processing request payload
-        json payload = req.getJsonPayload();
-        println(payload.id);
-        println("fsdfds");
-        var id, idError = (string)payload.id;
+    resource deleteEmployeeResource (http:Connection httpConnection, http:InRequest request) {
+
+        // Extract the data from the request payload
+        json requestPayload = request.getJsonPayload();
+        var employeeId, employeeIdError = (string)requestPayload.EmployeeID;
+
+        // Initialize an empty http response message
+        http:OutResponse response = {};
+
         // Check query parameter errors and sending bad request response if errors present
-        if (idError != null) {
-            res.setStringPayload("Error : Please check the input parameters ");
-            res.statusCode = 400;
-            _ = conn.respond(res);
+        if (employeeIdError != null) {
+            response.setStringPayload("Error : Please check the input parameters ");
+            response.statusCode = 400;
+            _ = httpConnection.respond(response);
             return;
         }
-        // Invoke deleteData function in dataBaseUtil package to delete data from mysql database
-        string updateStatus = databaseUtil:deleteData(id);
-        json responseJson = {"Employee ID":id, "Update Status":updateStatus};
-        //        log:printInfo("Employee deleted from database : " + responseJson.toString());
-        res.setJsonPayload(responseJson);
-        // Send the response back to the client
-        _ = conn.respond(res);
-    }
 
-    @http:resourceConfig {
-        methods:["GET"],
-        path:"/employee/"
-    }
-    resource retrieveEmployeeResource (http:Connection conn, http:InRequest req) {
-        http:OutResponse res = {};
-        // Processing request payload
-        map params = req.getQueryParams();
-        var id, idError = (string)params.id;
-        // Check query parameter errors and sending bad request response if errors present
-        if (idError != null) {
-            res.setStringPayload("Error : Please check the input parameters ");
-            res.statusCode = 400;
-            _ = conn.respond(res);
-            return;
-        }
-        // Invoke retrieveById function in dataBaseUtil package to retrieve employee data from mysql database
-        json result = databaseUtil:retrieveById(id);
-        res.setJsonPayload(result);
-        // Send the response back to the client
-        _ = conn.respond(res);
-    }
+        // Invoke deleteData function to delete data from MySQL database
+        json updateStatus = databaseUtil:deleteData(employeeId);
+        log:printInfo("Employee deleted from database: EmployeeID = " + employeeId);
 
-    @http:resourceConfig {
-        methods:["GET"],
-        path:"/retrieve-all/"
-    }
-    resource retrieveAllResource (http:Connection conn, http:InRequest req) {
-        http:OutResponse res = {};
-        // Invoke retrieveAllData function in dataBaseUtil package to retrieve all employees from mysql database
-        json result = databaseUtil:retrieveAllData();
-        res.setJsonPayload(result);
-        // Send the response back to the client
-        _ = conn.respond(res);
+        // Send the response back to the client with status of SQL delete operation
+        json respJson = {"Employee ID":employeeId, "Status":updateStatus};
+        response.setJsonPayload(respJson);
+        _ = httpConnection.respond(response);
     }
 }
