@@ -367,12 +367,16 @@ Output:
 
 ### <a name="unit-testing"></a> Writing Unit Tests 
 
-In ballerina, all the unit test cases should be in the same package and the naming convention is as follows,
+In ballerina, the unit test cases should be in the same package and the naming convention should be as follows,
 * Test files should contain _test.bal suffix.
 * Test functions should contain test prefix.
   * e.g.: testAddEmployee()
-  
-This guide contains unit test cases in the respective folders. Please find them in the git repo
+
+This guide contains unit test cases in the respective folders. The two test cases are written to test the Employee Data Service and the Database utilities package.
+To run the unit tests, go to the sample root directory and run the following command
+```bash
+$ ballerina test employeeService/
+```
 
 
 ## <a name="deploying-the-scenario"></a> Deployment
