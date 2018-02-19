@@ -290,34 +290,11 @@ public function retrieveById (string employeeID) (json) {
     // Convert the sql data table into JSON using type conversion
     var jsonReturnValue, _ = <json>dataTable;
     return jsonReturnValue;
-}```
-The following section will explain the implementation of `public function insertData`. Similarly other functions can be implemented. Please refer`org/<repo name>/employeeService/util/db/employee_database_util.bal` for complete implementation of utility functions.
-The `endpoint` keyword in ballerina refers to a connection with remote service, in this case, the remote service is MySQL database. `employee database` is the reference name for the SQL endpoint. This endpoint is initialized with the  SQL connection. The rest of the code is just preparing SQL queries and executing them by calling `update` action in `ballerina.data.sql` package. finally, the status of the SQL operation is returned as a JSON file.
-
-```ballerina
-public function insertData (string name, string age, string ssn) (json) {
-    endpoint<sql:ClientConnector> employeeDataBase {
-        sqlConnection;
-    }
-    json updateStatus;
-    string sqlString = "INSERT INTO EMPLOYEES (Name, Age, SSN) VALUES ('" + name + "','" + age + "','" + ssn + "')";
-    // Insert data to SQL database by invoking update action defined in ballerina sql connector
-    int updateRowCount = employeeDataBase.update(sqlString, null);
-    // log:printInfo("Data insertion to table status:" + updateRowCount);
-    if (updateRowCount > 0) {
-        // SQL query to retrieve the EmployeeID
-        sqlString = "SELECT EmployeeID FROM EMPLOYEES WHERE SSN = '" + ssn + "'";
-        var dataTableOfIDs = employeeDataBase.select(sqlString, null, null);
-        var jsonArrayOfIDs, _ = <json>dataTableOfIDs;
-        string employeeID = jsonArrayOfIDs[(lengthof jsonArrayOfIDs - 1)].EmployeeID.toString();
-        updateStatus = {"Status":UPDATED, "EmployeeID":employeeID};
-    }
-    else {
-        updateStatus = {"Status":NOT_UPDATED};
-    }
-    return updateStatus;
 }
 ```
+
+The `endpoint` keyword in ballerina refers to a connection with remote service, in this case, the remote service is MySQL database. `employee database` is the reference name for the SQL endpoint. This endpoint is initialized with the  SQL connection. The rest of the code is just preparing SQL queries and executing them by calling `update` action in `ballerina.data.sql` package. finally, the status of the SQL operation is returned as a JSON file.
+
 
 
 ## <a name="testing"></a> Testing 
