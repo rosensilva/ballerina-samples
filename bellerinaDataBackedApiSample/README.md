@@ -188,7 +188,7 @@ service<http> records {
 }
 ```
 
-Please refer `org/<repo name>/employeeService/employee_database_service.bal` file for the complete implementaion of employee management web service.
+Please refer `ballerina-guides/data-backed-service/employeeService/employee_database_service.bal` file for the complete implementaion of employee management web service.
 
 
 ### Develop the database handling utility functions
