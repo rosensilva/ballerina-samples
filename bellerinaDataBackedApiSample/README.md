@@ -192,45 +192,105 @@ Please refer `org/<repo name>/employeeService/employee_database_service.bal` fil
 
 
 ### Develop the database handling utility functions
-You can implement custom functions in Ballerina which does specific tasks. For this scenario, we need to have utility functions that deal with MySQL database. The following skeleton code is the implementation of the database utility package.
+You can implement custom functions in Ballerina which does specific tasks. For this scenario, we need to have utility functions that deal with MySQL database. The following code is the implementation of the database utility package.
 ```ballerina 
 package employeeService.util.db;
 
-public sql:ClientConnector sqlConnection;
+import ballerina.data.sql;
+
+sql:ClientConnector sqlConnection;
 
 public function initializeDatabase (string dbHost, string dbPort, string userName, string password, string dbName)
 (boolean) {
-   // Implementation of data initilization funcion
-}
-
-public function createDatabase (string userName, string password, string dbName, string dbURL) (int) {
-   // Implementation of database create funcion
+    // Convert dbPort string to integer value
+    var dbPortNumber, _ = <int>dbPort;
+    dbName = dbName + "?useSSL=false";
+    // Initialize the global variable "sqlConnection" with MySQL database connection
+    sqlConnection = create sql:ClientConnector(sql:DB.MYSQL, dbHost, dbPortNumber, dbName, userName, password,
+                                               {maximumPoolSize:5});
+    // Create the employee database table by invoking createTable function
+    _ = createTable();
+    return true;
 }
 
 public function createTable () (int) {
-   // Implementation of table creation function
+    endpoint<sql:ClientConnector> employeeDataBase {
+        sqlConnection;
+    }
+    // Create table by invoking update action defined in ballerina sql connector
+    string sqlString = "CREATE TABLE IF NOT EXISTS EMPLOYEES (EmployeeID INT, Name VARCHAR
+                       (50), Age INT, SSN INT, PRIMARY KEY (EmployeeID))";
+    int updateRowCount = employeeDataBase.update(sqlString, null);
+    return updateRowCount;
 }
 
-public function insertData (string name, string age, string ssn) (json) {
-    // Implementation of inserting employee data into the database
+public function insertData (string name, string age, string ssn, string employeeId) (json) {
+    endpoint<sql:ClientConnector> employeeDataBase {
+        sqlConnection;
+    }
+    // Initialize update status as unsuccessful MySQL operation
+    json updateStatus = {"Status":"Data Not Inserted"};
+
+    string sqlString = "INSERT INTO EMPLOYEES (Name, Age, SSN, EmployeeID) VALUES ('" + name + "','" + age + "','" +
+                       ssn + "','" + employeeId + "')";
+    // Insert data to SQL database by invoking update action defined in ballerina sql connector
+    int updateRowCount = employeeDataBase.update(sqlString, null);
+
+    // Check the MySQL updated row count to set the status
+    if (updateRowCount > 0) {
+        updateStatus = {"Status":"Data Inserted Successfully"};
+    }
+    return updateStatus;
 }
 
-public function updateData (string name, string age, string ssn, string employeeID) (string) {
-    // Implementation of updating existing employee in the database
+public function updateData (string name, string age, string ssn, string employeeId) (json) {
+    endpoint<sql:ClientConnector> employeeDataBase {
+        sqlConnection;
+    }
+    // Initialize update status as unsuccessful MySQL operation
+    json updateStatus = {"Status":"Data Not Updated"};
+
+    string sqlString = "UPDATE EMPLOYEES SET Name = '" + name + "', Age = '" + age + "', SSN = '" + ssn + "'WHERE
+                        EmployeeID  = '" + employeeId + "'";
+    // Update existing data by invoking update action defined in ballerina sql connector
+    int updateRowCount = employeeDataBase.update(sqlString, null);
+
+    // Check the MySQL updated row count to set the status
+    if (updateRowCount > 0) {
+        updateStatus = {"Status":"Data Updated Successfully"};
+    }
+    return updateStatus;
 }
 
-public function deleteData (string employeeID) (string) {
-    // Implementation of deleting an existing employee data from the database
-}
+public function deleteData (string employeeID) (json) {
+    endpoint<sql:ClientConnector> employeeDataBase {
+        sqlConnection;
+    }
+    // Initialize update status as unsuccessful MySQL operation
+    json updateStatus = {"Status":"Data Not Deleted"};
 
-public function retrieveAllData () (json) {
-    // Implementation of receiving all the employee data from database 
+    string sqlString = "DELETE FROM EMPLOYEES WHERE EmployeeID = '" + employeeID + "'";
+    // Delete existing data by invoking update action defined in ballerina sql connector
+    int updateRowCount = employeeDataBase.update(sqlString, null);
+
+    // Check the MySQL updated row count to set the status
+    if (updateRowCount > 0) {
+        updateStatus = {"Status":"Data Deleted Successfully"};
+    }
+    return updateStatus;
 }
 
 public function retrieveById (string employeeID) (json) {
-    // Implementaiton of retrieving employee data of specific employee with given EmployeeID
-}
-```
+    endpoint<sql:ClientConnector> employeeDataBase {
+        sqlConnection;
+    }
+    string sqlString = "SELECT * FROM EMPLOYEES WHERE EmployeeID = '" + employeeID + "'";
+    // Retrieve employee data by invoking call action defined in ballerina sql connector
+    var dataTable = employeeDataBase.call(sqlString, null, null);
+    // Convert the sql data table into JSON using type conversion
+    var jsonReturnValue, _ = <json>dataTable;
+    return jsonReturnValue;
+}```
 The following section will explain the implementation of `public function insertData`. Similarly other functions can be implemented. Please refer`org/<repo name>/employeeService/util/db/employee_database_util.bal` for complete implementation of utility functions.
 The `endpoint` keyword in ballerina refers to a connection with remote service, in this case, the remote service is MySQL database. `employee database` is the reference name for the SQL endpoint. This endpoint is initialized with the  SQL connection. The rest of the code is just preparing SQL queries and executing them by calling `update` action in `ballerina.data.sql` package. finally, the status of the SQL operation is returned as a JSON file.
 
