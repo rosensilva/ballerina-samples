@@ -331,11 +331,6 @@ curl -v -X POST -d '{"Name":"Alice", "Age":"20","SSN":"123456789","EmployeeID":"
 
 Output :  
 < HTTP/1.1 200 OK
-< Content-Type: application/json
-< Transfer-Encoding: chunked
-< Server: wso2-http-transport
-< 
-* Connection #0 to host localhost left intact
 {"Name":"Alice","Age":"20","SSN":"123456789","EmployeeID":"1","Status": \
 {"Status":"Data Inserted Successfully"}}
 ```
@@ -346,25 +341,16 @@ curl -v  "http://localhost:9090/records/employee?EmployeeID=1"
 
 Output : 
 < HTTP/1.1 200 OK
-< Content-Type: application/json
-< Transfer-Encoding: chunked
-< Server: wso2-http-transport
-< 
-* Connection #0 to host localhost left intact
 [{"EmployeeID":1,"Name":"Alice","Age":20,"SSN":123456789}]
 
 ```
 **Update an existing employee data** 
 ```
-curl -v -X PUT -d '{"Name":"Alice Updated", "Age":"30","SSN":"123456789","EmployeeID":"1"}' \  "http://localhost:9090/records/employee" -H "Content-Type:application/json"
+curl -v -X PUT -d '{"Name":"Alice Updated", "Age":"30","SSN":"123456789","EmployeeID":"1"}' \
+"http://localhost:9090/records/employee" -H "Content-Type:application/json"
 
 Output: 
 < HTTP/1.1 200 OK
-< Content-Type: application/json
-< Transfer-Encoding: chunked
-< Server: wso2-http-transport
-< 
-* Connection #0 to host localhost left intact
 {"Name":"Alice Updated","Age":"30","SSN":"123456789","EmployeeID":"1","Status": \
 {"Status":"Data Updated Successfully"}}
 ```
@@ -376,11 +362,6 @@ curl -v -X DELETE -d '{"EmployeeID":"1"}'  "http://localhost:9090/records/employ
 
 Output:
 < HTTP/1.1 200 OK
-< Content-Type: application/json
-< Transfer-Encoding: chunked
-< Server: wso2-http-transport
-< 
-* Connection #0 to host localhost left intact
 {"Employee ID":"1","Status":{"Status":"Data Deleted Successfully"}}
 ```
 
