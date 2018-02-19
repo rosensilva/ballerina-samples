@@ -326,7 +326,8 @@ ballerina: started HTTP/WS server connector 0.0.0.0:9090
 
 **Add new employee** 
 ```
-curl -v -X POST -d '{"name":"Alice", "age":"20","ssn":"123456789"}'  "http://localhost:9090/records/employee" -H "Content-Type:application/json"
+curl -v -X POST -d '{"Name":"Alice", "Age":"20","SSN":"123456789","EmployeeID":"1"}' \
+"http://localhost:9090/records/employee" -H "Content-Type:application/json"
 
 Output :  
 < HTTP/1.1 200 OK
@@ -335,13 +336,13 @@ Output :
 < Server: wso2-http-transport
 < 
 * Connection #0 to host localhost left intact
-{"Name":"Alice","Age":"20","SSN":"123456789","Details":{"Status":"Updated","EmployeeID":"1"}}
- 
+{"Name":"Alice","Age":"20","SSN":"123456789","EmployeeID":"1","Status": \
+{"Status":"Data Inserted Successfully"}}
 ```
 
 **Retrieve employee data** 
 ```
-curl -v  "http://localhost:9090/records/employee?id=1"
+curl -v  "http://localhost:9090/records/employee?EmployeeID=1"
 
 Output : 
 < HTTP/1.1 200 OK
@@ -350,12 +351,12 @@ Output :
 < Server: wso2-http-transport
 < 
 * Connection #0 to host localhost left intact
-[{"EmployeeID":34,"Name":"Alice","Age":20,"SSN":123456789}]
+[{"EmployeeID":1,"Name":"Alice","Age":20,"SSN":123456789}]
 
 ```
 **Update an existing employee data** 
 ```
-curl -v -X PUT -d '{"name":"Alice Updated", "age":"30","ssn":"123456789","id":"1"}' \ "http://localhost:9090/records/employee" -H "Content-Type:application/json"
+curl -v -X PUT -d '{"Name":"Alice Updated", "Age":"30","SSN":"123456789","EmployeeID":"1"}' \  "http://localhost:9090/records/employee" -H "Content-Type:application/json"
 
 Output: 
 < HTTP/1.1 200 OK
@@ -364,15 +365,23 @@ Output:
 < Server: wso2-http-transport
 < 
 * Connection #0 to host localhost left intact
-{"Name":"Alice Updated","Age":"30","ssn":"123456789","id":"1","Update Status":"Updated"}
+{"Name":"Alice Updated","Age":"30","SSN":"123456789","EmployeeID":"1","Status": \
+{"Status":"Data Updated Successfully"}}
 ```
 
 **Delete employee data** 
 ```
-curl -v -X DELETE -d '{"id":"1"}'  "http://localhost:9090/records/employee" -H "Content-Type:application/json"
+curl -v -X DELETE -d '{"EmployeeID":"1"}'  "http://localhost:9090/records/employee" \
+-H "Content-Type:application/json"
 
 Output:
-{"Employee ID":"1","Update Status":"Updated"}
+< HTTP/1.1 200 OK
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Server: wso2-http-transport
+< 
+* Connection #0 to host localhost left intact
+{"Employee ID":"1","Status":{"Status":"Data Deleted Successfully"}}
 ```
 
 ### <a name="unit-testing"></a> Writing Unit Tests 
