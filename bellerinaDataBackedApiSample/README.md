@@ -34,6 +34,17 @@ Optional Requirements
 
 ## <a name="develop-app"></a> Develop the application
 ### Before you begin
+##### Create the database
+Go to the terminal (command Prompt in Microsoft Windows). Open MySQL client by entering the following command
+
+```bash
+$ mysql -u root -p
+```
+Then create a database named as `RECORDS` by entering following command in mysql
+```mysql
+mysql> CREATE DATABASE RECORDS;
+```
+
 ##### Understand the package structure
 Ballerina is a complete programming language that can have any custom project structure as you wish. Although language allows you to have any package structure, we'll stick with the following package structure for this project.
 
@@ -62,35 +73,120 @@ First, you need to replace `localhost`, `3306`, `username`, `password` the respe
 
 
 ### Develop the Ballerina web service
-Ballerina language has built-in support for writing web services. The `service` keyword in ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource using `resource` keyword in Ballerina. We can implement the business logic inside a resource block using Ballerina language syntaxes. The following ballerina code is the skeleton code of the service with resources to add a new employee and retrieve employee data.
+Ballerina language has built-in support for writing web services. The `service` keyword in ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource using `resource` keyword in Ballerina. We can implement the business logic inside a resource block using Ballerina language syntaxes. The following ballerina code is the complete service with resources to add, retrieve, update and delete employee data.
 
 ```ballerina
 package employeeService;
 
+import ballerina.config;
+import ballerina.log;
 import ballerina.net.http;
+import employeeService.util.db as databaseUtil;
 
 service<http> records {
-    // Initialize your global variables here
-    
+    string dbHost = config:getGlobalValue("DATABASE_HOST");
+    string dbPort = config:getGlobalValue("DATABASE_PORT");
+    string userName = config:getGlobalValue("DATABASE_USERNAME");
+    string password = config:getGlobalValue("DATABASE_PASSWORD");
+    string dbName = config:getGlobalValue("DATABASE_NAME");
+
+    boolean isInitialized = databaseUtil:initializeDatabase(dbHost, dbPort, userName, password, dbName);
+
     @http:resourceConfig {
-        // Set the HTTP URL for adding new employee
+        methods:["POST"],
+        path:"/employee/"
     }
-    resource addEmployeeResource (http:Connection conn, http:InRequest req) {
-        // Implement the logic for adding a new employee
-        // Here you can execute SQL INSERT database and save the employee data
+    resource addEmployeeResource (http:Connection httpConnection, http:InRequest request) {
+        // Extract the data from the request payload
+        json requestPayload = request.getJsonPayload();
+        // Convert the json payload to string values
+        var name, nameError = (string)requestPayload.Name;
+        var age, ageError = (string)requestPayload.Age;
+        var ssn, ssnError = (string)requestPayload.SSN;
+        var employeeId, empIdError = (string)requestPayload.EmployeeID;
+
+        // Initialize an empty http response message
+        http:OutResponse response = {};
+
+        // Invoke insertData function to store data in the MySQL database
+        json updateStatus = databaseUtil:insertData(name, age, ssn, employeeId);
+        log:printInfo("New employee added to database: employeeID = " + employeeId);
+
+        // Send the response back to the client with the status of the database operation
+        json respJson = {"Name":name, "Age":age, "SSN":ssn, "EmployeeID":employeeId, "Status":updateStatus};
+        response.setJsonPayload(respJson);
+        _ = httpConnection.respond(response);
     }
 
     @http:resourceConfig {
-        // Set the HTTP URL for retrieve employee data
+        methods:["GET"],
+        path:"/employee/"
     }
-    resource retrieveEmployeeResource (http:Connection conn, http:InRequest req) {
-        // Implement the logic for retrieve employee data
-        // Here you can execute SQL RETRIEVE query and retrieve the employee data
+    resource retrieveEmployeeResource (http:Connection httpConnection, http:InRequest request) {
+        // Extract the data from the request payload
+        map queryParams = request.getQueryParams();
+        var employeeId, employeeIdError = (string)queryParams.EmployeeID;
+
+        // Initialize an empty http response message
+        http:OutResponse response = {};
+
+        // Invoke retrieveById function to retrieve data from MySQL database
+        json employeeData = databaseUtil:retrieveById(employeeId);
+
+        // Send the response back to the client with the employee data
+        response.setJsonPayload(employeeData);
+        _ = httpConnection.respond(response);
+    }
+
+    @http:resourceConfig {
+        methods:["PUT"],
+        path:"/employee/"
+    }
+    resource updateEmployeeResource (http:Connection httpConnection, http:InRequest request) {
+        // Extract the data from the request payload
+        json requestPayload = request.getJsonPayload();
+        // Convert the json payload to string values
+        var name, nameError = (string)requestPayload.Name;
+        var age, ageError = (string)requestPayload.Age;
+        var ssn, ssnError = (string)requestPayload.SSN;
+        var employeeId, employeeIdError = (string)requestPayload.EmployeeID;
+
+        // Initialize an empty http response message
+        http:OutResponse response = {};
+
+        // Invoke updateData function to update data in MySQL database
+        json updateStatus = databaseUtil:updateData(name, age, ssn, employeeId);
+        log:printInfo("Employee details updated in database: EmployeeID = " + employeeId);
+
+        // Send the response back to the client with database update status
+        json respJson = {"Name":name, "Age":age, "SSN":ssn, "EmployeeID":employeeId, "Status":updateStatus};
+        response.setJsonPayload(respJson);
+        _ = httpConnection.respond(response);
+    }
+
+    @http:resourceConfig {
+        methods:["DELETE"],
+        path:"/employee/"
+    }
+    resource deleteEmployeeResource (http:Connection httpConnection, http:InRequest request) {
+        // Extract the data from the request payload
+        json requestPayload = request.getJsonPayload();
+        var employeeId, employeeIdError = (string)requestPayload.EmployeeID;
+
+        // Initialize an empty http response message
+        http:OutResponse response = {};
+
+        // Invoke deleteData function to delete data from MySQL database
+        json updateStatus = databaseUtil:deleteData(employeeId);
+        log:printInfo("Employee deleted from database: EmployeeID = " + employeeId);
+
+        // Send the response back to the client with status of SQL delete operation
+        json respJson = {"Employee ID":employeeId, "Status":updateStatus};
+        response.setJsonPayload(respJson);
+        _ = httpConnection.respond(response);
     }
 }
 ```
-
-
 
 Please refer `org/<repo name>/employeeService/employee_database_service.bal` file for the complete implementaion of employee management web service.
 
