@@ -1,5 +1,6 @@
 package orderMgtService;
 
+import ballerina.log;
 import ballerina.net.http.resiliency;
 import ballerina.net.http;
 
@@ -43,7 +44,7 @@ service<http> orderService {
             return;
         }
         // Send response to the client if the order placement was successful
-        outResponse.setStringPayload("Order Placed for items :" + inResponse.getJsonPayload().toString());
+        outResponse.setStringPayload("Order Placed : " + inResponse.getJsonPayload().toString());
         _ = httpConnection.respond(outResponse);
     }
 }
