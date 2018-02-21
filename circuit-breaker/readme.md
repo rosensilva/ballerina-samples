@@ -45,7 +45,8 @@ Ballerina is a complete programming language that can have any custom project st
     └── inventory_service_test.bal
 ```
 
-The `orderService` is the service that gets the client orders. Order service is configured with circuit breaker to deal with the potentially-failing remote inventory management service.
+The `orderService` is the service that gets the client orders. Order service is configured with circuit breaker to deal with the potentially-failing remote inventory management service.  
+
 The `inventoryStore` is an independent web service that accepts orders via HTTP POST method from `orderService` and send the availablity of order items.
 
 ### Develop the Ballerina orderService
