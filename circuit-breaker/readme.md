@@ -3,4 +3,4 @@ This guide walks you through building a Ballerina web service with circuit break
 
 ## <a name="what-you-build"></a>  What you'll build
 You'll build an employee order man
-![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/bellerinaDataBackedApiSample/images/database_service_scenario.png)
+![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/circuit-breaker/images/circuit_breaker_image.png)
