@@ -15,16 +15,11 @@ function testInventoryService () {
 
     // Test the inventory resource
     // Prepare order with sample items
-    json requestJson = {"items":{"1":"Basket","2": "Table","3": "Chair"}};
+    json requestJson = {"1":"Basket", "2":"Table", "3":"Chair"};
     req.setJsonPayload(requestJson);
     // Send the request to service and get the response
     resp, _ = httpEndpoint.post("/", req);
-    println(resp.getJsonPayload());
-    println("test123");
     // Test the responses from the service with the original test data
     test:assertIntEquals(resp.statusCode, 200, "Inventory service didnot respond with 200 OK signal");
-    //test:assertStringEquals(resp.getJsonPayload().Name.toString(), "Alice", "Name did not store in the database");
-
+    test:assertStringEquals(resp.getJsonPayload().Status.toString(), "Order Completed", " respond mismatch");
 }
-
-

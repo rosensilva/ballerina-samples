@@ -14,7 +14,7 @@ service<http> inventoryService {
         http:OutResponse response = {};
         // Extract the items list from the request JSON payload
         json items = request.getJsonPayload();
-        //log:printInfo("Processing order items : " + items.toString());
+        log:printInfo("Processing order items : " + items.toString());
         // Prepare the response message
         json responseJson = {"Status":"Order Completed", "items":items};
         response.setJsonPayload(responseJson);

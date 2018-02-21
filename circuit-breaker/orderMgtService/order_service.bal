@@ -1,6 +1,5 @@
 package orderMgtService;
 
-import ballerina.log;
 import ballerina.net.http.resiliency;
 import ballerina.net.http;
 
@@ -39,7 +38,7 @@ service<http> orderService {
         // If inventory backend contain errors forward the error message to client
         if (err != null) {
             log:printInfo("Inventory service returns an error :" + err.msg);
-            outResponse.setStringPayload("Inventory Service did not respond : " + err.msg);
+            outResponse.setJsonPayload({"Error":"Inventory Service did not respond", "Error_message":err.msg});
             _ = httpConnection.respond(outResponse);
             return;
         }
