@@ -3,7 +3,7 @@ This guide walks you through the process of adding Circuit Breaker pattern to po
 
 ## <a name="what-you-build"></a>  What you'll build
 
-You’ll build a web service that uses the Circuit Breaker pattern to gracefully degrade functionality when a remorte backend fails. For better understanding we will map this with real world scenario of an order processing service for a retail store. The retail store uses potentially-failing remote backend for inventory management. When a specific order comes to the order processing service, the service will call the inventory management service to check the availability of items.
+You’ll build a web service that uses the Circuit Breaker pattern to gracefully degrade functionality when a remorte backend fails. For better understanding we will map this with real world scenario of an order processing service of a retail store. The retail store uses potentially-failing remote backend for inventory management. When a specific order comes to the order processing service, the service will call the inventory management service to check the availability of items.
 
 &nbsp;
 &nbsp;
