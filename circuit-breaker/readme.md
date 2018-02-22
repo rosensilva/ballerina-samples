@@ -52,7 +52,7 @@ The `inventoryStore` is an independent web service that accepts orders via HTTP 
 
 ### Develop the Ballerina services
 
-##### orderService.bal
+#### orderService.bal
 Ballerina language has built-in support for writing web services. The `service` keyword in ballerina simply defines a web service. Inside the service block, we can have all the required resources. You can define a resource using `resource` keyword in Ballerina. We can implement the business logic inside a resource block using Ballerina language syntaxes. The `ballerina.net.http.resiliency` package contains the Circuit Breaker implementation. After importing that package you can directly create an endpoint with a circuit breaker. The `endpoint` keyword in ballerina refers to a connection with remote service. You can pass the `HTTP Client`, `Failure Threshold` and `Reset Timeout` to the circuit breaker. The `circuitBreakerEP` is the reference for the HTTP endpoint with the circuit breaker. Whenever you call that remote HTTP endpoint it will go through the circuit breaker. 
 
 ```ballerina
@@ -112,7 +112,7 @@ service<http> orderService {
 Please refer `ballerina-guides/resiliency-circuit-breaker/orderService/order_service.bal` file for the complete implementaion of orderService.
 
 
-##### inventoryStore.bal 
+#### inventoryStore.bal 
 This is the inventory management service that we use to demonstrate the circuit breaker scenario. The inventory management service will send the response to any request saying that the items are available in the inventory.
 
 ```ballerina 
