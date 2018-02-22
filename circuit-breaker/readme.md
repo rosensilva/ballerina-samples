@@ -183,7 +183,7 @@ service<http> inventoryService {
    ```
    Now the circuit breaker should be activated since the order service knows that the inventory service is unavailable. This    time the order service should respond the following error message.
    ```json
-   {"Error":"Inventory Service did not respond","Error_message":"Upstream service  \ 
+   {"Error":"Inventory Service did not respond","Error_message":"Upstream service
    unavailable. Requests to upstream service will be suspended for 14451 milliseconds."}
    ```
 
