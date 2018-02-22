@@ -1,8 +1,9 @@
-# Database Backed RESTful Web Service
-This guide walks you through the process of adding circuit breaker pattern to potentially-failing remote backend web services.
+# Circuit Breaker
+This guide walks you through the process of adding circuit breaker pattern to potentially-failing remote backend web services. Circuit Breaker pattern is a way to automatically degrade functionality when remote services fail. Use of the Circuit Breaker pattern can allow a web service to continue operating without waiting for faling remote services.
 
 ## <a name="what-you-build"></a>  What you'll build
-You'll build an order processing service for a retail store. The retail store have a potentially-failing remote backend for inventory management. When a specific order comes to the order processing service, the service will call the inventory management service to check the avaibalility of items. The circuit breaker is configured to handle the faliures of inventory management service.  
+
+You'll build an order processing service for a retail store. The retail store uses potentially-failing remote backend for inventory management. When a specific order comes to the order processing service, the service will call the inventory management service.
 
 &nbsp;
 &nbsp;
