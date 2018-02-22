@@ -96,7 +96,8 @@ service<http> orderService {
         // If inventory backend contain errors forward the error message to client
         if (err != null) {
             log:printInfo("Inventory service returns an error :" + err.msg);
-            outResponse.setJsonPayload({"Error":"Inventory Service did not respond", "Error_message":err.msg});
+            outResponse.setJsonPayload({"Error":"Inventory Service did not respond",
+            "Error_message":err.msg});
             _ = httpConnection.respond(outResponse);
             return;
         }
@@ -154,7 +155,8 @@ service<http> inventoryService {
 
 2.  Then invoke the orderService by sending an order via HTTP POST method. 
 ``` bash
-curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' "http://localhost:9090/order" -H "Content-Type:application/json"
+curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \
+"http://localhost:9090/order" -H "Content-Type:application/json"
 ```
 The order service should respond something similar,
 ```
@@ -165,21 +167,24 @@ Order Placed : {"Status":"Order Available in Inventory","items":{"1":"Basket","2
 
 4.  Now invoke the orderService by sending an order via HTTP method.
 ``` bash
-curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' "http://localhost:9090/order" -H "Content-Type
+curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \ 
+"http://localhost:9090/order" -H "Content-Type
 ```
 The order service should respond something similar,
 ```json
-{"Error":"Inventory Service did not respond","Error_message":"Connection refused, localhost-9092"}r
+{"Error":"Inventory Service did not respond","Error_message":"Connection refused, localhost-9092"}
 ```
 This shows that the order service did try to call the inventory service and found tht inventory service is not available.
 
 5.  Now invoke the orderService again soon after sending the previous request.
 ``` bash
-curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' "http://localhost:9090/order" -H "Content-Type
+curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \ 
+"http://localhost:9090/order" -H "Content-Type
 ```
 Now the circuit breaker should be activated since the order service knows that the inventory service is unavailable. This time the order service should respond the following error message.
 ```json
-{"Error":"Inventory Service did not respond","Error_message":"Upstream service unavailable. Requests to upstream service will be suspended for 14451 milliseconds."}
+{"Error":"Inventory Service did not respond","Error_message":"Upstream service  \ 
+unavailable. Requests to upstream service will be suspended for 14451 milliseconds."}
 ```
 
 
