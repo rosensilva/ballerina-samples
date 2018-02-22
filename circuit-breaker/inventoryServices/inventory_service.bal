@@ -1,4 +1,4 @@
-package inventoryStore;
+package inventoryServices;
 
 import ballerina.log;
 import ballerina.net.http;
@@ -10,15 +10,15 @@ service<http> inventoryService {
         path:"/"
     }
     resource inventoryResource (http:Connection httpConnection, http:InRequest request) {
-        // Initialize the response message that needs to send back to callee
+        // Initialize the response message that needs to send back to client
         http:OutResponse response = {};
         // Extract the items list from the request JSON payload
         json items = request.getJsonPayload();
-        log:printInfo("Processing order items : " + items.toString());
+        log:printInfo("Checking the order items : " + items.toString());
         // Prepare the response message
-        json responseJson = {"Status":"Order Completed", "items":items};
+        json responseJson = {"Status":"Order Available in Inventory", "items":items};
         response.setJsonPayload(responseJson);
-        // Send the response to the callee
+        // Send the response to the client
         _ = httpConnection.respond(response);
     }
 }

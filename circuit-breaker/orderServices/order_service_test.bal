@@ -1,4 +1,4 @@
-package orderMgtService;
+package orderServices;
 
 import ballerina.net.http;
 import ballerina.test;

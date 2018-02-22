@@ -1,4 +1,4 @@
-package inventoryStore;
+package inventoryServices;
 
 import ballerina.net.http;
 import ballerina.test;
@@ -21,5 +21,6 @@ function testInventoryService () {
     resp, _ = httpEndpoint.post("/", req);
     // Test the responses from the service with the original test data
     test:assertIntEquals(resp.statusCode, 200, "Inventory service didnot respond with 200 OK signal");
-    test:assertStringEquals(resp.getJsonPayload().Status.toString(), "Order Completed", " respond mismatch");
+    test:assertStringEquals(resp.getJsonPayload().Status.toString(), "Order Available in Inventory",
+                            " respond mismatch");
 }

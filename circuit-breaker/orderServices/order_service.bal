@@ -1,4 +1,4 @@
-package orderMgtService;
+package orderServices;
 
 import ballerina.log;
 import ballerina.net.http.resiliency;
@@ -7,8 +7,7 @@ import ballerina.net.http;
 @http:configuration {basePath:"/order"}
 service<http> orderService {
     endpoint<resiliency:CircuitBreaker> circuitBreakerEP {
-        create resiliency:CircuitBreaker(create http:HttpClient("http://localhost:9092", {endpointTimeout:3000}), 0.2,
-                                         20000);
+        create resiliency:CircuitBreaker(create http:HttpClient("http://localhost:9092", null), 0.2, 20000);
     }
 
     @http:resourceConfig {
@@ -17,14 +16,14 @@ service<http> orderService {
     }
     resource orderResource (http:Connection httpConnection, http:InRequest request) {
         // Initialize the request and response message to send to the inventory service
-        http:OutResponse outResponse = {};
         http:OutRequest outRequest = {};
-        // Initialize the response message to send back to client
         http:InResponse inResponse = {};
+        // Initialize the response message to send back to client
+        http:OutResponse outResponse = {};
         http:HttpConnectorError err;
         // Extract the items from the json payload
         json items = request.getJsonPayload().items;
-        // Send bad request message to the client if request don't contain items JSON
+        // Send bad request message to the client if request don't contain order items
         if (items == null) {
             outResponse.setStringPayload("Error : Please check the input json payload");
             outResponse.statusCode = 400;
