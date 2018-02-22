@@ -164,7 +164,7 @@ service<http> inventoryService {
    Order Placed : {"Status":"Order Available in Inventory", \ 
    "items":{"1":"Basket","2":"Table","3":"Chair"}}
    ```
-3. Now lets shutdown the inventory service. Our inventory will now have a broken remote endpoint.
+3. Now lets shutdown the inventory service. Our order service will now have a broken remote endpoint for inventory service.
 
 4. Now invoke the orderService by sending an order via HTTP method.
    ``` bash
