@@ -160,8 +160,8 @@ service<http> inventoryService {
    ```
    The order service should respond something similar,
    ```
-   < HTTP/1.1 200 OK
-   Order Placed : {"Status":"Order Available in Inventory","items":{"1":"Basket","2":"Table","3":"Chair"}}
+   Order Placed : {"Status":"Order Available in Inventory", \ 
+   "items":{"1":"Basket","2":"Table","3":"Chair"}}
    ```
 3. Now lets shutdown the inventory service. Our inventory will now have a broken remote endpoint.
 
