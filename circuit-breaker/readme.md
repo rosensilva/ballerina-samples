@@ -1,5 +1,5 @@
 # Circuit Breaker
-This guide walks you through the process of adding Circuit Breaker pattern to potentially-failing remote backend web services. Circuit Breaker pattern is a way to automatically degrade functionality when remote services fail. Use of the Circuit Breaker pattern can allow a web service to continue operating without waiting for unresponsive remote services.
+This guide walks you through the process of adding Circuit Breaker pattern to potentially-failing remote backend. Circuit Breaker pattern is a way to automatically degrade functionality when remote services fail. Use of the Circuit Breaker pattern can allow a web service to continue operating without waiting for unresponsive remote services.
 
 ## <a name="what-you-build"></a>  What you'll build
 
