@@ -145,47 +145,47 @@ service<http> inventoryService {
 ### Try it out
 
 1. Run both the orderService and inventoryService by entering the following commands in sperate terminals
-```bash
-<SAMPLE_ROOT_DIRECTORY>$ ballerina run inventoryStore/
-```
+    ```bash
+    <SAMPLE_ROOT_DIRECTORY>$ ballerina run inventoryStore/
+   ```
 
-```bash
-<SAMPLE_ROOT_DIRECTORY>$ ballerina run orderService/
-```
+   ```bash
+   <SAMPLE_ROOT_DIRECTORY>$ ballerina run orderService/
+   ```
 
-2.  Then invoke the orderService by sending an order via HTTP POST method. 
-``` bash
-curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \
-"http://localhost:9090/order" -H "Content-Type:application/json"
-```
-The order service should respond something similar,
-```
-< HTTP/1.1 200 OK
-Order Placed : {"Status":"Order Available in Inventory","items":{"1":"Basket","2":"Table","3":"Chair"}}
-```
-3.  Now lets shutdown the inventory service. Our inventory will now have a broken remote endpoint.
+2. Then invoke the orderService by sending an order via HTTP POST method. 
+   ``` bash
+   curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \
+   "http://localhost:9090/order" -H "Content-Type:application/json"
+   ```
+   The order service should respond something similar,
+   ```
+   < HTTP/1.1 200 OK
+   Order Placed : {"Status":"Order Available in Inventory","items":{"1":"Basket","2":"Table","3":"Chair"}}
+   ```
+3. Now lets shutdown the inventory service. Our inventory will now have a broken remote endpoint.
 
-4.  Now invoke the orderService by sending an order via HTTP method.
-``` bash
-curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \ 
-"http://localhost:9090/order" -H "Content-Type
-```
-The order service should respond something similar,
-```json
-{"Error":"Inventory Service did not respond","Error_message":"Connection refused, localhost-9092"}
-```
-This shows that the order service did try to call the inventory service and found tht inventory service is not available.
+4. Now invoke the orderService by sending an order via HTTP method.
+   ``` bash
+   curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \ 
+   "http://localhost:9090/order" -H "Content-Type
+   ```
+   The order service should respond something similar,
+   ```json
+   {"Error":"Inventory Service did not respond","Error_message":"Connection refused, localhost-9092"}
+   ```
+   This shows that the order service did try to call the inventory service and found tht inventory service is not available.
 
-5.  Now invoke the orderService again soon after sending the previous request.
-``` bash
-curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \ 
-"http://localhost:9090/order" -H "Content-Type
-```
-Now the circuit breaker should be activated since the order service knows that the inventory service is unavailable. This time the order service should respond the following error message.
-```json
-{"Error":"Inventory Service did not respond","Error_message":"Upstream service  \ 
-unavailable. Requests to upstream service will be suspended for 14451 milliseconds."}
-```
+5. Now invoke the orderService again soon after sending the previous request.
+   ``` bash
+   curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \ 
+   "http://localhost:9090/order" -H "Content-Type
+   ```
+   Now the circuit breaker should be activated since the order service knows that the inventory service is unavailable. This    time the order service should respond the following error message.
+   ```json
+   {"Error":"Inventory Service did not respond","Error_message":"Upstream service  \ 
+   unavailable. Requests to upstream service will be suspended for 14451 milliseconds."}
+   ```
 
 
 ## <a name="testing"></a> Testing 
