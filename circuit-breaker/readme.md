@@ -65,7 +65,8 @@ import ballerina.net.http;
 @http:configuration {basePath:"/order"}
 service<http> orderService {
     endpoint<resiliency:CircuitBreaker> circuitBreakerEP {
-        create resiliency:CircuitBreaker(create http:HttpClient("http://localhost:9092"), 0.2, 20000);
+        create resiliency:CircuitBreaker(create http:HttpClient("http://localhost:9092",null)
+                                         , 0.2, 20000);
     }
 
     @http:resourceConfig {
