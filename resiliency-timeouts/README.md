@@ -5,16 +5,9 @@ This guide walks you through the process of adding timeouts and retry patterns t
 
 You’ll build a web service that calls potentially busy remote backend(responce only to few requests). The service incorporates both retry and timeout  patterns to call the remote backend. For better understanding we will map this with real world scenario of an eCommerce product search service. The eCommerce product search service uses potentially-busy remote eCommerce backend to find details about products. When some item is searched from the eCommerce porduct search service it will call to the eCommerce backend to get the details about the item. The eCommerce backend is trypically busy and might not respond to all the requests. The retry and timeout patterns will help to get the response from the busy eCommerce backend.
 
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
 
 ![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/resiliency-timeouts/images/retry_and_timeout_scenario.png)
 
-&nbsp;
-&nbsp;
-&nbsp;
 
 - **Search item on eCommerce stores** : To search and find the details about items, you can use the HTTP GET message that contains item details as query parameters.
 
