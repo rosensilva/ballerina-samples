@@ -5,7 +5,7 @@ import ballerina.net.http;
 int count = 0;
 
 @http:configuration {basePath:"/browse", port:9092}
-service<http> ecommerceService {
+service<http> eCommerceService {
 
     @http:resourceConfig {
         methods:["GET"],
@@ -13,14 +13,11 @@ service<http> ecommerceService {
     }
     resource findItems (http:Connection httpConnection, http:InRequest request, string item_id) {
         count = count + 1;
-        println(count);
+        // Mock the busy service by only responding to one request out of five incoming requests
         if (count % 5 != 4) {
-            //while (true) {
-            //    println(    "Waiting");
-            //    sleep(500);
-            //}
             sleep(10000);
         }
+        // Initialize sample item details about the item
         json itemDetails = {
                                "itemId":item_id,
                                "brand":"ABC",
@@ -30,6 +27,7 @@ service<http> ecommerceService {
                                "seller":"XYZ"
                            };
 
+        // Send the response back with the item details
         http:OutResponse response = {};
         response.setJsonPayload(itemDetails);
         _ = httpConnection.respond(response);
