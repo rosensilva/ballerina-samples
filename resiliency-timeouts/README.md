@@ -1,15 +1,15 @@
 # HTTP Calls with Retry and Timeouts
-This guide walks you through the process of adding timeouts and retry patterns to potentially-busy remote backend calls. Timeout pattern will automatically cut off the remote services if it fails to respond before the deadline. Well-placed timeouts provide isolation from network faliures. Retry pattern calls the remote backed services again and again until it gets response or retry count reached. Retry pattern is used to get response from remote service even it fails several times.
+This guide walks you through the process of incorporating timeouts and retry patterns with potentially-busy remote backend services. Timeout pattern will automatically cut off the remote services if it fails to respond before the deadline. The retry pattern calls the remote backed services repeatedly until it gets a response or until retry count is reached. Retry pattern helps to receive responses from remote service even it fails several times.
 
 ## <a name="what-you-build"></a>  What you'll build
 
-You’ll build a web service that calls potentially busy remote backend(responce only to few requests). The service incorporates both retry and timeout  patterns to call the remote backend. For better understanding we will map this with real world scenario of an eCommerce product search service. The eCommerce product search service uses potentially-busy remote eCommerce backend to find details about products. When some item is searched from the eCommerce porduct search service it will call to the eCommerce backend to get the details about the item. The eCommerce backend is trypically busy and might not respond to all the requests. The retry and timeout patterns will help to get the response from the busy eCommerce backend.
+You’ll build a web service that calls potentially busy remote backend(response only to few requests). The service incorporates both retry and timeout patterns to call the remote backend. For better understanding, we will map this with a real-world scenario of an eCommerce product search service. The eCommerce product search service uses potentially-busy remote eCommerce backend to find details about products. When some item is searched from the eCommerce product search service it will call to the eCommerce backend to get the details about the item. The eCommerce backend is typically busy and might not respond to all the requests. The retry and timeout patterns will help to get the response from the busy eCommerce backend.
 
 
 ![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/resiliency-timeouts/images/retry_and_timeout_scenario.png)
 
 
-- **Search item on eCommerce stores** : To search and find the details about items, you can use the HTTP GET message that contains item details as query parameters.
+- **Search item on eCommerce stores **: To search and find the details about items, you can use the HTTP GET message that contains item details as query parameters.
 
 ## <a name="pre-req"></a> Prerequisites
  
@@ -42,13 +42,13 @@ Ballerina is a complete programming language that can have any custom project st
 
 ```
 
-The `product_search` is the service that handles the client requests. product_search incorparate resiliency pattern like timeouts and retry when calling potentially-busy remote eCommerce backend.  
+The `product_search` is the service that handles the client requests. product_search incorporate resiliency pattern like timeouts and retry when calling potentially-busy remote eCommerce backend.  
 
-The `ecommerce_backend` is an independent web service that accepts orders via HTTP GET method and sends the item details back to the client.
+The `ecommerce_backend` is an independent web service that accepts product queries via HTTP GET method and sends the item details back to the client.
 ### Develop the Ballerina services
 
 #### product_serach_service.bal
-The `product_serach_service.bal` is the service which incorparates the retry and timeout resiliency pattens. You need to pass the remote endpoint timeout and retry configurations when you define the HTTP client endpoint. 
+The `product_serach_service.bal` is the service which incorporates the retry and timeout resiliency patterns. You need to pass the remote endpoint timeout and retry configurations when you define the HTTP client endpoint. 
 
 ```ballerina
 package guide.product_search;
@@ -102,7 +102,7 @@ create http:HttpClient("http://localhost:9092/browse/",
 {endpointTimeout:1000, retryConfig:{count:10, interval:100}});
 ```
 
-The argument `endpointTimeout` refers to the remote HTTP client timeout in milliseconds and `retryConfig` refers to retry configuration. There are two parameters in the the retry configuration, `count` refers to the number of retires and the `interval` refers to the time interval between two consecative retries. The `eCommerceEndpoint` is the reference for the HTTP endpoint of eCommerce backend. Whenever you call that remote HTTP endpoint it uses the retry and timeout resillency patterns.
+The argument `endpointTimeout` refers to the remote HTTP client timeout in milliseconds and `retryConfig` refers to retry configuration. There are two parameters in the retry configuration, `count` refers to the number of retires and the `interval` refers to the time interval between two consecutive retries. The `eCommerceEndpoint` is the reference to the HTTP endpoint of eCommerce backend. Whenever you call that remote HTTP endpoint it uses the retry and timeout resiliency patterns.
 
 
 #### ecommerce_backend_service.bal 
@@ -113,14 +113,14 @@ will send the following JSON message with the item details.
 ```
 This mock eCommerce backend is designed only to respond once for every five requests. Big potion of calls to this eCommerce backend will not get any response.
 
-Please find the implementation of the inventory management service in `ballerina-guides/resiliency-timeouts/guides/ecommerce_backend/ecommerce_backend_service.bal`
+Please find the implementation of the eCommerce backend service in `ballerina-guides/resiliency-timeouts/guides/ecommerce_backend/ecommerce_backend_service.bal`
 
 ## <a name="testing"></a> Testing 
 
 
 ### Try it out
 
-1. Run both the orderService and inventoryService by entering the following commands in sperate terminals
+1. Run both product_search service and the ecommerce_backend service by entering the following commands in sperate terminals
     ```bash
     <SAMPLE_ROOT_DIRECTORY>$  ballerina run guide/ecommerce_backend/
    ```
@@ -129,11 +129,11 @@ Please find the implementation of the inventory management service in `ballerina
    <SAMPLE_ROOT_DIRECTORY>$ ballerina run guide/product_search/
    ```
 
-2. Then invoke the product_search by quering an item via HTTP GET method. 
+2. Then invoke the product_search by querying an item via HTTP GET method. 
    ``` bash
     curl 0.0.0.0:9090/products/search?item=TV
    ```
-   The order service should finally respond after several timeouts and retires with the following json message,
+   The eCommerce product search service should finally respond after several timeouts and retires with the following json message,
    ```json
    {"itemId":"TV","brand":"ABC","condition":"New","itemLocation":"USA","marketingPrice":"$100","seller":"XYZ"} 
    ```
