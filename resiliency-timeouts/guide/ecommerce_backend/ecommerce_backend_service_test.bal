@@ -1,4 +1,4 @@
-package ecommerce_backend;
+package guide.ecommerce_backend;
 
 import ballerina.net.http;
 import ballerina.test;

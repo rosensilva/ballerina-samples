@@ -1,4 +1,4 @@
-package product_search;
+package guide.product_search;
 
 import ballerina.net.http;
 
