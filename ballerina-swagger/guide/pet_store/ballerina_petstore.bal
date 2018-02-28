@@ -2,10 +2,11 @@ package guide.pet_store;
 
 import ballerina.net.http;
 
+
 @http:configuration {
     host:"localhost",
     port:9090,
-    basePath:"/v1"
+    basePath:"/petstore/v1"
 }
 service<http> BallerinaPetstore {
     // Use in memory data map to store pet data
@@ -21,7 +22,7 @@ service<http> BallerinaPetstore {
         json petDataJson = inReq.getJsonPayload();
         var petId, payloadDataError = (string)petDataJson.id;
 
-        // Send bad request message to the client if request don't contain pet data
+        // Send bad request message to the client if request doesn't contain pet data
         if (payloadDataError != null) {
             resp.setStringPayload("Error : Please provide the json payload with `id`,`catogery` and `name`");
             // set the response code as 400 to indicate a bad request
@@ -47,7 +48,7 @@ service<http> BallerinaPetstore {
         json petUpdateData = inReq.getJsonPayload();
         var petId, payloadDataError = (string)petUpdateData.id;
 
-        // Send bad request message to the client if request don't contain pet data
+        // Send bad request message to the client if request doesn't contain valid pet data
         if (payloadDataError != null || !petData.hasKey(petId)) {
             resp.setStringPayload("Error : Please provide the json payload with valid `id`,`catogery` and `name`");
             // set the response code as 400 to indicate a bad request
@@ -69,8 +70,8 @@ service<http> BallerinaPetstore {
     }
     resource getPetById (http:Connection conn, http:InRequest inReq, string petId) {
         http:OutResponse resp = {};
-        // Send bad request message to client if pet ID cannot found in petData map
 
+        // Send bad request message to client if pet ID cannot found in petData map
         if (!petData.hasKey(petId)) {
             resp.setStringPayload("Error : Invalid Pet ID");
             // set the response code as 400 to indicate a bad request
@@ -89,8 +90,8 @@ service<http> BallerinaPetstore {
     }
     resource deletePet (http:Connection conn, http:InRequest inReq, string petId) {
         http:OutResponse resp = {};
-        // Send bad request message to client if pet ID cannot found in petData map
 
+        // Send bad request message to client if pet ID cannot found in petData map
         if (!petData.hasKey(petId)) {
             resp.setStringPayload("Error : Invalid Pet ID");
             // set the response code as 400 to indicate a bad request
