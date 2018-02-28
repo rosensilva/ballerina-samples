@@ -2,7 +2,6 @@ package guide.pet_store;
 
 import ballerina.net.http;
 
-
 @http:configuration {
     host:"localhost",
     port:9090,
@@ -30,7 +29,6 @@ service<http> BallerinaPetstore {
             _ = conn.respond(resp);
             return;
         }
-
         // Add the pet details into the map
         petData[petId] = petDataJson;
         // Send back the status message back to the client
@@ -57,7 +55,6 @@ service<http> BallerinaPetstore {
             _ = conn.respond(resp);
             return;
         }
-
         // Update the pet details into the map
         petData[petId] = petUpdateData;
         // Send back the status message back to the client
@@ -80,7 +77,6 @@ service<http> BallerinaPetstore {
             resp.statusCode = 400;
             _ = conn.respond(resp);
         }
-
         // Set the pet data as the payload and send back the response
         var payload, _ = (json)petData[petId];
         resp.setJsonPayload(payload);
@@ -101,7 +97,6 @@ service<http> BallerinaPetstore {
             resp.statusCode = 400;
             _ = conn.respond(resp);
         }
-
         // Remove the pet data from the petData map
         petData.remove(petId);
         // Send the status back to the client
