@@ -240,7 +240,7 @@ contain all the required details about the pet store web API that we are going t
 ```
 ### Genarate the service from the Swagger / OpenAPI definition
 
-Ballerina language is capable of understanding the Swagger / OpenAPI specifications. You can easliy generate the implementation of the service by just typing the following command in the terminal.
+Ballerina language is capable of understanding the Swagger / OpenAPI specifications. You can easliy generate the implementation of the service just by typing the following command in the terminal.
 
 ```bash 
 <SAMPLE_ROOT>$ ballerina swagger skeleton swagger.json -d guide/pet_store/ballerinaPetstore.bal -p guide.pet_store
@@ -248,7 +248,7 @@ Ballerina language is capable of understanding the Swagger / OpenAPI specificati
 The `-p` flag indicates the the package and `-d` flag indicates the service file destination. These parameters are optional and can be used to have a customized package name and file location for the project.
 
 #### Generated project structure 
-After just typing the above command for swagger to Ballerina service generation, you would get a package structure similar to following,
+After running the above command Ballerina service will be generated. You would get a package structure similar to the following,
 
 ```
 ├── guide
@@ -354,14 +354,6 @@ service<http> BallerinaPetstore {
         json petDataJson = inReq.getJsonPayload();
         var petId, payloadDataError = (string)petDataJson.id;
 
-        // Send bad request message to the client if request doesn't contain pet data
-        if (payloadDataError != null) {
-            resp.setStringPayload("Error : Please provide the json payload with `id`,`catogery` and `name`");
-            // set the response code as 400 to indicate a bad request
-            resp.statusCode = 400;
-            _ = conn.respond(resp);
-            return;
-        }
         // Add the pet details into the map
         petData[petId] = petDataJson;
         // Send back the status message back to the client
@@ -380,14 +372,6 @@ service<http> BallerinaPetstore {
         json petUpdateData = inReq.getJsonPayload();
         var petId, payloadDataError = (string)petUpdateData.id;
 
-        // Send bad request message to the client if request doesn't contain valid pet data
-        if (payloadDataError != null || !petData.hasKey(petId)) {
-            resp.setStringPayload("Error : Please provide the json payload with valid `id`,`catogery` and `name`");
-            // set the response code as 400 to indicate a bad request
-            resp.statusCode = 400;
-            _ = conn.respond(resp);
-            return;
-        }
         // Update the pet details into the map
         petData[petId] = petUpdateData;
         // Send back the status message back to the client
@@ -403,13 +387,6 @@ service<http> BallerinaPetstore {
     resource getPetById (http:Connection conn, http:InRequest inReq, string petId) {
         http:OutResponse resp = {};
 
-        // Send bad request message to client if pet ID cannot found in petData map
-        if (!petData.hasKey(petId)) {
-            resp.setStringPayload("Error : Invalid Pet ID");
-            // set the response code as 400 to indicate a bad request
-            resp.statusCode = 400;
-            _ = conn.respond(resp);
-        }
         // Set the pet data as the payload and send back the response
         var payload, _ = (json)petData[petId];
         resp.setJsonPayload(payload);
@@ -423,13 +400,6 @@ service<http> BallerinaPetstore {
     resource deletePet (http:Connection conn, http:InRequest inReq, string petId) {
         http:OutResponse resp = {};
 
-        // Send bad request message to client if pet ID cannot found in petData map
-        if (!petData.hasKey(petId)) {
-            resp.setStringPayload("Error : Invalid Pet ID");
-            // set the response code as 400 to indicate a bad request
-            resp.statusCode = 400;
-            _ = conn.respond(resp);
-        }
         // Remove the pet data from the petData map
         petData.remove(petId);
         // Send the status back to the client
