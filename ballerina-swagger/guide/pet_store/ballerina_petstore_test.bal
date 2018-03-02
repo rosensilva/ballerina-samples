@@ -11,7 +11,7 @@ function beforeTest () {
 function testPetStore () {
     // Create a connection with petStore service endpoint
     endpoint<http:HttpClient> httpEndpoint {
-        create http:HttpClient("http://localhost:9090/petstore/v1", null);
+        create http:HttpClient("http://localhost:9090/v1", null);
     }
 
     // Prepare sample pet data to test the petStore service
