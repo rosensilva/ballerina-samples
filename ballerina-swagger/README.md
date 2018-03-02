@@ -6,7 +6,7 @@ The Swagger to Ballerina Code Generator can take existing Swagger definition fil
 
 ## <a name="what-you-build"></a>  What you'll build
 You'll build an RESTful web service using an already existing OpenAPI specification.
-We will use the OpenAPI / Swagger specification of a pet store RESTful service. The pet store web service supports the following operations, 
+We will use the OpenAPI / Swagger specification of a pet store RESTful service throughout this guide. The pet store web service will supports the following operations, 
 * Add new pets to the pet store via HTTP POST method
 * Retrieve existing pet details from the pet store via HTTP GET method
 * Update existing pet data in the pet store via HTTP PUT method
@@ -247,10 +247,10 @@ Ballerina language is capable of understanding the Swagger / OpenAPI specificati
 
 ```
 
-The `-p` flag indicates the package name and `-d` flag indicates the service file destination. These parameters are optional and can be used to have a customized package name and file location for the project.
+The `-p` flag indicates the package name and `-d` flag indicates the file destination for the web service. These parameters are optional and can be used to have a customized package name and file location for the project.
 
 #### Project structure 
-After running the above command, pet store web service will be auto-generated. You would get a package structure similar to the following,
+After running the above command, the pet store web service will be auto-generated. You would get a package structure similar to the following,
 
 ```
 ├── guide
@@ -330,7 +330,7 @@ service<http> BallerinaPetstore {
 
 ### Implementation of the Ballerina web service
 
-Now we have the Ballerina web service skeleton file. We only need to add the business logic inside the each resource. For simplicity, we will use an in-memory map to store the pet data. The following is the completed pet store service. 
+Now we have the Ballerina web service skeleton file. We only need to add the business logic inside each resource. For simplicity, we will use an in-memory map to store the pet data. The following is the completed pet store web service implementation. 
 
 ```ballerina
 package guide.pet_store;
@@ -504,7 +504,17 @@ ballerina run pet_store.balx
 
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
-(Work in progress) 
+
+You can use the Ballerina executable archive (.balx) archive that we created above and create a docker image using either of the following commands. 
+```
+ballerina docker pet_store.balx  
+```
+
+Once you have created the docker image, you can run it using docker run. 
+
+```
+docker run -p <host_port>:9090 --name ballerina_pet_store -d pet_store:latest
+```
 
 ### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
 (Work in progress) 
