@@ -231,8 +231,8 @@ contains all the required details about the pet store RESTful API. Additionally,
     }
   },
   "externalDocs": {
-    "description": "Find out more about Swagger",
-    "url": "http://swagger.io"
+    "description": "Find out more about Ballerina",
+    "url": "http://ballerina.io"
   }
 }
 
