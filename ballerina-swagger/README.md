@@ -33,7 +33,7 @@ Optional Requirements
 
 #### Understand the Swagger / OpenAPI specification
 The scenario that we use throughout this guide will base on the swagger specification of a pet store web service. You can find the
-complete swagger definition in the `open-api-service/swagger.json`.This specification
+complete swagger definition in `open-api-service/swagger.json`.This specification
 contain all the required details about the pet store web API that we are going to develop. You can use swagger view in Ballerina composer to create and edit swagger files. 
 
 ##### swagger.json
@@ -245,10 +245,10 @@ Ballerina language is capable of understanding the Swagger / OpenAPI specificati
 ```bash 
 <SAMPLE_ROOT>$ ballerina swagger skeleton swagger.json -d guide/pet_store/ballerinaPetstore.bal -p guide.pet_store
 ```
-The `-p` indicates the the package and `-d` indicates the service file destination. These parameters are optional and can be used to have a customized package name and file location for the project.
+The `-p` flag indicates the the package and `-d` flag indicates the service file destination. These parameters are optional and can be used to have a customized package name and file location for the project.
 
 #### Generated project structure 
-After just typing the above command for swagger to Ballerina service generation, you would get a package structure like this,
+After just typing the above command for swagger to Ballerina service generation, you would get a package structure similar to following,
 
 ```
 ├── guide
@@ -327,15 +327,121 @@ service<http> BallerinaPetstore {
 
 ### Implementation of the Ballerina web service
 
-
+Now we have the Ballerina web service skeleton file. We only need to add the business logic inside each and every resource. For simplicity we have use an in memory map to store the pet data. Following is the completed pet store service. 
 
 ```ballerina
+package guide.pet_store;
+
+import ballerina.net.http;
+
+
+@http:configuration {
+    host:"localhost",
+    port:9090,
+    basePath:"/petstore/v1"
+}
+service<http> BallerinaPetstore {
+    // Use in memory data map to store pet data
+    map petData = {};
+
+    @http:resourceConfig {
+        methods:["POST"],
+        path:"/pet"
+    }
+    resource addPet (http:Connection conn, http:InRequest inReq) {
+        http:OutResponse resp = {};
+        // Retrieve the json payload data of pets
+        json petDataJson = inReq.getJsonPayload();
+        var petId, payloadDataError = (string)petDataJson.id;
+
+        // Send bad request message to the client if request doesn't contain pet data
+        if (payloadDataError != null) {
+            resp.setStringPayload("Error : Please provide the json payload with `id`,`catogery` and `name`");
+            // set the response code as 400 to indicate a bad request
+            resp.statusCode = 400;
+            _ = conn.respond(resp);
+            return;
+        }
+        // Add the pet details into the map
+        petData[petId] = petDataJson;
+        // Send back the status message back to the client
+        string payload = "Pet added successfully : Pet ID = " + petId;
+        resp.setStringPayload(payload);
+        _ = conn.respond(resp);
+    }
+
+    @http:resourceConfig {
+        methods:["PUT"],
+        path:"/pet"
+    }
+    resource updatePet (http:Connection conn, http:InRequest inReq) {
+        http:OutResponse resp = {};
+        // Retrieve the payload data of pets
+        json petUpdateData = inReq.getJsonPayload();
+        var petId, payloadDataError = (string)petUpdateData.id;
+
+        // Send bad request message to the client if request doesn't contain valid pet data
+        if (payloadDataError != null || !petData.hasKey(petId)) {
+            resp.setStringPayload("Error : Please provide the json payload with valid `id`,`catogery` and `name`");
+            // set the response code as 400 to indicate a bad request
+            resp.statusCode = 400;
+            _ = conn.respond(resp);
+            return;
+        }
+        // Update the pet details into the map
+        petData[petId] = petUpdateData;
+        // Send back the status message back to the client
+        string payload = "Pet details updated successfully : id = " + petId;
+        resp.setStringPayload(payload);
+        _ = conn.respond(resp);
+    }
+
+    @http:resourceConfig {
+        methods:["GET"],
+        path:"/pet/{petId}"
+    }
+    resource getPetById (http:Connection conn, http:InRequest inReq, string petId) {
+        http:OutResponse resp = {};
+
+        // Send bad request message to client if pet ID cannot found in petData map
+        if (!petData.hasKey(petId)) {
+            resp.setStringPayload("Error : Invalid Pet ID");
+            // set the response code as 400 to indicate a bad request
+            resp.statusCode = 400;
+            _ = conn.respond(resp);
+        }
+        // Set the pet data as the payload and send back the response
+        var payload, _ = (json)petData[petId];
+        resp.setJsonPayload(payload);
+        _ = conn.respond(resp);
+    }
+
+    @http:resourceConfig {
+        methods:["DELETE"],
+        path:"/pet/{petId}"
+    }
+    resource deletePet (http:Connection conn, http:InRequest inReq, string petId) {
+        http:OutResponse resp = {};
+
+        // Send bad request message to client if pet ID cannot found in petData map
+        if (!petData.hasKey(petId)) {
+            resp.setStringPayload("Error : Invalid Pet ID");
+            // set the response code as 400 to indicate a bad request
+            resp.statusCode = 400;
+            _ = conn.respond(resp);
+        }
+        // Remove the pet data from the petData map
+        petData.remove(petId);
+        // Send the status back to the client
+        string payload = "Deleted pet data successfully : Pet ID = " + petId;
+        resp.setStringPayload(payload);
+        _ = conn.respond(resp);
+    }
+}
+
 ```
 
-Please refer `ballerina-guides/data-backed-service/employeeService/employee_database_service.bal` file for the complete implementaion of employee management web service.
-
-
-
+With that we have completed the implementaion of the Pet store web service.
 
 ## <a name="testing"></a> Testing 
 
@@ -346,63 +452,57 @@ You can run the RESTful service that you developed above, in your local environm
 1. As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
 
 ```
-$ballerina build  /employeeService
+$ ballerina build guide/pet_store/
+
 ```
 
 2. Once the employeeService.balx is created, you can run that with the following command. 
 
 ```
-ballerina run employeeService.balx 
+$ ballerina run pet_store.balx  
 ```
 
 3. The successful execution of the service should show us the following output. 
 ```
-ballerina: deploying service(s) in 'employeeService'
+ballerina: deploying service(s) in 'pet_store.balx'
 ballerina: started HTTP/WS server connector 0.0.0.0:9090
- 
+
 ```
 
-4. You can test the functionality of the employee database management RESTFul service by sending HTTP request for each database operation. For example, we have used the curl commands to test each operation of employeeService as follows. 
+4. You can test the functionality of the pet store RESTFul service by sending HTTP request for each operation. For example, we have used the curl commands to test each operation of pet store as follows. 
 
-**Add new employee** 
+**Add new pet** 
 ```
-curl -v -X POST -d '{"Name":"Alice", "Age":"20","SSN":"123456789","EmployeeID":"1"}' \
-"http://localhost:9090/records/employee" -H "Content-Type:application/json"
+curl -X POST -d '{"id":"1", "catogery":"dog", "name":"doggie"}' 
+"http://localhost:9090/petstore/v1/pet/" -H "Content-Type:application/json"
 
 Output :  
-< HTTP/1.1 200 OK
-{"Name":"Alice","Age":"20","SSN":"123456789","EmployeeID":"1","Status": \
-{"Status":"Data Inserted Successfully"}}
+Pet added successfully : Pet ID = 1
 ```
 
-**Retrieve employee data** 
+**Retrieve pet data** 
 ```
-curl -v  "http://localhost:9090/records/employee?EmployeeID=1"
-
-Output : 
-< HTTP/1.1 200 OK
-[{"EmployeeID":1,"Name":"Alice","Age":20,"SSN":123456789}]
-
-```
-**Update an existing employee data** 
-```
-curl -v -X PUT -d '{"Name":"Alice Updated", "Age":"30","SSN":"123456789","EmployeeID":"1"}' \
-"http://localhost:9090/records/employee" -H "Content-Type:application/json"
-
-Output: 
-< HTTP/1.1 200 OK
-{"Name":"Alice Updated","Age":"30","SSN":"123456789","EmployeeID":"1","Status": \
-{"Status":"Data Updated Successfully"}}
-```
-
-**Delete employee data** 
-```
-curl -v -X DELETE -d '{"EmployeeID":"1"}'  "http://localhost:9090/records/employee" \
--H "Content-Type:application/json"
+curl "http://localhost:9090/petstore/v1/pet/1"
 
 Output:
-< HTTP/1.1 200 OK
-{"Employee ID":"1","Status":{"Status":"Data Deleted Successfully"}}
+{"id":"1","catogery":"dog-updated","name":"Updated-doggie"}
+```
+
+**Update pet data** 
+```
+curl -X PUT -d '{"id":"1", "catogery":"dog-updated", "name":"Updated-doggie"}' 
+"http://localhost:9090/petstore/v1/pet/" -H "Content-Type:application/json"
+
+Output: 
+Pet details updated successfully : id = 1
+```
+
+**Delete pet data** 
+```
+curl -X DELETE  "http://localhost:9090/petstore/v1/pet/1"
+
+Output:
+Deleted pet data successfully : Pet ID = 1
 ```
 
 ### <a name="unit-testing"></a> Writing Unit Tests 
@@ -410,14 +510,13 @@ Output:
 In ballerina, the unit test cases should be in the same package and the naming convention should be as follows,
 * Test files should contain _test.bal suffix.
 * Test functions should contain test prefix.
-  * e.g.: testAddEmployee()
+  * e.g.: testPetStore()
 
-This guide contains unit test cases in the respective folders. The two test cases are written to test the Employee Data Service and the Database utilities package.
+This guide contains unit test cases in the respective folders. The test cases are written to test the pet store web service.
 To run the unit tests, go to the sample root directory and run the following command
 ```bash
-$ ballerina test employeeService/
+$ ballerina test guide/pet_store/
 ```
-
 
 ## <a name="deploying-the-scenario"></a> Deployment
 
@@ -427,7 +526,7 @@ Once you are done with the development, you can deploy the service using any of 
 You can deploy the RESTful service that you developed above, in your local environment. You can use the Ballerina executable archive (.balx) archive that we created above and run it in your local environment as follows. 
 
 ```
-ballerina run employeeService.balx 
+ballerina run pet_store.balx 
 ```
 
 
