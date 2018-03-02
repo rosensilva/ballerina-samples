@@ -450,7 +450,7 @@ ballerina: started HTTP/WS server connector 0.0.0.0:9090
 **Add a new pet** 
 ```
 curl -X POST -d '{"id":"1", "catogery":"dog", "name":"doggie"}' 
-"http://localhost:9090/petstore/v1/pet/" -H "Content-Type:application/json"
+"http://localhost:9090/v1/pet/" -H "Content-Type:application/json"
 
 Output :  
 Pet added successfully : Pet ID = 1
@@ -458,7 +458,7 @@ Pet added successfully : Pet ID = 1
 
 **Retrieve pet data** 
 ```
-curl "http://localhost:9090/petstore/v1/pet/1"
+curl "http://localhost:9090/v1/pet/1"
 
 Output:
 {"id":"1","catogery":"dog","name":"Updated"}
@@ -467,7 +467,7 @@ Output:
 **Update pet data** 
 ```
 curl -X PUT -d '{"id":"1", "catogery":"dog-updated", "name":"Updated-doggie"}' 
-"http://localhost:9090/petstore/v1/pet/" -H "Content-Type:application/json"
+"http://localhost:9090/v1/pet/" -H "Content-Type:application/json"
 
 Output: 
 Pet details updated successfully : id = 1
@@ -475,7 +475,7 @@ Pet details updated successfully : id = 1
 
 **Delete pet data** 
 ```
-curl -X DELETE  "http://localhost:9090/petstore/v1/pet/1"
+curl -X DELETE  "http://localhost:9090/v1/pet/1"
 
 Output:
 Deleted pet data successfully: Pet ID = 1
