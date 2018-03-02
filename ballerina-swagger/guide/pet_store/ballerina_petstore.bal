@@ -6,7 +6,7 @@ import ballerina.net.http;
 @http:configuration {
     host:"localhost",
     port:9090,
-    basePath:"/petstore/v1"
+    basePath:"/v1"
 }
 service<http> BallerinaPetstore {
     // Use in memory data map to store pet data

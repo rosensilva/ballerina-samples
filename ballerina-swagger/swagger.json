@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "This is a sample server Petstore server. This uses swagger definitions to create the ballerina service",
+    "description": "This is a sample Petstore server. This uses swagger definitions to create the ballerina service",
     "version": "1.0.0",
     "title": "Ballerina Petstore",
     "termsOfService": "http://ballerina.io/terms/",
@@ -13,7 +13,7 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "host": "petstore.swagger.io",
+  "host": "localhost:9090",
   "basePath": "/v1",
   "tags": [
     {
