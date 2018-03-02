@@ -1,12 +1,12 @@
 # Building Ballerina Web Services with Swagger / OpenAPI Specifications
 This guide walks you through building a RESTful Ballerina web service using [Swagger / OpenAPI Specification](https://swagger.io/specification/).
 OpenAPI Specification (formerly called the Swagger Specification) is a specification that creates RESTful contract for APIs,
-detailing all of its resources and operations in a human and machine readable format for easy development, discovery, and integration.
+detailing all of its resources and operations in a human and machine-readable format for easy development, discovery, and integration.
 The Swagger to Ballerina Code Generator can take existing Swagger definition files and generate Ballerina services from them.
 
 ## <a name="what-you-build"></a>  What you'll build
 You'll build an RESTful web service using an already existing OpenAPI specification.
-We will use the OpenAPI / Swagger specification of a pet store RESTful API. The pet store web service support the following operations, 
+We will use the OpenAPI / Swagger specification of a pet store RESTful API. The pet store web service supports the following operations, 
 * Add new pets to the pet store via HTTP POST method
 * Retrieve existing pet details from the pet store via HTTP GET method
 * Update existing pet data in the pet store via HTTP PUT method
@@ -34,7 +34,7 @@ Optional Requirements
 #### Understand the Swagger / OpenAPI specification
 The scenario that we use throughout this guide will base on the swagger specification of a pet store web service. You can find the
 complete swagger definition in `open-api-service/swagger.json`.This specification
-contain all the required details about the pet store web API that we are going to develop. You can use swagger view in Ballerina composer to create and edit swagger files. 
+contains all the required details about the pet store web API that we are going to develop. You can use the swagger view in Ballerina composer to create and edit swagger files. 
 
 ##### swagger.json
 ```json
@@ -240,12 +240,12 @@ contain all the required details about the pet store web API that we are going t
 ```
 ### Genarate the service from the Swagger / OpenAPI definition
 
-Ballerina language is capable of understanding the Swagger / OpenAPI specifications. You can easliy generate the implementation of the service just by typing the following command in the terminal.
+Ballerina language is capable of understanding the Swagger / OpenAPI specifications. You can easily generate the implementation of the service just by typing the following command in the terminal.
 
 ```bash 
 <SAMPLE_ROOT>$ ballerina swagger skeleton swagger.json -d guide/pet_store/ballerinaPetstore.bal -p guide.pet_store
 ```
-The `-p` flag indicates the the package and `-d` flag indicates the service file destination. These parameters are optional and can be used to have a customized package name and file location for the project.
+The `-p` flag indicates the package and `-d` flag indicates the service file destination. These parameters are optional and can be used to have a customized package name and file location for the project.
 
 #### Generated project structure 
 After running the above command Ballerina service will be generated. You would get a package structure similar to the following,
@@ -258,7 +258,7 @@ After running the above command Ballerina service will be generated. You would g
 └── swagger.json
 
 ```
-The `guide.pet_store` is the package for the pet store web service. You will have the skeleton of the service implementaion. Now you can have the business logic inside the each RESTful resource and build the pet store web service.
+The `guide.pet_store` is the package for the pet store web service. You will have the skeleton of the service implementation. Now you can have the business logic inside each RESTful resource and build the pet store web service.
 
 ##### The generated `ballerina_petstore.bal` file 
 ```ballerina
@@ -327,7 +327,7 @@ service<http> BallerinaPetstore {
 
 ### Implementation of the Ballerina web service
 
-Now we have the Ballerina web service skeleton file. We only need to add the business logic inside each and every resource. For simplicity we have use an in memory map to store the pet data. Following is the completed pet store service. 
+Now we have the Ballerina web service skeleton file. We only need to add the business logic inside each and every resource. For simplicity, we have used an in-memory map to store the pet data. Following is the completed pet store service. 
 
 ```ballerina
 package guide.pet_store;
@@ -411,7 +411,7 @@ service<http> BallerinaPetstore {
 
 ```
 
-With that we have completed the implementaion of the Pet store web service.
+With that, we have completed the implementation of the Pet store web service.
 
 ## <a name="testing"></a> Testing 
 
@@ -472,7 +472,7 @@ Pet details updated successfully : id = 1
 curl -X DELETE  "http://localhost:9090/petstore/v1/pet/1"
 
 Output:
-Deleted pet data successfully : Pet ID = 1
+Deleted pet data successfully: Pet ID = 1
 ```
 
 ### <a name="unit-testing"></a> Writing Unit Tests 
