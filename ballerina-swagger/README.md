@@ -6,7 +6,7 @@ The Swagger to Ballerina Code Generator can take existing Swagger definition fil
 
 ## <a name="what-you-build"></a>  What you'll build
 You'll build an RESTful web service using an already existing OpenAPI specification.
-We will use the OpenAPI / Swagger specification of a pet store RESTful service throughout this guide. The pet store web service will supports the following operations, 
+We will use the OpenAPI / Swagger specification of a pet store RESTful service throughout this guide. The pet store web service will support the following operations, 
 * Add new pets to the pet store via HTTP POST method
 * Retrieve existing pet details from the pet store via HTTP GET method
 * Update existing pet data in the pet store via HTTP PUT method
@@ -250,7 +250,7 @@ Ballerina language is capable of understanding the Swagger / OpenAPI specificati
 The `-p` flag indicates the package name and `-d` flag indicates the file destination for the web service. These parameters are optional and can be used to have a customized package name and file location for the project.
 
 #### Project structure 
-After running the above command, the pet store web service will be auto-generated. You would get a package structure similar to the following,
+After running the above command, the pet store web service will be auto-generated. You should see a package structure similar to the following,
 
 ```
 ├── guide
@@ -260,7 +260,7 @@ After running the above command, the pet store web service will be auto-generate
 └── swagger.json
 
 ```
-The `guide.pet_store` is the package for the pet store web service. You will have the skeleton of the service implementation. Now we can have the business logic inside each RESTful resource and build the pet store web service.
+The `guide.pet_store` is the package for the pet store web service. You will have the skeleton of the service implementation. 
 
 ##### The generated `ballerina_petstore.bal` file
   
@@ -327,6 +327,9 @@ service<http> BallerinaPetstore {
 }
 
 ```
+
+  Next we need to implement the business logic inside each RESTful resource and build the pet store web service.
+  
 
 ### Implementation of the Ballerina web service
 
