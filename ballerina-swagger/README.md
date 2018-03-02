@@ -6,7 +6,7 @@ The Swagger to Ballerina Code Generator can take existing Swagger definition fil
 
 ## <a name="what-you-build"></a>  What you'll build
 You'll build an RESTful web service using an already existing OpenAPI specification.
-The OpenAPI / Swagger specification is the RESTful API for pet store web service that have the following resources, 
+We will use the OpenAPI / Swagger specification of a pet store RESTful API. The pet store web service support the following operations, 
 * Add new pets to the pet store via HTTP POST method
 * Retrieve existing pet details from the pet store via HTTP GET method
 * Update existing pet data in the pet store via HTTP PUT method
@@ -240,26 +240,94 @@ contain all the required details about the pet store web API that we are going t
 ```
 ### Genarate the service from the Swagger / OpenAPI definition
 
-Ballerina language is capable of understand the Swagger / OpenAPI specifications. You can easliy generate the implementation 
-of the service by just typing the following command in the terminal.
+Ballerina language is capable of understanding the Swagger / OpenAPI specifications. You can easliy generate the implementation of the service by just typing the following command in the terminal.
 
 ```bash 
 <SAMPLE_ROOT>$ ballerina swagger skeleton swagger.json -d guide/pet_store/ballerinaPetstore.bal -p guide.pet_store
-
 ```
+The `-p` indicates the the package and `-d` indicates the service file destination. These parameters are optional and can be used to have a customized package name and file location for the project.
+
 #### Generated project structure 
-```
-├── employeeService
-│   |── util
-│   |    └── db
-│   |        ├── employee_database_util.bal
-│   |        └── employee_database_util_test.bal
-│   ├── employee_database_service.bal
-│   └── employee_database_service_test.bal
-└── ballerina.conf
+After just typing the above command for swagger to Ballerina service generation, you would get a package structure like this,
 
 ```
-### Develop the Ballerina web service
+├── guide
+│   └── pet_store
+│       ├── ballerina_petstore.bal
+│       └── ballerina_petstore_test.bal
+└── swagger.json
+
+```
+The `guide.pet_store` is the package for the pet store web service. You will have the skeleton of the service implementaion. Now you can have the business logic inside the each RESTful resource and build the pet store web service.
+
+##### The generated `ballerina_petstore.bal` file 
+```ballerina
+package ;
+
+import ballerina.net.http;
+
+
+@http:configuration {
+    host: "petstore.swagger.io",
+    port: 80,
+    basePath: "/v1"
+}
+service<http> BallerinaPetstore {
+
+    @http:resourceConfig {
+        methods:["POST"],
+        path:"/pet"
+    }
+    resource addPet (http:Connection conn, http:InRequest inReq) {
+        //stub code - fill as necessary
+        http:OutResponse resp = {};
+        string payload = "Sample addPet Response";
+        resp.setStringPayload(payload);
+        _ = conn.respond(resp);
+    }
+
+    @http:resourceConfig {
+        methods:["PUT"],
+        path:"/pet"
+    }
+    resource updatePet (http:Connection conn, http:InRequest inReq) {
+        //stub code - fill as necessary
+        http:OutResponse resp = {};
+        string payload = "Sample updatePet Response";
+        resp.setStringPayload(payload);
+        _ = conn.respond(resp);
+    }
+
+    @http:resourceConfig {
+        methods:["GET"],
+        path:"/pet/{petId}"
+    }
+    resource getPetById (http:Connection conn, http:InRequest inReq, string petId) {
+        //stub de - fill as necessary
+        http:OutResponse resp = {};
+        string payload = "Sample getPetById Response";
+        resp.setStringPayload(payload);
+        _ = conn.respond(resp);
+    }
+
+    @http:resourceConfig {
+        methods:["DELETE"],
+        path:"/pet/{petId}"
+    }
+    resource deletePet (http:Connection conn, http:InRequest inReq, string petId) {
+        //stub code - fill as necessary
+        http:OutResponse resp = {};
+        string payload = "Sample deletePet Response";
+        resp.setStringPayload(payload);
+        _ = conn.respond(resp);
+    }
+}
+
+```
+
+### Implementation of the Ballerina web service
+
+
 
 ```ballerina
 ```
