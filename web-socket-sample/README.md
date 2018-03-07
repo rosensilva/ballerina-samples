@@ -2,7 +2,7 @@
 [WebSockets](https://tools.ietf.org/html/rfc6455) is a computer communications protocol that allows you to open an interactive communication session between the user's browser and a server. With WebSockets, you can send messages to a server and receive responses based on events without having to query the server for a response.
 
 ## <a name="what-you-build"></a>  What you'll build
-You'll build Chat Application using WebSockets. We will develop the chat application server side completely in Ballerina. For the browser client, we will use JavaScript and HTML.
+You'll build Chat Application using WebSockets. We will develop the chat application server completely using Ballerina. For the browser client, we will use JavaScript and HTML.
 
 &nbsp;
 ![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/web-socket-sample/images/chat_application_ui.png)
@@ -22,19 +22,23 @@ Optional Requirements
 ### Before you begin
 
 #### Understand the project structure
-You should see a package structure similar to the following,
+The package structure would look similar to the following,
 
 ```
-├── guide
-│   └── petstore
-│       ├── ballerina_petstore.bal
-│       └── ballerina_petstore_test.bal
-└── petstore.json
+├── chatserver
+│   └── chat_app.bal
+└── chat_web_client
+    ├── bootstrap-3
+    │   ├── css
+    │   │   └── bootstrap.min.css
+    │   └── js
+    │       └── bootstrap.min.js
+    └── index.html
 
 ```
-The `guide.petstore` is the package for the pet store web service. You will have the skeleton of the service implementation. 
+The `chatserver` is the package for the chat application server side implementation. The `chat_web_client` is the web client for the chat application. This guide will more elobarate on the serverside implementation of chat application using WebSocket support in Ballerina. 
 
-### Implementation of the WebSocket chat application
+### Implementation of the Chat Application using WebSockets
 
 Now we have the Ballerina web service skeleton file. We only need to add the business logic inside each resource. For simplicity, we will use an in-memory map to store the pet data. The following code is the completed pet store web service implementation. 
 
