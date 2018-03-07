@@ -231,8 +231,8 @@ contains all the required details about the pet store RESTful API. Additionally,
     }
   },
   "externalDocs": {
-    "description": "Find out more about Swagger",
-    "url": "http://swagger.io"
+    "description": "Find out more about Ballerina",
+    "url": "http://ballerina.io"
   }
 }
 
@@ -333,7 +333,7 @@ service<http> BallerinaPetstore {
 
 ### Implementation of the Ballerina web service
 
-Now we have the Ballerina web service skeleton file. We only need to add the business logic inside each resource. For simplicity, we will use an in-memory map to store the pet data. The following is the completed pet store web service implementation. 
+Now we have the Ballerina web service skeleton file. We only need to add the business logic inside each resource. For simplicity, we will use an in-memory map to store the pet data. The following code is the completed pet store web service implementation. 
 
 ```ballerina
 package guide.pet_store;
