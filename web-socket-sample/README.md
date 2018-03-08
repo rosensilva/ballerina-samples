@@ -22,7 +22,7 @@ Optional Requirements
 ### Before you begin
 
 #### Understand the project structure
-The package structure would look similar to the following,
+The project structure would look similar to the following,
 
 ```
 ├── chatserver
@@ -36,11 +36,12 @@ The package structure would look similar to the following,
     └── index.html
 
 ```
-The `chatserver` is the package for the chat application server side implementation. The `chat_web_client` is the web client for the chat application. This guide will more elobarate on the serverside implementation of chat application using WebSocket support in Ballerina. 
+The `chatserver` is the package for the chat application server side implementation. The `chat_web_client` is the web client for the chat application. This guide will elaborate more on the server-side implementation of chat application using WebSockets in Ballerina. 
 
 ### Implementation of the Chat Application using WebSockets
 
-Now we have the Ballerina web service skeleton file. We only need to add the business logic inside each resource. For simplicity, we will use an in-memory map to store the pet data. The following code is the completed pet store web service implementation. 
+First, you need to import the WebSocket package using the `import ballerina.net.ws;` command. Then, you can define a WebSocket web service as `service<ws> ChatApp `. Before that you may need to add additional WebSocket configurations using `@ws:configuration` annotation. For the chat application we'll give `basePath` as `"/chat/{name}"` and `port` as `9090`. 
+Next, we need to add resources for events like Openning a new WebSocket, Closing an exisitng WebSokcets, receiving messages form WebSockets.  Inside each resource, we can implement the logic as per the requirement. In this guide we will implement the chat application logic inside those resources. We can use an in-memory map to save all the WebSocket connections. Then, we can add the incomming WebSocket connection to the map in the `onOpen` resource, we can remove the WebSocket connection form the map in the `onClose` resource and we can broadcast the message to all the connections in the map at the `onTextMessage` resource. Please find the complete implementation of the chat application at `/websocket-chat-app/chatserver/chat_app.bal` 
 
 #### chat_app.bal
 ```ballerina
