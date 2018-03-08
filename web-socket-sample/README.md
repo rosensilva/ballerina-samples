@@ -169,25 +169,14 @@ ballerina: started HTTP/WS server connector 0.0.0.0:9090
 4. You can test the functionality using the chat application web client. Navigate to the sample base directory and find the `index.html` at `websocket-chat-app/chat_web_client/` loaction. Then open the index.html file from a web browser (e.g: Chrome, Firefox). 
 Then you will see the chat application user interface, 
 
-**Registring as new user** 
+**Connect as a new user** 
+
+You can add your name and age in the respetive text input boxes. Then the client will connect to the chat application web server using WebSockets.
 
 ![alt_text](https://github.com/rosensilva/ballerina-samples/blob/master/web-socket-sample/images/chat_app_add_user_resized.png)
 
-```
-curl -X POST -d '{"id":"1", "catogery":"dog", "name":"doggie"}' 
-"http://localhost:9090/v1/pet/" -H "Content-Type:application/json"
-
-Output :  
-Pet added successfully : Pet ID = 1
-```
-
-**Retrieve pet data** 
-```
-curl "http://localhost:9090/v1/pet/1"
-
-Output:
-{"id":"1","catogery":"dog","name":"Updated"}
-```
+**Sending chat messages** 
+You can 
 
 **Update pet data** 
 ```
@@ -198,50 +187,24 @@ Output:
 Pet details updated successfully : id = 1
 ```
 
-**Delete pet data** 
-```
-curl -X DELETE  "http://localhost:9090/v1/pet/1"
-
-Output:
-Deleted pet data successfully: Pet ID = 1
-```
-
 ### <a name="unit-testing"></a> Writing Unit Tests 
 
 In ballerina, the unit test cases should be in the same package and the naming convention should be as follows,
 * Test files should contain _test.bal suffix.
 * Test functions should contain test prefix.
-  * e.g.: testPetStore()
-
-This guide contains unit test cases in the respective folders. The test cases are written to test the pet store web service.
-To run the unit tests, go to the sample root directory and run the following command
-```bash
-$ ballerina test guide/petstore/
-```
-
-## <a name="deploying-the-scenario"></a> Deployment
-
-Once you are done with the development, you can deploy the service using any of the methods that we listed below. 
-
-### <a name="deploying-on-locally"></a> Deploying Locally
-You can deploy the RESTful service that you developed above, in your local environment. You can use the Ballerina executable archive (.balx) archive that we created above and run it in your local environment as follows. 
-
-```
-ballerina run petstore.balx 
-```
-
+  * e.g.: testOnMessage()
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
 
 You can use the Ballerina executable (.balx) archive that we created above and create a docker image by using the following command. 
 ```
-ballerina docker pet_store.balx  
+ballerina docker chatserver.balx  
 ```
 
 Once you have created the docker image, you can run it using docker run. 
 
 ```
-docker run -p <host_port>:9090 --name ballerina_pet_store -d pet_store:latest
+docker run -p <host_port>:9090 --name ballerina_chatserver -d chatserver:latest
 ```
 
 ### <a name="deploying-on-k8s"></a> Deploying on Kubernetes
