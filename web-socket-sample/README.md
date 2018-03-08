@@ -169,7 +169,7 @@ ballerina: started HTTP/WS server connector 0.0.0.0:9090
 4. You can test the functionality using the chat application web client. Navigate to the sample base directory and find the `index.html` at `websocket-chat-app/chat_web_client/` loaction. Then open the index.html file from a web browser (e.g: Chrome, Firefox). 
 Then you will see the chat application user interface,  
 
-**Connect as a new user** 
+**Connect as a new user**  
 You can add your name and age in the respetive text input boxes. Then the client will connect to the chat application web server using WebSockets.  
 
 ![alt_text](https://github.com/rosensilva/ballerina-samples/blob/master/web-socket-sample/images/chat_app_add_user_resized.png)
