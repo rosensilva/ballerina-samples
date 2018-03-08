@@ -1,5 +1,5 @@
-# Using WebSockets to develop interactive web application
-[WebSockets](https://tools.ietf.org/html/rfc6455) is a computer communications protocol that allows you to open an interactive communication session between the user's browser and a server. With WebSockets, you can send messages to a server and receive responses based on events without having to query the server for a response.
+# Using WebSockets to develop an interactive web application
+[WebSocket](https://tools.ietf.org/html/rfc6455) is a computer communications protocol that allows you to open an interactive communication session between the user's browser and a server. With WebSockets, you can send messages to a server and receive responses based on events without having to query the server for a response.
 
 ## <a name="what-you-build"></a>  What you'll build
 You'll build Chat Application using WebSockets. We will develop the chat application server completely using Ballerina. For the browser client, we will use JavaScript and HTML.
@@ -107,37 +107,72 @@ function broadcast (map consMap, string text) {
 }
 ```
 
-With that, we have completed the implementation of the Chat Application.
+With that, we have completed the implementation of the Chat Application web server.
+
+### Implementation of the web client for the Chat Application
+
+You can use the WebSocket API provided in JavaScript to write the web client for the Chat Applicatio
+First, we will create a new WebSocket connection from JavaScript.
+```javascript
+var ws = new WebSocket("ws://localhost:9090/proxy/ws");`.
+```
+
+Next we need to listen to the following events for the WebSocket connection.
+```javascript
+ws.onmessage = onMessageFucntion
+ws.onclose = onCloaseFunction
+```
+Basically, you will need to display the messgae in the web page when a new message arieved and you should display user disconnect message when WebSocket closes.
+Following is the implementation of the `onMessageFucntion` and `onCloaseFunction`
+```javascript
+        function onMessageFunction(msg) {
+            // Display the received message in the web page
+            $('#responseBox').append('<h4>' + msg.data + '</h4>');
+        }
+
+        function onCloseFunction() {
+            $('#responseBox').append('<h4 style="color: red">Server closed the connection</h4>');
+            $('#connectionStatus').text("connection closed.").css("color", "red");
+        }
+```
+Finally, you can send new messages from the following WebSocket fucntion, 
+```javascript
+ws.send("text message to send");
+```
+Please find the complete implementation of JavaScript web client at `websocket-chat-app/chat_web_client/index.html`
 
 ## <a name="testing"></a> Testing 
 
-### <a name="invoking"></a> Invoking the RESTful service 
+### <a name="invoking"></a> Invoking the Chat Application web service 
 
-You can run the RESTful service that you developed above, in your local environment. You need to have the Ballerina installation on your local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
+You can run the Chat Application server that you developed above, in your local environment. You need to have the Ballerina installation on your local machine and simply point to the <ballerina>/bin/ballerina binary to execute all the following steps.  
 
 1. As the first step, you can build a Ballerina executable archive (.balx) of the service that we developed above, using the following command. It points to the directory structure of the service that we developed above and it will create an executable binary out of that. 
 
 ```
-$ ballerina build guide/petstore/
-
+$ $ ballerina build chatserver/
 ```
 
 2. Once the petstore.balx is created, you can run that with the following command. 
 
 ```
-$ ballerina run petstore.balx  
+$ ballerina run chatserver.balx  
 ```
 
 3. The successful execution of the service should show us the following output. 
 ```
-ballerina: deploying service(s) in 'petstore.balx'
+ballerina: deploying service(s) in 'chatserver.balx'
 ballerina: started HTTP/WS server connector 0.0.0.0:9090
 
 ```
 
-4. You can test the functionality of the pet store RESTFul service by sending HTTP request for each operation. For example, we have used the curl commands to test each operation of pet store as follows. 
+4. You can test the functionality using the chat application web client. Navigate to the sample base directory and find the `index.html` at `websocket-chat-app/chat_web_client/` loaction. Then open the index.html file from a web browser (e.g: Chrome, Firefox). 
+Then you will see the chat application user interface, 
 
-**Add a new pet** 
+**Registring as new user** 
+
+![alt_text](https://github.com/rosensilva/ballerina-samples/blob/master/web-socket-sample/images/chat_app_add_user_resized.png)
+
 ```
 curl -X POST -d '{"id":"1", "catogery":"dog", "name":"doggie"}' 
 "http://localhost:9090/v1/pet/" -H "Content-Type:application/json"
