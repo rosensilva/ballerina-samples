@@ -171,21 +171,24 @@ Then you will see the chat application user interface,
 
 **Connect as a new user** 
 
-You can add your name and age in the respetive text input boxes. Then the client will connect to the chat application web server using WebSockets.
+You can add your name and age in the respetive text input boxes. Then the client will connect to the chat application web server using WebSockets.  
 
 ![alt_text](https://github.com/rosensilva/ballerina-samples/blob/master/web-socket-sample/images/chat_app_add_user_resized.png)
 
-**Sending chat messages** 
-You can 
+**Send chat messages**  
 
-**Update pet data** 
-```
-curl -X PUT -d '{"id":"1", "catogery":"dog-updated", "name":"Updated-doggie"}' 
-"http://localhost:9090/v1/pet/" -H "Content-Type:application/json"
+You can send new messages to chat using the chat application client by typing the message in the provided text box and pressing send button.  
 
-Output: 
-Pet details updated successfully : id = 1
-```
+![alt_text](https://github.com/rosensilva/ballerina-samples/blob/master/web-socket-sample/images/chat_app_send_msg.png)  
+
+
+**Recieve chat messages**  
+
+You can see the new messages as they arive in the chat application client user interface.
+
+**Join multiple clients to the chat server**  
+You can login to chat application using muliple browsers or from the same browser. To test this, you can open multiple
+ instances of `websocket-chat-app/chat_web_client/index.html` from your browser/s.
 
 ### <a name="unit-testing"></a> Writing Unit Tests 
 
