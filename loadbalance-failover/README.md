@@ -1,33 +1,33 @@
-# Circuit Breaker
-The [circuit breaker pattern](https://martinfowler.com/bliki/CircuitBreaker.html) is a way to automatically degrade functionality when remote services fail. When you use the circuit breaker pattern, you can allow a web service to continue operating without waiting for unresponsive remote services.
+# Failover and Load Balancing
+Load Balancing is efficiently distributing incoming network traffic across a group of backend servers and failover refers to a procedure by which a system automatically transfers control to a duplicate system when it detects a fault or failure. The combination of load balancing and failover techniques will create a highly available systems with eficiently distributing the workload amoung avaibale resources. Ballerina laguage supports load balancing and failover out-of-the-box.
 
-> This guide walks you through the process of adding a circuit breaker pattern to a potentially-failing remote backend. 
+> This guide walks you through the process of adding load balancing and failover for Ballerina programms.
 
 The following are the sections available in this guide.
 
 - [What you'll build](#what-you-build)
 - [Prerequisites](#pre-req)
-- [Developing the RESTFul service with circuit breaker](#developing-service)
+- [Developing the RESTFul service with load balancing and failover](#developing-service)
 - [Testing](#testing)
 - [Deployment](#deploying-the-scenario)
 - [Observability](#observability)
 
 ## <a name="what-you-build"></a>  What you'll build
 
-You’ll build a web service that uses the Circuit Breaker pattern to gracefully degrade functionality when a remorte backend fails. To understand this better, you'll be mapping this with a real world scenario of an order processing service of a retail store. The retail store uses a potentially-failing remote backend for inventory management. When a specific order comes to the order processing service, the service calls the inventory management service to check the availability of items.
+You’ll build a web service with loadbalancing and failover mechanisms. To understand this better, you'll be mapping this with a real world scenario of a book finding service. The book finding service will use three remote backends running three identical book store services to retrieve the book details.The failover and load balancing mechaisms help to balance the load amoung all the available remote servers.
 
 &nbsp;
 &nbsp;
 &nbsp;
 &nbsp;
 
-![Circuit breaker ](images/circuit_breaker_image3.png)
+![Load Balancer](images/load_balancer_image1.png)
 
 &nbsp;
 &nbsp;
 &nbsp;
 
-**Place orders through retail store**: To place a new order you can use the HTTP POST message that contains the order details
+**Request book details from book search service**: To searcg a new book you can use the HTTP GET request that contains the book name as a path parameter.
 
 ## <a name="pre-req"></a> Prerequisites
  
@@ -44,18 +44,16 @@ You’ll build a web service that uses the Circuit Breaker pattern to gracefully
 ### Before you begin
 
 #### Understand the package structure
-Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
+The project structure for this guide should be as the following.
 
 ```
-├── orderServices
-│   ├── order_service.bal
-│   └── order_service_test.bal
-└── inventoryServices
-    ├── inventory_service.bal
-    └── inventory_service_test.bal
+├── booksearchservice
+│   └── book_search_service.bal
+└── bookstorebacked
+    └── book_store_service.bal
 ```
 
-The `orderServices` is the service that handles the client orders. Order service is configured with a circuit breaker to deal with the potentially-failing remote inventory management service.  
+The `booksearchservice` is the service that handles the client orders to find books from book stores. Book search service is configured with three identical book store backeds to find book details. You can find the loadbalancing and failover mechanisms are applied when the book search service searches book from identical backends.
 
 The `inventoryServices` is an independent web service that accepts orders via HTTP POST method from `orderService` and sends the availability of order items.
 
