@@ -53,72 +53,61 @@ The project structure for this guide should be as the following.
     └── book_store_service.bal
 ```
 
-The `booksearchservice` is the service that handles the client orders to find books from book stores. Book search service is configured with three identical book store backeds to find book details. You can find the loadbalancing and failover mechanisms are applied when the book search service searches book from identical backends.
+The `booksearchservice` is the service that handles the client orders to find books from book stores. Book search service call book store backeds to retrieve book details. You can find the loadbalancing and failover mechanisms are applied when the book search service calls three identical backend servers.
 
-The `inventoryServices` is an independent web service that accepts orders via HTTP POST method from `orderService` and sends the availability of order items.
+The `bookstorebacked` is an independent web service that accepts orders via HTTP POST method from `booksearchservice` and sends the details of the book back to `booksearchservice`.
 
 ### Implementation of the Ballerina services
 
-#### order_service.bal
-The `ballerina.net.http.resiliency` package contains the circuit breaker implementation. After importing that package you can directly create an endpoint with a circuit breaker. The `endpoint` keyword in Ballerina refers to a connection with a remote service. You can pass the `HTTP Client`, `Failure Threshold` and `Reset Timeout` to the circuit breaker. The `circuitBreakerEP` is the reference for the HTTP endpoint with the circuit breaker. Whenever you call that remote HTTP endpoint, it goes through the circuit breaker. 
+#### book_search_service.bal
+The `ballerina.net.http.resiliency` package contains the load balancer implementation. After importing that package you can directly create an endpoint with a load balancer. The `endpoint` keyword in Ballerina refers to a connection with a remote service. Here you'll have three identical remote services that we load balance across. First, you need to import ` ballerina.net.http.resiliency` package to use the loadbalancer. Next, create a LoadBalancer end point by ` create resiliency:LoadBalancer` statement. Then you need to create an array of HTTP Clients that you needs to be Loadbalanced across. Finally, pass the `resiliency:roundRobin` argument to the `create loadbalancer` constructor. Now whenever you call the `bookStoreEndPoints` remote HTTP endpoint, it goes through the failover and load balancer. 
 
 ```ballerina
-package orderServices;
+package booksearchservice;
 
-import ballerina.log;
 import ballerina.net.http.resiliency;
 import ballerina.net.http;
 
-@http:configuration {basePath:"/order"}
-service<http> orderService {
-    // The CircuitBreaker parameter defines an endpoint with the circuit breaker pattern
-    // The circuit breaker immediately drop remote calls if the endpoint exceeds the failure threshold
-    endpoint<resiliency:CircuitBreaker> circuitBreakerEP {
-        // Circuit Breaker should be initialized with HTTP Client, failure threshold and reset timeout
-        // HTTP client could be any HTTP endpoint that has risk of failure
-        // Failure threshold should be 0 and 1
-        // The reset timeout for the circuit breaker should be in milliseconds
-        create resiliency:CircuitBreaker(create http:HttpClient("http://localhost:9092", null),
-                                         0.2, 20000);
-    }
-    
+
+@http:configuration {basePath:"book"}
+service<http> bookSearchService {
     @http:resourceConfig {
-        methods:["POST"],
-        path:"/"
+    // Set the bookName as a path parameter
+        path:"/{bookName}"
     }
-    resource orderResource (http:Connection httpConnection, http:InRequest request) {
-        // Initialize the request and response message to send to the inventory service
-        http:OutResponse outResponse = {};
-        http:OutRequest outRequest = {};
-        // Initialize the response message to send back to the client
+    resource bookSearchService (http:Connection conn, http:InRequest req, string bookName) {
+        // Define the end point to the book store backend
+        endpoint<http:HttpClient> bookStoreEndPoints {
+        // Crate a LoadBalancer end point
+        // The LoadBalancer is defined in ballerina.net.http.resiliency package
+            create resiliency:LoadBalancer(
+            // Create an array of HTTP Clients that needs to be Loadbalanced across
+            [create http:HttpClient("http://localhost:9011/book-store", {endpointTimeout:1000}),
+             create http:HttpClient("http://localhost:9012/book-store", {endpointTimeout:1000}),
+             create http:HttpClient("http://localhost:9013/book-store", {endpointTimeout:1000})],
+            // Use the round robbin load balancing algorithm
+            resiliency:roundRobin);
+        }
+
+        // Initialize the request and response messages for the remote call
         http:InResponse inResponse = {};
-        http:HttpConnectorError err;
-        // Extract the items from the JSON payload
-        json items = request.getJsonPayload().items;
-        // Send bad request message to the client if the request does not contain items JSON
-        if (items == null) {
-            outResponse.setStringPayload("Error: Please check the input JSON payload");
-            // Set the response code as 400 to indicate a bad request
-            outResponse.statusCode = 400;
-            _ = httpConnection.respond(outResponse);
-            return;
+        http:HttpConnectorError httpConnectorError;
+        http:OutRequest outRequest = {};
+
+        // Set the json payload with the book name
+        json requestPayload = {"bookName":bookName};
+        outRequest.setJsonPayload(requestPayload);
+        // Call the book store backend with loadbalancer enabled
+        inResponse, httpConnectorError = bookStoreEndPoints.post("/", outRequest);
+        // Send the response back to the client
+        http:OutResponse outResponse = {};
+        if (httpConnectorError != null) {
+            outResponse.statusCode = httpConnectorError.statusCode;
+            outResponse.setStringPayload(httpConnectorError.message);
+            _ = conn.respond(outResponse);
+        } else {
+            _ = conn.forward(inResponse);
         }
-        log:printInfo("Recieved Order : " + items.toString());
-        // Set the outgoing request JSON payload with items
-        outRequest.setJsonPayload(items);
-        // Call the inventory backend with the item list
-        inResponse, err = circuitBreakerEP.post("/inventory", outRequest);
-        // If inventory backend contains errors, forward the error message to the client
-        if (err != null) {
-            log:printInfo("Inventory service returns an error:" + err.msg);
-            outResponse.setJsonPayload({"Error":"Inventory Service did not respond",
-            "Error_message":err.msg});
-            _ = httpConnection.respond(outResponse);
-            return;
-        }
-        // Send response to the client if the order placement was successful
-        outResponse.setStringPayload("Order Placed : " + inResponse.getJsonPayload().toString());
-        _ = httpConnection.respond(outResponse);
     }
 }
 
