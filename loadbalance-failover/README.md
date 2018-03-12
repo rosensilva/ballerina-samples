@@ -1,33 +1,33 @@
-# Circuit Breaker
-The [circuit breaker pattern](https://martinfowler.com/bliki/CircuitBreaker.html) is a way to automatically degrade functionality when remote services fail. When you use the circuit breaker pattern, you can allow a web service to continue operating without waiting for unresponsive remote services.
+# Failover and Load Balancing
+Load Balancing is efficiently distributing incoming network traffic across a group of backend servers and failover refers to a procedure by which a system automatically transfers control to a duplicate system when it detects a fault or failure. The combination of load balancing and failover techniques will create highly available systems with efficiently distributing the workload among available resources. Ballerina language supports load balancing and failover out-of-the-box.
 
-> This guide walks you through the process of adding a circuit breaker pattern to a potentially-failing remote backend. 
+> This guide walks you through the process of adding load balancing and failover for Ballerina programmes.
 
 The following are the sections available in this guide.
 
 - [What you'll build](#what-you-build)
 - [Prerequisites](#pre-req)
-- [Developing the RESTFul service with circuit breaker](#developing-service)
+- [Developing the RESTFul service with load balancing and failover](#developing-service)
 - [Testing](#testing)
 - [Deployment](#deploying-the-scenario)
 - [Observability](#observability)
 
 ## <a name="what-you-build"></a>  What you'll build
 
-You’ll build a web service that uses the Circuit Breaker pattern to gracefully degrade functionality when a remorte backend fails. To understand this better, you'll be mapping this with a real world scenario of an order processing service of a retail store. The retail store uses a potentially-failing remote backend for inventory management. When a specific order comes to the order processing service, the service calls the inventory management service to check the availability of items.
+You’ll build a web service with load balancing and failover mechanisms. To understand this better, you'll be mapping this with a real-world scenario of a book finding service. The book finding service will use three remote backends running three identical bookstore services to retrieve the book details.The failover and load balancing mechanisms help to balance the load among all the available remote servers.
 
 &nbsp;
 &nbsp;
 &nbsp;
 &nbsp;
 
-![Circuit breaker ](images/circuit_breaker_image3.png)
+![Load Balancer](images/load_balancer_image1.png)
 
 &nbsp;
 &nbsp;
 &nbsp;
 
-**Place orders through retail store**: To place a new order you can use the HTTP POST message that contains the order details
+**Request book details from book search service**: To search a new book you can use the HTTP GET request that contains the book name as a path parameter.
 
 ## <a name="pre-req"></a> Prerequisites
  
@@ -44,162 +44,190 @@ You’ll build a web service that uses the Circuit Breaker pattern to gracefully
 ### Before you begin
 
 #### Understand the package structure
-Ballerina is a complete programming language that can have any custom project structure that you wish. Although the language allows you to have any package structure, use the following package structure for this project to follow this guide.
+The project structure for this guide should be as the following.
 
 ```
-├── orderServices
-│   ├── order_service.bal
-│   └── order_service_test.bal
-└── inventoryServices
-    ├── inventory_service.bal
-    └── inventory_service_test.bal
+├── booksearchservice
+│   └── book_search_service.bal
+└── bookstorebacked
+    └── book_store_service.bal
 ```
 
-The `orderServices` is the service that handles the client orders. Order service is configured with a circuit breaker to deal with the potentially-failing remote inventory management service.  
+The `booksearchservice` is the service that handles the client orders to find books from bookstores. Book search service call bookstore backends to retrieve book details. You can find the loadbalancing and failover mechanisms are applied when the book search service calls three identical backend servers.
 
-The `inventoryServices` is an independent web service that accepts orders via HTTP POST method from `orderService` and sends the availability of order items.
+The `bookstorebacked` is an independent web service that accepts orders via HTTP POST method from `booksearchservice` and sends the details of the book back to the `booksearchservice`.
 
 ### Implementation of the Ballerina services
 
-#### order_service.bal
-The `ballerina.net.http.resiliency` package contains the circuit breaker implementation. After importing that package you can directly create an endpoint with a circuit breaker. The `endpoint` keyword in Ballerina refers to a connection with a remote service. You can pass the `HTTP Client`, `Failure Threshold` and `Reset Timeout` to the circuit breaker. The `circuitBreakerEP` is the reference for the HTTP endpoint with the circuit breaker. Whenever you call that remote HTTP endpoint, it goes through the circuit breaker. 
+#### book_search_service.bal
+The `ballerina.net.http.resiliency` package contains the load balancer implementation. After importing that package you can create an endpoint with a load balancer. The `endpoint` keyword in Ballerina refers to a connection with a remote service. Here you'll have three identical remote services to load balance across. First, you need to import ` ballerina.net.http.resiliency` package to use the loadbalancer. Next, create a LoadBalancer end point by ` create resiliency:LoadBalancer` statement. Then you need to create an array of HTTP Clients that you needs to be Loadbalanced across. Finally, pass the `resiliency:roundRobin` argument to the `create loadbalancer` constructor. Now whenever you call the `bookStoreEndPoints` remote HTTP endpoint, it goes through the failover and load balancer. 
 
 ```ballerina
-package orderServices;
+package booksearchservice;
 
-import ballerina.log;
 import ballerina.net.http.resiliency;
 import ballerina.net.http;
 
-@http:configuration {basePath:"/order"}
-service<http> orderService {
-    // The CircuitBreaker parameter defines an endpoint with the circuit breaker pattern
-    // The circuit breaker immediately drop remote calls if the endpoint exceeds the failure threshold
-    endpoint<resiliency:CircuitBreaker> circuitBreakerEP {
-        // Circuit Breaker should be initialized with HTTP Client, failure threshold and reset timeout
-        // HTTP client could be any HTTP endpoint that has risk of failure
-        // Failure threshold should be 0 and 1
-        // The reset timeout for the circuit breaker should be in milliseconds
-        create resiliency:CircuitBreaker(create http:HttpClient("http://localhost:9092", null),
-                                         0.2, 20000);
-    }
-    
+
+@http:configuration {basePath:"book"}
+service<http> bookSearchService {
     @http:resourceConfig {
-        methods:["POST"],
-        path:"/"
+    // Set the bookName as a path parameter
+        path:"/{bookName}"
     }
-    resource orderResource (http:Connection httpConnection, http:InRequest request) {
-        // Initialize the request and response message to send to the inventory service
-        http:OutResponse outResponse = {};
-        http:OutRequest outRequest = {};
-        // Initialize the response message to send back to the client
+    resource bookSearchService (http:Connection conn, http:InRequest req, string bookName) {
+        // Define the end point to the book store backend
+        endpoint<http:HttpClient> bookStoreEndPoints {
+        // Crate a LoadBalancer end point
+        // The LoadBalancer is defined in ballerina.net.http.resiliency package
+            create resiliency:LoadBalancer(
+            // Create an array of HTTP Clients that needs to be Loadbalanced across
+            [create http:HttpClient("http://localhost:9011/book-store", {endpointTimeout:1000}),
+             create http:HttpClient("http://localhost:9012/book-store", {endpointTimeout:1000}),
+             create http:HttpClient("http://localhost:9013/book-store", {endpointTimeout:1000})],
+            // Use the round robbin load balancing algorithm
+            resiliency:roundRobin);
+        }
+
+        // Initialize the request and response messages for the remote call
         http:InResponse inResponse = {};
-        http:HttpConnectorError err;
-        // Extract the items from the JSON payload
-        json items = request.getJsonPayload().items;
-        // Send bad request message to the client if the request does not contain items JSON
-        if (items == null) {
-            outResponse.setStringPayload("Error: Please check the input JSON payload");
-            // Set the response code as 400 to indicate a bad request
-            outResponse.statusCode = 400;
-            _ = httpConnection.respond(outResponse);
-            return;
+        http:HttpConnectorError httpConnectorError;
+        http:OutRequest outRequest = {};
+
+        // Set the json payload with the book name
+        json requestPayload = {"bookName":bookName};
+        outRequest.setJsonPayload(requestPayload);
+        // Call the book store backend with loadbalancer enabled
+        inResponse, httpConnectorError = bookStoreEndPoints.post("/", outRequest);
+        // Send the response back to the client
+        http:OutResponse outResponse = {};
+        if (httpConnectorError != null) {
+            outResponse.statusCode = httpConnectorError.statusCode;
+            outResponse.setStringPayload(httpConnectorError.message);
+            _ = conn.respond(outResponse);
+        } else {
+            _ = conn.forward(inResponse);
         }
-        log:printInfo("Recieved Order : " + items.toString());
-        // Set the outgoing request JSON payload with items
-        outRequest.setJsonPayload(items);
-        // Call the inventory backend with the item list
-        inResponse, err = circuitBreakerEP.post("/inventory", outRequest);
-        // If inventory backend contains errors, forward the error message to the client
-        if (err != null) {
-            log:printInfo("Inventory service returns an error:" + err.msg);
-            outResponse.setJsonPayload({"Error":"Inventory Service did not respond",
-            "Error_message":err.msg});
-            _ = httpConnection.respond(outResponse);
-            return;
-        }
-        // Send response to the client if the order placement was successful
-        outResponse.setStringPayload("Order Placed : " + inResponse.getJsonPayload().toString());
-        _ = httpConnection.respond(outResponse);
     }
 }
 
 ```
 
-Refer to the complete implementaion of the orderService in the [resiliency-circuit-breaker/orderServices/order_service.bal](/orderServices/order_service.bal) file.
+Refer to the complete implementaion of the orderService in the [loadbalancing-failover/booksearchservice/book_search_service.bal](/booksearchservice/book_search_service.bal) file.
 
 
-#### inventory_service.bal 
-The inventory management service is a simple web service that is used to mock inventory management. This service sends the following JSON message to any request. 
+#### book_store_service.bal
+The book store service is a mock service that gives the details about the requested book. This service is a simple service that accepts,
+HTTP POST requests with following json payload
 ```json
-{"Status":"Order Available in Inventory",   "items":"requested items list"}
+ {"bookName":"Name of the book"}
 ```
-Refer to the complete implementation of the inventory management service in the [resiliency-circuit-breaker/inventoryServices/inventory_service.bal](/inventoryServices/inventory_service.bal) file.
+and resopond with the following JSON,
+
+```json
+
+{
+ "Served by Data Ceter" : "1",
+ "Book Details" : {
+     "Title":"Book titile",
+     "Author":"Stephen King",
+     "ISBN":"978-3-16-148410-0",
+     "Availability":"Available"
+ }
+}
+```
+
+Refer to the complete implementation of the book store service in the [loadbalance-failover/bookstorebacked/book_store_service.bal](bookstorebacked/book_store_service.bal) file.
 
 ## <a name="testing"></a> Testing 
 
 
 ### Try it out
-
-1. Run both the orderService and inventoryService by entering the following commands in sperate terminals from the sample root directory.
+#### Load balancer
+1. Run book search service by running the following command in the terminal from the sample root directory.
     ```bash
-    $ ballerina run inventoryServices/
+    $ ballerina run booksearchservice/
    ```
+
+2. Run the three instances of the book store service. Here, you have to enter the service port number in each service instance. You can pass the port number as parameter `Bport=<Port Number>`
+   ``` bash
+   // 1st instance with port number 9011
+   $ ballerina run bookstorebacked/ -Bport=9011
+   ```
+   
+    ``` bash
+    // 2nd instance with port number 9012
+    $ ballerina run bookstorebacked/ -Bport=9012
+   ```
+   
+    ``` bash
+    // 3rd instance with port number 9013
+    $ ballerina run bookstorebacked/ -Bport=9013
+   ```
+   Now all the required servers are up and runninig.
+  
+3. Invoke the book search service by sending the following HTTP GET request to the book search service
+ 
+   ```bash
+   curl -X GET http://localhost:9090/book/Carrie
+   ```
+   You should see a response silmilar to,
+   ```json
+   {"Served by Data Ceter":1,"Book Details":{"Title":"Carrie","Author":"Stephen King","ISBN":"978-3-16-148410-   0","Availability":"Available"}}
+   ```
+   The`"Served by Data Ceter":1` entry says that 1st instance of book store service has invoked to retrieved the book details
+
+4. Repeat the above request for three times. You should see the responses as follows,
+
+   ```json
+   {"Served by Data Ceter":2,"Book Details":{"Title":"Carrie","Author":"Stephen King","ISBN":"978-3-16-148410-   0","Availability":"Available"}}
+   ```
+   ```json
+   {"Served by Data Ceter":3,"Book Details":{"Title":"Carrie","Author":"Stephen King","ISBN":"978-3-16-148410-   0","Availability":"Available"}}
+   ```
+  ```json
+   {"Served by Data Ceter":1,"Book Details":{"Title":"Carrie","Author":"Stephen King","ISBN":"978-3-16-148410-   0","Availability":"Available"}}
+   ```
+
+  You can see that the book search service has invoked book store backed with round robin load balancing pattern. The `"Served by Data Ceter"` is repeating as 1->2->3->1
+
+#### Failover
+
+1.  Now, shut down the 3rd instance of the book store service by terminating following instance,
+    ```bash
+    // 3rd instance with port number 9013
+    $ ballerina run bookstorebacked/ -Bport=9013
+    // Terminate this from the terminal
+    ``` 
+2.  Then send following request repeatedly for three times,
 
    ```bash
-   $ ballerina run orderServices/
-   ```
-
-2. Invoke the orderService by sending an order via the HTTP POST method. 
-   ``` bash
-   curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \
-   "http://localhost:9090/order" -H "Content-Type:application/json"
-   ```
-   The order service sends a response similar to the following:
-   ```
-   Order Placed : {"Status":"Order Available in Inventory", \ 
-   "items":{"1":"Basket","2":"Table","3":"Chair"}}
-   ```
-3. Shutdown the inventory service. Your order service now has a broken remote endpoint for the inventory service.
-
-4. Invoke the orderService by sending an order via HTTP method.
-   ``` bash
-   curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \ 
-   "http://localhost:9090/order" -H "Content-Type
-   ```
-   The order service sends a response similar to the following:
+   curl -X GET http://localhost:9090/book/Carrie
+   ```  
+3.  The responses for above requests should look similar to,
    ```json
-   {"Error":"Inventory Service did not respond","Error_message":"Connection refused, localhost-9092"}
+   {"Served by Data Ceter":1,"Book Details":{"Title":"Carrie","Author":"Stephen King","ISBN":"978-3-16-148410-   0","Availability":"Available"}}
    ```
-   This shows that the order service attempted to call the inventory service and found that the inventory service is not available.
-
-5. Invoke the orderService again soon after sending the previous request.
-   ``` bash
-   curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \ 
-   "http://localhost:9090/order" -H "Content-Type
-   ```
-   Now the Circuit Breaker is activated since the order service knows that the inventory service is unavailable. This time the order service responds with the following error message.
    ```json
-   {"Error":"Inventory Service did not respond","Error_message":"Upstream service
-   unavailable. Requests to upstream service will be suspended for 14451 milliseconds."}
+   {"Served by Data Ceter":2,"Book Details":{"Title":"Carrie","Author":"Stephen King","ISBN":"978-3-16-148410-   0","Availability":"Available"}}
    ```
-
-
-### <a name="unit-testing"></a> Writing unit tests 
+   ```json
+   {"Served by Data Ceter":1,"Book Details":{"Title":"Carrie","Author":"Stephen King","ISBN":"978-3-16-148410-   0","Availability":"Available"}}
+   ```
+   
+ 3.  This means that the failover is preventing the 3rd instance form invoking since we have shut down the 3rd instance. Meantime you'll see the order of `"Served by Data Ceter"` is similar to 1->2->1. 
+ 
+ ### <a name="unit-testing"></a> Writing unit tests 
 
 In Ballerina, the unit test cases should be in the same package and the naming convention should be as follows,
 * Test files should contain the _test.bal suffix.
 * Test functions should contain the test prefix.
-  * e.g., testOrderService()
+  * e.g., testBookStoreService()
 
-This guide contains unit test cases in the respective folders. The two test cases are written to test the `orderServices` and the `inventoryStores` service.
+This guide contains unit test cases in the respective folders. 
 To run the unit tests, go to the sample root directory and run the following command
 ```bash
-$ ballerina test orderServices/
-```
-
-```bash
-$ ballerina test inventoryServices/
+$ ballerina test bookstorebacked/
 ```
 
 ## <a name="deploying-the-scenario"></a> Deployment
@@ -207,16 +235,23 @@ $ ballerina test inventoryServices/
 Once you are done with the development, you can deploy the service using any of the methods listed below. 
 
 ### <a name="deploying-on-locally"></a> Deploying locally
-You can deploy the RESTful service that you developed above in your local environment. You can use the Ballerina executable archive (.balx) that you created above and run it in your local environment as follows. 
+You can deploy the RESTful service that you developed above in your local environment. You can create the Ballerina executable archive (.balx) first and then run it in your local environment as follows.
 
-```
-$ ballerina run orderServices.balx 
-```
+Building 
+   ```bash
+    $ ballerina build booksearchservice/
 
+    $ ballerina build bookstorebacked/
 
-```
-$ ballerina run inventoryServices.balx 
-```
+   ```
+
+Running
+   ```bash
+    $ ballerina run booksearchservice.balx
+
+    $ ballerina run bookstorebacked.balx -Bport=9011
+
+   ```
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
 (Work in progress) 
