@@ -143,62 +143,91 @@ Refer to the complete implementation of the book store service in the [loadbalan
 
 
 ### Try it out
-
-1. Run book search service in the [loadbalancing-failover/booksearchservice/book_search_service.bal](/booksearchservice/book_search_service.bal) file.
+#### Load balancer
+1. Run book search service by running the following command in the terminal from the sample root directory.
     ```bash
     $ ballerina run booksearchservice/
    ```
 
 2. Run the three instances of the book store service. Here, you have to enter the service port number in each service instance. You can pass the port number as parameter `Bport=<Port Number>`
    ``` bash
-   curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \
-   "http://localhost:9090/order" -H "Content-Type:application/json"
+   // 1st instance with port number 9011
+   $ ballerina run bookstorebacked/ -Bport=9011
    ```
-   The order service sends a response similar to the following:
+   
+    ``` bash
+    // 2nd instance with port number 9012
+    $ ballerina run bookstorebacked/ -Bport=9012
    ```
-   Order Placed : {"Status":"Order Available in Inventory", \ 
-   "items":{"1":"Basket","2":"Table","3":"Chair"}}
+   
+    ``` bash
+    // 3rd instance with port number 9013
+    $ ballerina run bookstorebacked/ -Bport=9013
    ```
-3. Shutdown the inventory service. Your order service now has a broken remote endpoint for the inventory service.
-
-4. Invoke the orderService by sending an order via HTTP method.
-   ``` bash
-   curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \ 
-   "http://localhost:9090/order" -H "Content-Type
+   Now all the required servers are up and runninig.
+  
+3. Invoke the book search service by sending the following HTTP GET request to the book search service
+ 
+   ```bash
+   curl -X GET http://localhost:9090/book/Carrie
    ```
-   The order service sends a response similar to the following:
+   You should see a response silmilar to,
    ```json
-   {"Error":"Inventory Service did not respond","Error_message":"Connection refused, localhost-9092"}
+   {"Served by Data Ceter":1,"Book Details":{"Title":"Carrie","Author":"Stephen King","ISBN":"978-3-16-148410-   0","Availability":"Available"}}
    ```
-   This shows that the order service attempted to call the inventory service and found that the inventory service is not available.
+   The`"Served by Data Ceter":1` entry says that 1st instance of book store service has invoked to retrieved the book details
 
-5. Invoke the orderService again soon after sending the previous request.
-   ``` bash
-   curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \ 
-   "http://localhost:9090/order" -H "Content-Type
-   ```
-   Now the Circuit Breaker is activated since the order service knows that the inventory service is unavailable. This time the order service responds with the following error message.
+4. Repeat the above request for three times. You should see the responses as follows,
+
    ```json
-   {"Error":"Inventory Service did not respond","Error_message":"Upstream service
-   unavailable. Requests to upstream service will be suspended for 14451 milliseconds."}
+   {"Served by Data Ceter":2,"Book Details":{"Title":"Carrie","Author":"Stephen King","ISBN":"978-3-16-148410-   0","Availability":"Available"}}
+   ```
+   ```json
+   {"Served by Data Ceter":3,"Book Details":{"Title":"Carrie","Author":"Stephen King","ISBN":"978-3-16-148410-   0","Availability":"Available"}}
+   ```
+  ```json
+   {"Served by Data Ceter":1,"Book Details":{"Title":"Carrie","Author":"Stephen King","ISBN":"978-3-16-148410-   0","Availability":"Available"}}
    ```
 
+  You can see that the book search service has invoked book store backed with round robin load balancing pattern. The `"Served by Data Ceter"` is repeating as 1->2->3->1
 
-### <a name="unit-testing"></a> Writing unit tests 
+#### Failover
+
+1.  Now, shut down the 3rd instance of the book store service by terminating following instance,
+    ```bash
+    // 3rd instance with port number 9013
+    $ ballerina run bookstorebacked/ -Bport=9013
+    // Terminate this from the terminal
+    ``` 
+2.  Then send following request repeatedly for three times,
+
+   ```bash
+   curl -X GET http://localhost:9090/book/Carrie
+   ```  
+3.  The responses for above requests should look similar to,
+   ```json
+   {"Served by Data Ceter":1,"Book Details":{"Title":"Carrie","Author":"Stephen King","ISBN":"978-3-16-148410-   0","Availability":"Available"}}
+   ```
+   ```json
+   {"Served by Data Ceter":2,"Book Details":{"Title":"Carrie","Author":"Stephen King","ISBN":"978-3-16-148410-   0","Availability":"Available"}}
+   ```
+   ```json
+   {"Served by Data Ceter":1,"Book Details":{"Title":"Carrie","Author":"Stephen King","ISBN":"978-3-16-148410-   0","Availability":"Available"}}
+   ```
+   
+ 3.  This means that the failover is preventing the 3rd instance form invoking since we have shut down the 3rd instance. Meantime you'll see the order of `"Served by Data Ceter"` is similar to 1->2->1. 
+ 
+ ### <a name="unit-testing"></a> Writing unit tests 
 
 In Ballerina, the unit test cases should be in the same package and the naming convention should be as follows,
 * Test files should contain the _test.bal suffix.
 * Test functions should contain the test prefix.
-  * e.g., testOrderService()
+  * e.g., testBookStoreService()
 
-This guide contains unit test cases in the respective folders. The two test cases are written to test the `orderServices` and the `inventoryStores` service.
+This guide contains unit test cases in the respective folders. 
 To run the unit tests, go to the sample root directory and run the following command
 ```bash
-$ ballerina test orderServices/
-```
-
-```bash
-$ ballerina test inventoryServices/
+$ ballerina test bookstorebacked/
 ```
 
 ## <a name="deploying-the-scenario"></a> Deployment
@@ -206,16 +235,23 @@ $ ballerina test inventoryServices/
 Once you are done with the development, you can deploy the service using any of the methods listed below. 
 
 ### <a name="deploying-on-locally"></a> Deploying locally
-You can deploy the RESTful service that you developed above in your local environment. You can use the Ballerina executable archive (.balx) that you created above and run it in your local environment as follows. 
+You can deploy the RESTful service that you developed above in your local environment. You can create the Ballerina executable archive (.balx) first and then run it in your local environment as follows.
 
-```
-$ ballerina run orderServices.balx 
-```
+Building 
+   ```bash
+    $ ballerina build booksearchservice/
 
+    $ ballerina build bookstorebacked/
 
-```
-$ ballerina run inventoryServices.balx 
-```
+   ```
+
+Running
+   ```bash
+    $ ballerina run booksearchservice.balx
+
+    $ ballerina run bookstorebacked.balx -Bport=9011
+
+   ```
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
 (Work in progress) 
