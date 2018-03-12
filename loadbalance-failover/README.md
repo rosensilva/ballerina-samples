@@ -1,7 +1,7 @@
 # Failover and Load Balancing
-Load Balancing is efficiently distributing incoming network traffic across a group of backend servers and failover refers to a procedure by which a system automatically transfers control to a duplicate system when it detects a fault or failure. The combination of load balancing and failover techniques will create a highly available systems with eficiently distributing the workload amoung avaibale resources. Ballerina laguage supports load balancing and failover out-of-the-box.
+Load Balancing is efficiently distributing incoming network traffic across a group of backend servers and failover refers to a procedure by which a system automatically transfers control to a duplicate system when it detects a fault or failure. The combination of load balancing and failover techniques will create highly available systems with efficiently distributing the workload among available resources. Ballerina language supports load balancing and failover out-of-the-box.
 
-> This guide walks you through the process of adding load balancing and failover for Ballerina programms.
+> This guide walks you through the process of adding load balancing and failover for Ballerina programmes.
 
 The following are the sections available in this guide.
 
@@ -14,7 +14,7 @@ The following are the sections available in this guide.
 
 ## <a name="what-you-build"></a>  What you'll build
 
-You’ll build a web service with loadbalancing and failover mechanisms. To understand this better, you'll be mapping this with a real world scenario of a book finding service. The book finding service will use three remote backends running three identical book store services to retrieve the book details.The failover and load balancing mechaisms help to balance the load amoung all the available remote servers.
+You’ll build a web service with load balancing and failover mechanisms. To understand this better, you'll be mapping this with a real-world scenario of a book finding service. The book finding service will use three remote backends running three identical bookstore services to retrieve the book details.The failover and load balancing mechanisms help to balance the load among all the available remote servers.
 
 &nbsp;
 &nbsp;
@@ -27,7 +27,7 @@ You’ll build a web service with loadbalancing and failover mechanisms. To unde
 &nbsp;
 &nbsp;
 
-**Request book details from book search service**: To searcg a new book you can use the HTTP GET request that contains the book name as a path parameter.
+**Request book details from book search service**: To search a new book you can use the HTTP GET request that contains the book name as a path parameter.
 
 ## <a name="pre-req"></a> Prerequisites
  
@@ -53,7 +53,7 @@ The project structure for this guide should be as the following.
     └── book_store_service.bal
 ```
 
-The `booksearchservice` is the service that handles the client orders to find books from book stores. Book search service call book store backeds to retrieve book details. You can find the loadbalancing and failover mechanisms are applied when the book search service calls three identical backend servers.
+The `booksearchservice` is the service that handles the client orders to find books from bookstores. Book search service call bookstore backends to retrieve book details. You can find the loadbalancing and failover mechanisms are applied when the book search service calls three identical backend servers.
 
 The `bookstorebacked` is an independent web service that accepts orders via HTTP POST method from `booksearchservice` and sends the details of the book back to the `booksearchservice`.
 
