@@ -55,12 +55,12 @@ The project structure for this guide should be as the following.
 
 The `booksearchservice` is the service that handles the client orders to find books from book stores. Book search service call book store backeds to retrieve book details. You can find the loadbalancing and failover mechanisms are applied when the book search service calls three identical backend servers.
 
-The `bookstorebacked` is an independent web service that accepts orders via HTTP POST method from `booksearchservice` and sends the details of the book back to `booksearchservice`.
+The `bookstorebacked` is an independent web service that accepts orders via HTTP POST method from `booksearchservice` and sends the details of the book back to the `booksearchservice`.
 
 ### Implementation of the Ballerina services
 
 #### book_search_service.bal
-The `ballerina.net.http.resiliency` package contains the load balancer implementation. After importing that package you can directly create an endpoint with a load balancer. The `endpoint` keyword in Ballerina refers to a connection with a remote service. Here you'll have three identical remote services that we load balance across. First, you need to import ` ballerina.net.http.resiliency` package to use the loadbalancer. Next, create a LoadBalancer end point by ` create resiliency:LoadBalancer` statement. Then you need to create an array of HTTP Clients that you needs to be Loadbalanced across. Finally, pass the `resiliency:roundRobin` argument to the `create loadbalancer` constructor. Now whenever you call the `bookStoreEndPoints` remote HTTP endpoint, it goes through the failover and load balancer. 
+The `ballerina.net.http.resiliency` package contains the load balancer implementation. After importing that package you can create an endpoint with a load balancer. The `endpoint` keyword in Ballerina refers to a connection with a remote service. Here you'll have three identical remote services to load balance across. First, you need to import ` ballerina.net.http.resiliency` package to use the loadbalancer. Next, create a LoadBalancer end point by ` create resiliency:LoadBalancer` statement. Then you need to create an array of HTTP Clients that you needs to be Loadbalanced across. Finally, pass the `resiliency:roundRobin` argument to the `create loadbalancer` constructor. Now whenever you call the `bookStoreEndPoints` remote HTTP endpoint, it goes through the failover and load balancer. 
 
 ```ballerina
 package booksearchservice;
@@ -113,31 +113,43 @@ service<http> bookSearchService {
 
 ```
 
-Refer to the complete implementaion of the orderService in the [resiliency-circuit-breaker/orderServices/order_service.bal](/orderServices/order_service.bal) file.
+Refer to the complete implementaion of the orderService in the [loadbalancing-failover/booksearchservice/book_search_service.bal](/booksearchservice/book_search_service.bal) file.
 
 
-#### inventory_service.bal 
-The inventory management service is a simple web service that is used to mock inventory management. This service sends the following JSON message to any request. 
+#### book_store_service.bal
+The book store service is a mock service that gives the details about the requested book. This service is a simple service that accepts,
+HTTP POST requests with following json payload
 ```json
-{"Status":"Order Available in Inventory",   "items":"requested items list"}
+ {"bookName":"Name of the book"}
 ```
-Refer to the complete implementation of the inventory management service in the [resiliency-circuit-breaker/inventoryServices/inventory_service.bal](/inventoryServices/inventory_service.bal) file.
+and resopond with the following JSON,
+
+```json
+
+{
+ "Served by Data Ceter" : "1",
+ "Book Details" : {
+     "Title":"Book titile",
+     "Author":"Stephen King",
+     "ISBN":"978-3-16-148410-0",
+     "Availability":"Available"
+ }
+}
+```
+
+Refer to the complete implementation of the book store service in the [loadbalance-failover/bookstorebacked/book_store_service.bal](bookstorebacked/book_store_service.bal) file.
 
 ## <a name="testing"></a> Testing 
 
 
 ### Try it out
 
-1. Run both the orderService and inventoryService by entering the following commands in sperate terminals from the sample root directory.
+1. Run book search service in the [loadbalancing-failover/booksearchservice/book_search_service.bal](/booksearchservice/book_search_service.bal) file.
     ```bash
-    $ ballerina run inventoryServices/
+    $ ballerina run booksearchservice/
    ```
 
-   ```bash
-   $ ballerina run orderServices/
-   ```
-
-2. Invoke the orderService by sending an order via the HTTP POST method. 
+2. Run the three instances of the book store service. Here, you have to enter the service port number in each service instance. You can pass the port number as parameter `Bport=<Port Number>`
    ``` bash
    curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \
    "http://localhost:9090/order" -H "Content-Type:application/json"
