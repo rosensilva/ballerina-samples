@@ -1,6 +1,7 @@
 package chatserver;
 
 import ballerina.io;
+import ballerina.log;
 import ballerina.net.ws;
 
 
@@ -11,6 +12,11 @@ import ballerina.net.ws;
 service<ws> ChatApp {
     // In-memory map to store web socket connections
     map consMap = {};
+
+    //This resource will trigger when a new connection handshake: before connecting
+    resource onHandshake(ws:HandshakeConnection conn) {
+        log:printInfo("\nNew client is going to connect with ID: "+ conn.connectionID);
+    }
 
     // This resource will trigger when a new web socket connection is open
     resource onOpen (ws:Connection conn, string name) {
@@ -54,7 +60,7 @@ function broadcast (map consMap, string text) {
     // Iterate through all available connections in the connections map
     foreach wsConnection in consMap {
         var con, _ = (ws:Connection)wsConnection;
-        // Send the text message to the connection
+        // Push the text message to the connection
         con.pushText(text);
     }
 }
