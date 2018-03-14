@@ -56,6 +56,7 @@ Inside each resource, we can implement the logic as per the requirement. In this
 package chatserver;
 
 import ballerina.io;
+import ballerina.log;
 import ballerina.net.ws;
 
 
@@ -67,6 +68,11 @@ service<ws> ChatApp {
     // In-memory map to store web socket connections
     map consMap = {};
 
+    //This resource will trigger when a new connection handshake
+    resource onHandshake(ws:HandshakeConnection conn) {
+        log:printInfo("New client is going to connect with ID: "+ conn.connectionID);
+    }
+    
     // This resource will trigger when a new web socket connection is open
     resource onOpen (ws:Connection conn, string name) {
         // Add the new connection to the connection map
@@ -182,10 +188,13 @@ Then you will see the following chat application user interface,
     You can insert your name and age to the respective text input boxes. Then the client will connect to the chat application  once you press the `Connect` button.
     
     **Send chat messages**
-    You can send new messages to chat using the chat application client by typing the message in the provided text box and pressing send button.
+    You can type new messages to the chat in the provided text box.  Then the client will send the message to the chat application once you press the `Send` button.
     
     **Recieve chat messages**
     You can see the new messages as they arrive in the chat application client user interface.
+    
+    **Exit from the chat**
+    You can exit from the chat application once you press the `Disconnect` button.
     
     **Join multiple clients to the chat server**
     You can login to chat application using multiple browsers or from the same browser. To test this, you can open multiple instances of `websocket-chat-app/chat_web_client/index.html` from your browser/s.
