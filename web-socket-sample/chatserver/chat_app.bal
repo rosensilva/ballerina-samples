@@ -15,7 +15,7 @@ service<ws> ChatApp {
 
     //This resource will trigger when a new connection handshake: before connecting
     resource onHandshake(ws:HandshakeConnection conn) {
-        log:printInfo("\nNew client is going to connect with ID: "+ conn.connectionID);
+        log:printInfo("New client is going to connect with ID: "+ conn.connectionID);
     }
 
     // This resource will trigger when a new web socket connection is open
