@@ -5,7 +5,7 @@
 You'll build a chat application using WebSockets. We will develop the chat application server completely using Ballerina and we'll use JavaScript and HTML to implement browser client for the chat application.
 
 &nbsp;
-![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/web-socket-sample/images/chat_application_ui.png)
+![WebSocket Scenario](https://github.com/rosensilva/ballerina-samples/blob/master/web-socket-sample/images/websokcet_scenario.png)
 &nbsp; 
 
 ## <a name="pre-req"></a> Prerequisites
@@ -172,15 +172,13 @@ ballerina: started HTTP/WS server connector 0.0.0.0:9090
 ```
 
 4. You can test the functionality using the chat application web client. Navigate to the sample base directory and find the `index.html` at `websocket-chat-app/chat_web_client/` location. Then open the index.html file from a web browser (e.g: Chrome, Firefox). 
-Then you will see the chat application user interface,
-  
+Then you will see the following chat application user interface,
+![Chat Application UI](https://github.com/rosensilva/ballerina-samples/blob/master/web-socket-sample/images/chat_application_ui.png)
     **Connect as a new user**
     You can add your name and age to the respective text input boxes. Then the client will connect to the chat application web   server using WebSockets.
-    ![alt_text](https://github.com/rosensilva/ballerina-samples/blob/master/web-socket-sample/images/chat_app_add_user_resized.png)
     
     **Send chat messages**
     You can send new messages to chat using the chat application client by typing the message in the provided text box and pressing send button.
-    ![alt_text](https://github.com/rosensilva/ballerina-samples/blob/master/web-socket-sample/images/chat_app_send_msg.png)
     
     **Recieve chat messages**
     You can see the new messages as they arrive in the chat application client user interface.
