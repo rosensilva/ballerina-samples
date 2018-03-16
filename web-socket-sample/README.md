@@ -1,13 +1,15 @@
 # Using WebSockets to develop an interactive web application
-[WebSocket](https://tools.ietf.org/html/rfc6455) is a computer communications protocol that allows you to open an interactive communication session between the user's browser and a server. With WebSockets, you can send messages to a server and receive responses based on events without having to query the server for a response.
+[WebSocket](https://tools.ietf.org/html/rfc6455) is a computer communications protocol that allows you to open an interactive communication session between the user's browser and a server. With WebSockets, you can send messages to a server and receive responses based on events without having to query the server for a response. Ballerina language has build-in support for creating services with WebSockets.
 
 ## <a name="what-you-build"></a>  What you'll build
-You'll build a chat application using WebSockets. We will develop the chat application server completely using Ballerina and we'll use JavaScript and HTML to implement browser client for the chat application.
+You'll build a chat application using WebSockets. We will develop the chat application server completely using Ballerina language. The Ballerina WebSocket Chat application will have four resorces to handel WebSocket connections. Refer to the following diagram to understand how we are going to implement the chat application.
 
 &nbsp;
-![alt text](https://github.com/rosensilva/ballerina-samples/blob/master/web-socket-sample/images/chat_application_ui.png)
+![WebSocket Scenario](https://github.com/rosensilva/ballerina-samples/blob/master/web-socket-sample/images/websokcet_scenario.png)
 &nbsp; 
 
+  
+NOTE:  We'll use JavaScript and HTML to implement browser client for the chat application. But this guide will only explains the JavaScript implementation of the web client.
 ## <a name="pre-req"></a> Prerequisites
  
 * JDK 1.8 or later
@@ -36,7 +38,8 @@ The project structure should look similar to the following,
     └── index.html
 
 ```
-The `chatserver` is the package for the chat application server side implementation. The `chat_web_client` is the web client for the chat application. This guide will elaborate more on the server-side implementation of chat application using WebSockets. 
+The `chatserver` is the package for the chat application server side implementation.  
+The `chat_web_client` is the web client for the chat application. This guide will elaborate more on the server-side implementation of chat application using WebSockets. 
 
 ### Implementation of the chat application using WebSockets
 
@@ -53,6 +56,7 @@ Inside each resource, we can implement the logic as per the requirement. In this
 package chatserver;
 
 import ballerina.io;
+import ballerina.log;
 import ballerina.net.ws;
 
 
@@ -64,6 +68,11 @@ service<ws> ChatApp {
     // In-memory map to store web socket connections
     map consMap = {};
 
+    //This resource will trigger when a new connection handshake
+    resource onHandshake(ws:HandshakeConnection conn) {
+        log:printInfo("New client is going to connect with ID: "+ conn.connectionID);
+    }
+    
     // This resource will trigger when a new web socket connection is open
     resource onOpen (ws:Connection conn, string name) {
         // Add the new connection to the connection map
@@ -172,18 +181,21 @@ ballerina: started HTTP/WS server connector 0.0.0.0:9090
 ```
 
 4. You can test the functionality using the chat application web client. Navigate to the sample base directory and find the `index.html` at `websocket-chat-app/chat_web_client/` location. Then open the index.html file from a web browser (e.g: Chrome, Firefox). 
-Then you will see the chat application user interface,
+Then you will see the following chat application user interface,  
+
+![Chat Application UI](https://github.com/rosensilva/ballerina-samples/blob/master/web-socket-sample/images/chat_application_ui.png)  
   
     **Connect as a new user**
-    You can add your name and age to the respective text input boxes. Then the client will connect to the chat application web   server using WebSockets.
-    ![alt_text](https://github.com/rosensilva/ballerina-samples/blob/master/web-socket-sample/images/chat_app_add_user_resized.png)
+    You can insert your name and age to the respective text input boxes. Then the client will connect to the chat application  once you press the `Connect` button.
     
     **Send chat messages**
-    You can send new messages to chat using the chat application client by typing the message in the provided text box and pressing send button.
-    ![alt_text](https://github.com/rosensilva/ballerina-samples/blob/master/web-socket-sample/images/chat_app_send_msg.png)
+    You can type new messages to the chat in the provided text box.  Then the client will send the message to the chat application once you press the `Send` button.
     
     **Recieve chat messages**
     You can see the new messages as they arrive in the chat application client user interface.
+    
+    **Exit from the chat**
+    You can exit from the chat application once you press the `Disconnect` button.
     
     **Join multiple clients to the chat server**
     You can login to chat application using multiple browsers or from the same browser. To test this, you can open multiple instances of `websocket-chat-app/chat_web_client/index.html` from your browser/s.
