@@ -17,8 +17,8 @@ service<http> weatherService {
         json requestData = request.getJsonPayload();
         // Prepare dummy weather data
         json responseJson = {
-                                "city":requestData.city,
                                 "time":requestData.time,
+                                "city":requestData.city,
                                 "temperature(*C)":math:randomInRange(20, 40),
                                 "humidity(%)":math:randomInRange(60, 100),
                                 "windSpeed(mph)":math:randomInRange(15, 25)

@@ -1,9 +1,13 @@
 package taskscheduler;
 
+import ballerina.file;
+import ballerina.io;
 import ballerina.log;
 import ballerina.net.http;
 import ballerina.task;
 import ballerina.time;
+
+const string FILE_NAME = "./data/weather_data.txt";
 
 public function main (string[] args) {
 
@@ -38,11 +42,17 @@ function getWeatherSummary () returns (error) {
     // Set the request payload to send to the remote weather service
     json requestJsonPayload = {"city":"London", "time":timeString};
     outRequest.setJsonPayload(requestJsonPayload);
+
     // Call the remote weather service
     inResponse, weatherServiceError = weatherEndpoint.post("/summary", outRequest);
+
+    // Check for errors in the response from the weather backend
     if (weatherServiceError == null) {
+        string weatherUpdate = inResponse.getJsonPayload().toString();
         // Print the weather update
-        log:printInfo(inResponse.getJsonPayload().toString());
+        log:printInfo(weatherUpdate);
+        // Write the weather data to a file
+        writeToFile(weatherUpdate);
     }
     return (error)weatherServiceError;
 }
@@ -50,4 +60,20 @@ function getWeatherSummary () returns (error) {
 function taskSchedulerError (error e) {
     // Log the error if getWeatherSummary returns an error
     log:printErrorCause("[ERROR]", e);
+}
+
+function writeToFile (string weatherData) {
+    log:printInfo("Writing weather data to the file...\n");
+
+    // Initialize the File using global path "FILE_NAME"
+    file:File targetFile = {path:FILE_NAME};
+    // Open the file with Append access
+    targetFile.open(file:A);
+    // Open the bite channel with append access
+    io:ByteChannel channel = targetFile.openChannel("A");
+    weatherData = weatherData + "\n";
+    // Write the current weather data to the byte channel
+    _ = channel.writeBytes(weatherData.toBlob("UTF-8"), 0);
+    // Close the file
+    targetFile.close();
 }
