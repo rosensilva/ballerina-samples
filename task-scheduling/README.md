@@ -199,16 +199,16 @@ Note : this service implementation is not mandotary to develop task scheduling a
 In Ballerina, the unit test cases should be in the same package and the naming convention should be as follows,
 * Test files should contain the _test.bal suffix.
 * Test functions should contain the test prefix.
-  * e.g., testOrderService()
+  * e.g., testWeatherService()
 
-This guide contains unit test cases in the respective folders. The two test cases are written to test the `orderServices` and the `inventoryStores` service.
+This guide contains unit test cases in the respective folders. The two test cases are written to test the `weatherservice` and the `taskscheduler`.
 To run the unit tests, go to the sample root directory and run the following command
 ```bash
-$ ballerina test orderServices/
+$ ballerina test weatherservice/
 ```
 
 ```bash
-$ ballerina test inventoryServices/
+$ ballerina test weatherservice/
 ```
 
 ## <a name="deploying-the-scenario"></a> Deployment
@@ -216,15 +216,14 @@ $ ballerina test inventoryServices/
 Once you are done with the development, you can deploy the service using any of the methods listed below. 
 
 ### <a name="deploying-on-locally"></a> Deploying locally
-You can deploy the RESTful service that you developed above in your local environment. You can use the Ballerina executable archive (.balx) that you created above and run it in your local environment as follows. 
+You can deploy the task scheduling application and weather service that you developed above in your local environment. You can use the Ballerina executable archive (.balx) that you created above and run it in your local environment as follows. 
 
 ```
-$ ballerina run orderServices.balx 
+$ ballerina run taskscheduler.balx 
 ```
 
-
 ```
-$ ballerina run inventoryServices.balx 
+$ ballerina run weatherservice.balx 
 ```
 
 ### <a name="deploying-on-docker"></a> Deploying on Docker
