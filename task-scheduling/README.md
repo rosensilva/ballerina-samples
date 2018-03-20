@@ -18,7 +18,7 @@ You’ll build an application that schedules task for every 20 seconds time inte
 
 ![Circuit breaker ](images/task_scheduling_scenario.png)
 
-# <a name="pre-req"></a> Prerequisites
+## <a name="pre-req"></a> Prerequisites
  
 - JDK 1.8 or later
 - [Ballerina Distribution](https://github.com/ballerina-lang/ballerina/blob/master/docs/quick-tour.md)
