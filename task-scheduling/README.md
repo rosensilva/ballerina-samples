@@ -140,17 +140,22 @@ function writeToFile (string weatherData) {
 }
 
 ```
+### Implementation of the Ballerina Weather service backend
 
-#### inventory_service.bal 
-The inventory management service is a simple web service that is used to mock inventory management. This service sends the following JSON message to any request. 
-```json
-{"Status":"Order Available in Inventory",   "items":"requested items list"}
+#### weather_service.bal
+This weather service is mock web service that accepts requests through,
+HTTP POST request with following JSON payload,
+```json 
+{"city":"London", "time":"11:17:0"};
 ```
-Refer to the complete implementation of the inventory management service in the [resiliency-circuit-breaker/inventoryServices/inventory_service.bal](/inventoryServices/inventory_service.bal) file.
+and respond with following random weather data,
+```json
+{"time":"11:17:0","city":"London","temperature(*C)":25,"humidity(%)":60,"windSpeed(mph)":21}
+```
+
+Note : this service implementation is not mandotary to develop task scheduling application, since the implementation details will be not discussed in this guide. Please find the complete implementaion of the weather service backend at `/task-scheduling/weatherservice/weather_service.bal`
 
 ## <a name="testing"></a> Testing 
-
-
 ### Try it out
 
 1. Run both the orderService and inventoryService by entering the following commands in sperate terminals from the sample root directory.
