@@ -1,4 +1,4 @@
-# Circuit Breaker
+# Task Scheduling with Ballerina
 Task scheduling is a process where we can automate specific tasks to happen at a predefined time. With Ballerina you can use [Cron syntax](http://www.nncron.ru/help/EN/working/cron-format.htm) to define time and frequency of various actions.
 
 > This guide walks you through scheduling tasks with Ballerina. 
@@ -53,7 +53,8 @@ The `weatherservice` is an independent web service that accepts requests via HTT
 ### Implementation of the Ballerina task scheduling application
 
 #### weather_update_application.bal
-The `ballerina.task` package contains the task scheduler implementation. After importing that package you can directly create task schedule appoinment. The `task:scheduleAppointment(onTrigger, onError, scheduleCronExpression)` will initiate the task. * First, need to pass onTrigger function(should return error) which suppose to be run on trigger by the task scheduler.
+The `ballerina.task` package contains the task scheduler implementation. After importing that package you can directly create task schedule appoinment. The `task:scheduleAppointment(onTrigger, onError, scheduleCronExpression)` will initiate the task. 
+* First, need to pass onTrigger function(should return error) which suppose to be run on trigger by the task scheduler.
 * Next, you need to pass onError function(should accepet error as an argument) that specify the action when an error occured at ioTrigger function.
 * Finaly, you need to pass the scheduleCronExpression string which specifies the Cron expression of the schedule.
 
