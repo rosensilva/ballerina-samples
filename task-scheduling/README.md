@@ -140,7 +140,7 @@ function writeToFile (string weatherData) {
 }
 
 ```
-### Implementation of the Ballerina Weather service backend
+### Implementation of the Ballerina weather service backend
 
 #### weather_service.bal
 This weather service is mock web service that accepts requests through,
@@ -158,50 +158,42 @@ Note : this service implementation is not mandotary to develop task scheduling a
 ## <a name="testing"></a> Testing 
 ### Try it out
 
-1. Run both the orderService and inventoryService by entering the following commands in sperate terminals from the sample root directory.
+1. Open the terminal from the sample root directory and type the following command and execute.
     ```bash
-    $ ballerina run inventoryServices/
+    $ ballerina run weatherservice
+   ```
+   
+2. Then, run the task scheduling application by entering the following command from the sample root directory
+   ``` bash
+    $ ballerina run taskscheduler
    ```
 
+3. The terminal where you run the taskscheduler should display logs similar to follwing
    ```bash
-   $ ballerina run orderServices/
+    2018-03-20 11:15:00,093 INFO  [taskscheduler] - Calling weather service endpoint... 
+    2018-03-20 11:15:01,134 INFO  [taskscheduler] - {"time":"11:15:0","city":"London","temperature(*C)":21,"humidity(%)":66,"windSpeed(mph)":18} 
+    2018-03-20 11:15:01,142 INFO  [taskscheduler] - Writing weather data to the file...
+ 
+    2018-03-20 11:15:20,005 INFO  [taskscheduler] - Calling weather service endpoint... 
+    2018-03-20 11:15:20,022 INFO  [taskscheduler] - {"time":"11:15:20","city":"London","temperature(*C)":22,"humidity(%)":79,"windSpeed(mph)":23} 
+    2018-03-20 11:15:20,023 INFO  [taskscheduler] - Writing weather data to the file...
    ```
 
-2. Invoke the orderService by sending an order via the HTTP POST method. 
+4. Next, find the generated weater data log file in the sample directory
    ``` bash
-   curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \
-   "http://localhost:9090/order" -H "Content-Type:application/json"
+   ├── data
+      └── weather_data.txt
    ```
-   The order service sends a response similar to the following:
-   ```
-   Order Placed : {"Status":"Order Available in Inventory", \ 
-   "items":{"1":"Basket","2":"Table","3":"Chair"}}
-   ```
-3. Shutdown the inventory service. Your order service now has a broken remote endpoint for the inventory service.
-
-4. Invoke the orderService by sending an order via HTTP method.
-   ``` bash
-   curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \ 
-   "http://localhost:9090/order" -H "Content-Type
-   ```
-   The order service sends a response similar to the following:
+   This file should contatain the logged weather data similar to,
    ```json
-   {"Error":"Inventory Service did not respond","Error_message":"Connection refused, localhost-9092"}
-   ```
-   This shows that the order service attempted to call the inventory service and found that the inventory service is not available.
+   {"time":"11:19:0","city":"London","temperature(*C)":27,"humidity(%)":74,"windSpeed(mph)":21}
+   {"time":"11:19:20","city":"London","temperature(*C)":37,"humidity(%)":88,"windSpeed(mph)":21}
+   {"time":"11:19:40","city":"London","temperature(*C)":23,"humidity(%)":80,"windSpeed(mph)":16}
+   {"time":"11:20:0","city":"London","temperature(*C)":29,"humidity(%)":64,"windSpeed(mph)":21}
+   {"time":"11:20:20","city":"London","temperature(*C)":39,"humidity(%)":60,"windSpeed(mph)":19}
+   {"time":"11:20:40","city":"London","temperature(*C)":24,"humidity(%)":63,"windSpeed(mph)":19}
 
-5. Invoke the orderService again soon after sending the previous request.
-   ``` bash
-   curl -v -X POST -d '{ "items":{"1":"Basket","2": "Table","3": "Chair"}}' \ 
-   "http://localhost:9090/order" -H "Content-Type
    ```
-   Now the Circuit Breaker is activated since the order service knows that the inventory service is unavailable. This time the order service responds with the following error message.
-   ```json
-   {"Error":"Inventory Service did not respond","Error_message":"Upstream service
-   unavailable. Requests to upstream service will be suspended for 14451 milliseconds."}
-   ```
-
-
 ### <a name="unit-testing"></a> Writing unit tests 
 
 In Ballerina, the unit test cases should be in the same package and the naming convention should be as follows,
