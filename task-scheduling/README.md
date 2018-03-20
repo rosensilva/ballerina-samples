@@ -17,14 +17,9 @@ The following are the sections available in this guide.
 You’ll build an application that schedules task for every 20 seconds time interval. Since Ballerina language is fine tuned for integration, we'll develop task scheduling application that periodically calls a remote weather service and logs the data into a file.
 
 &nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
 
 ![Circuit breaker ](images/task_scheduling_scenario.png)
 
-&nbsp;
-&nbsp;
 &nbsp;
 
 # <a name="pre-req"></a> Prerequisites
